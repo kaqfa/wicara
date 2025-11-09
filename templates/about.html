@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ page_title }}</title>
+    <meta name="description" content="{{ seo_description }}">
+    <meta name="keywords" content="{{ seo_keywords|join(', ') }}">
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>{{ sitename }}</h1>
+            <nav>
+                <ul>
+                    {% for page in pages %}
+                    <li><a href="{{ page.url }}">{{ page.get('menu_title', page.title) }}</a></li>
+                    {% endfor %}
+                </ul>
+            </nav>
+        </div>
+    </header>
+    
+    <main>
+        <section class="about">
+            <div class="container">
+                <h1>About Us</h1>
+                <div class="about-content">
+                    <div class="text">
+                        <p>{{ about_content }}</p>
+                    </div>
+                    {% if team_image %}
+                    <div class="image">
+                        <img src="{{ team_image }}" alt="Our Team">
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <footer>
+        <div class="container">
+            {% for line in footer %}
+            <p>{{ line }}</p>
+            {% endfor %}
+        </div>
+    </footer>
+</body>
+</html>

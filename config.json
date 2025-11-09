@@ -1,0 +1,92 @@
+{
+  "admin-password": "scrypt:32768:8:1$dLQFhTGZDuFqolmd$deb5e1b924768ba1b4a37ce9c17366950c81d7eca0bf194609bac21fdd40d64921e84c5fb514c84f4f18a647c4e2d97e64f5ffd3bf4eca2a20b5dd57edf12c91",
+  "sitename": "My Awesome Website",
+  "description": "A simple website built with Editable Static Web",
+  "keywords": ["website", "profile", "business"],
+  "pages": [
+    {
+      "title": "Home - My Awesome Website",
+      "template": "home.html",
+      "menu-title": "Home",
+      "url": "/",
+      "seo-description": "Welcome to my awesome website",
+      "seo-keywords": ["home", "welcome"],
+      "fields": [
+        {
+          "name": "hero-title",
+          "type": "text",
+          "label": "Hero Title",
+          "value": "Welcome to Our Website"
+        },
+        {
+          "name": "hero-description",
+          "type": "textarea",
+          "label": "Hero Description",
+          "value": "We provide amazing services for your business"
+        },
+        {
+          "name": "hero-image",
+          "type": "image",
+          "label": "Hero Background Image",
+          "value": "/static/images/hero-bg.jpg"
+        }
+      ]
+    },
+    {
+      "title": "About Us - My Awesome Website",
+      "template": "about.html",
+      "menu-title": "About",
+      "url": "/about",
+      "seo-description": "Learn more about our company",
+      "seo-keywords": ["about", "company", "team"],
+      "fields": [
+        {
+          "name": "about-content",
+          "type": "textarea",
+          "label": "About Content",
+          "value": "We are a company that specializes in creating amazing digital experiences for our clients."
+        },
+        {
+          "name": "team-image",
+          "type": "image",
+          "label": "Team Photo",
+          "value": "/static/images/team.jpg"
+        }
+      ]
+    },
+    {
+      "title": "Contact - My Awesome Website",
+      "template": "contact.html",
+      "menu-title": "Contact",
+      "url": "/contact",
+      "seo-description": "Get in touch with us",
+      "seo-keywords": ["contact", "email", "phone"],
+      "fields": [
+        {
+          "name": "contact-email",
+          "type": "text",
+          "label": "Contact Email",
+          "value": "info@mywebsite.com"
+        },
+        {
+          "name": "contact-phone",
+          "type": "text",
+          "label": "Contact Phone",
+          "value": "+62 21 1234 5678"
+        },
+        {
+          "name": "contact-address",
+          "type": "textarea",
+          "label": "Contact Address",
+          "value": "Jakarta, Indonesia"
+        }
+      ]
+    }
+  ],
+  "footer": {
+    "content": [
+      "Copyright © 2025 My Awesome Website. All rights reserved.",
+      "Powered by Editable Static Web CMS"
+    ]
+  }
+}

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ page_title }}</title>
+    <meta name="description" content="{{ seo_description }}">
+    <meta name="keywords" content="{{ seo_keywords|join(', ') }}">
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>{{ sitename }}</h1>
+            <nav>
+                <ul>
+                    {% for page in pages %}
+                    <li><a href="{{ page.url }}">{{ page.get('menu_title', page.title) }}</a></li>
+                    {% endfor %}
+                </ul>
+            </nav>
+        </div>
+    </header>
+    
+    <main>
+        <section class="hero" style="background-image: url('{{ hero_image }}')">
+            <div class="container">
+                <h1>{{ hero_title }}</h1>
+                <p>{{ hero_description }}</p>
+            </div>
+        </section>
+    </main>
+    
+    <footer>
+        <div class="container">
+            {% for line in footer %}
+            <p>{{ line }}</p>
+            {% endfor %}
+        </div>
+    </footer>
+</body>
+</html>
