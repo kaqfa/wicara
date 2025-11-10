@@ -1,66 +1,93 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Page - {{ page.title }}</title>
-    <link rel="stylesheet" href="/static/css/admin.css">
-</head>
-<body>
-    <div class="admin-container">
-        <header class="admin-header">
-            <h1>Edit Page: {{ page.get('menu_title', page.title) }}</h1>
-            <div class="admin-actions">
-                <a href="{{ url_for('admin_dashboard') }}" class="btn">Back to Dashboard</a>
-                <a href="{{ url_for('admin_logout') }}" class="btn btn-danger">Logout</a>
+{% extends "admin/base.html" %}
+
+{% block title %}Edit Page{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h3 mb-0">
+                <i class="bi bi-pencil-square me-2"></i>Edit Page: {{ page.title }}
+            </h1>
+            <div>
+                <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left me-1"></i>Back to Dashboard
+                </a>
             </div>
-        </header>
-        
-        <main class="admin-main">
-            {% with messages = get_flashed_messages(with_categories=true) %}
-                {% if messages %}
-                    {% for category, message in messages %}
-                        <div class="alert alert-{{ category }}">{{ message }}</div>
-                    {% endfor %}
-                {% endif %}
-            {% endwith %}
-            
-            <div class="edit-form">
-                <form method="POST" enctype="multipart/form-data">
-                    {% for field in page.fields %}
-                    <div class="form-group">
-                        <label for="{{ field.name }}">{{ field.label }}:</label>
-                        
-                        {% if field.type == 'text' %}
-                        <input type="text" id="{{ field.name }}" name="{{ field.name }}" 
-                               value="{{ field.get('value', '') }}" required>
-                        
-                        {% elif field.type == 'textarea' %}
-                        <textarea id="{{ field.name }}" name="{{ field.name }}" rows="6" required>{{ field.get('value', '') }}</textarea>
-                        
-                        {% elif field.type == 'image' %}
-                        <div class="image-field">
-                            {% if field.get('value') %}
-                            <div class="current-image">
-                                <p>Current image:</p>
-                                <img src="{{ field.value }}" alt="{{ field.label }}" style="max-width: 200px;">
-                            </div>
-                            {% endif %}
-                            <input type="file" id="{{ field.name }}" name="{{ field.name }}" accept="image/*">
-                            <small>Leave empty to keep current image</small>
-                        </div>
-                        
-                        {% endif %}
-                    </div>
-                    {% endfor %}
+        </div>
+
+        <!-- Page Info -->
+        <div class="page-info">
+            <h5><i class="bi bi-info-circle me-2"></i>Page Information</h5>
+            <p><i class="bi bi-file-earmark-text me-2"></i><strong>Title:</strong> {{ page.get('menu-title', page.title) }}</p>
+            <p><i class="bi bi-link-45deg me-2"></i><strong>URL:</strong> {{ page.url }}</p>
+            <p><i class="bi bi-file-code me-2"></i><strong>Template:</strong> {{ page.template }}</p>
+        </div>
+
+        <!-- Edit Form -->
+        <form method="POST" enctype="multipart/form-data">
+            <div class="form-section">
+                <h3 class="section-title">Page Content</h3>
+                
+                {% for field in page.get('fields', []) %}
+                <div class="mb-4">
+                    {% if field.type == 'text' %}
+                    <label for="{{ field.name }}" class="form-label">{{ field.label }}</label>
+                    <input type="text" 
+                           class="form-control" 
+                           id="{{ field.name }}" 
+                           name="{{ field.name }}" 
+                           value="{{ field.get('value', '') }}"
+                           {% if field.required %}required{% endif %}>
                     
-                    <div class="form-actions">
-                        <button type="submit" class="btn btn-primary">Save Changes</button>
-                        <a href="{{ url_for('admin_dashboard') }}" class="btn btn-secondary">Cancel</a>
+                    {% elif field.type == 'textarea' %}
+                    <label for="{{ field.name }}" class="form-label">{{ field.label }}</label>
+                    <textarea class="form-control" 
+                              id="{{ field.name }}" 
+                              name="{{ field.name }}" 
+                              rows="6"
+                              {% if field.required %}required{% endif %}>{{ field.get('value', '') }}</textarea>
+                    
+                    {% elif field.type == 'image' %}
+                    <label for="{{ field.name }}" class="form-label">{{ field.label }}</label>
+                    <input type="file" 
+                           class="form-control" 
+                           id="{{ field.name }}" 
+                           name="{{ field.name }}" 
+                           accept="image/*">
+                    
+                    {% if field.get('value') %}
+                    <div class="mt-2">
+                        <small class="text-muted">Current image:</small><br>
+                        <img src="{{ field.value }}" alt="{{ field.label }}" class="image-preview">
+                        <div class="mt-1">
+                            <small class="text-muted">{{ field.value }}</small>
+                        </div>
                     </div>
-                </form>
+                    {% endif %}
+                    
+                    {% else %}
+                    <label for="{{ field.name }}" class="form-label">{{ field.label }}</label>
+                    <input type="text" 
+                           class="form-control" 
+                           id="{{ field.name }}" 
+                           name="{{ field.name }}" 
+                           value="{{ field.get('value', '') }}"
+                           placeholder="Unsupported field type: {{ field.type }}">
+                    {% endif %}
+                </div>
+                {% endfor %}
             </div>
-        </main>
+
+            <div class="d-flex justify-content-between">
+                <a href="{{ url_for('admin_dashboard') }}" class="btn btn-secondary">
+                    <i class="bi bi-x-circle me-1"></i>Cancel
+                </a>
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-check-circle me-1"></i>Save Changes
+                </button>
+            </div>
+        </form>
     </div>
-</body>
-</html>
+</div>
+{% endblock %}

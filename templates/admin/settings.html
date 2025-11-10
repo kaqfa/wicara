@@ -1,0 +1,115 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Settings{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h3 mb-0">
+                <i class="bi bi-gear me-2"></i>Settings
+            </h1>
+            <div>
+                <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left me-1"></i>Back to Dashboard
+                </a>
+            </div>
+        </div>
+
+        <form method="POST">
+            <!-- Site Settings -->
+            <div class="form-section">
+                <h3 class="section-title">Site Settings</h3>
+                
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="sitename" class="form-label">Site Name</label>
+                        <input type="text" class="form-control" id="sitename" name="sitename" value="{{ sitename }}" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="admin_password" class="form-label">Admin Password</label>
+                        <input type="password" class="form-control" id="admin_password" name="admin_password" placeholder="Leave blank to keep current">
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="description" class="form-label">Site Description</label>
+                    <textarea class="form-control" id="description" name="description" rows="3">{{ description }}</textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label for="keywords" class="form-label">Site Keywords</label>
+                    <input type="text" class="form-control" id="keywords" name="keywords" value="{{ keywords }}">
+                </div>
+            </div>
+
+            <!-- Footer Settings -->
+            <div class="form-section">
+                <h3 class="section-title">Footer Settings</h3>
+                
+                <div id="footer-items">
+                    {% for key, value in footer.items() %}
+                    <div class="footer-item">
+                        <div class="row align-items-center">
+                            <div class="col-md-5">
+                                <input type="text" class="form-control" name="footer_key_{{ loop.index0 }}" value="{{ key }}" placeholder="Footer key (e.g., copyright)">
+                            </div>
+                            <div class="col-md-5">
+                                <input type="text" class="form-control" name="footer_value_{{ loop.index0 }}" value="{{ value }}" placeholder="Footer value">
+                            </div>
+                            <div class="col-md-2">
+                                <button type="button" class="btn btn-remove" onclick="removeFooterItem(this)">
+                                    <i class="bi bi-trash"></i> Remove
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                
+                <button type="button" class="btn btn-outline-primary" onclick="addFooterItem()">
+                    <i class="bi bi-plus-circle me-1"></i>Add Footer Item
+                </button>
+            </div>
+
+            <div class="d-flex justify-content-between">
+                <a href="{{ url_for('admin_dashboard') }}" class="btn btn-secondary">
+                    <i class="bi bi-x-circle me-1"></i>Cancel
+                </a>
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-check-circle me-1"></i>Save Settings
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+function addFooterItem() {
+    const container = document.getElementById('footer-items');
+    const index = container.children.length;
+    const newItem = document.createElement('div');
+    newItem.className = 'footer-item';
+    newItem.innerHTML = `
+        <div class="row align-items-center">
+            <div class="col-md-5">
+                <input type="text" class="form-control" name="footer_key_${index}" placeholder="Footer key (e.g., copyright)">
+            </div>
+            <div class="col-md-5">
+                <input type="text" class="form-control" name="footer_value_${index}" placeholder="Footer value">
+            </div>
+            <div class="col-md-2">
+                <button type="button" class="btn btn-remove" onclick="removeFooterItem(this)">
+                    <i class="bi bi-trash"></i> Remove
+                </button>
+            </div>
+        </div>
+    `;
+    container.appendChild(newItem);
+}
+
+function removeFooterItem(button) {
+    button.closest('.footer-item').remove();
+}
+</script>
+{% endblock %}
