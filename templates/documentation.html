@@ -1,0 +1,334 @@
+{% extends "base.html" %} {% block title %}{{ page_title }} - {{ sitename }}{%
+endblock %} {% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8 mx-auto text-center">
+                <h1 class="hero-title animate-fade-in">{{ page_title }}</h1>
+                <p class="hero-subtitle animate-fade-in">{{ page_subtitle }}</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Installation Section -->
+<section class="section section-light">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 text-center mb-5">
+                <h2 class="section-title">{{ installation_title }}</h2>
+                <p class="section-subtitle">{{ installation_description }}</p>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <!-- Step 1 -->
+                <div class="custom-card mb-4">
+                    <h4 class="card-title-custom">{{ step_1_title }}</h4>
+                    <div class="code-block">{{ step_1_code }}</div>
+                    <p class="text-muted mt-2">
+                        Clone the WICARA repository to your local machine.
+                    </p>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="custom-card mb-4">
+                    <h4 class="card-title-custom">{{ step_2_title }}</h4>
+                    <div class="code-block">{{ step_2_code }}</div>
+                    <p class="text-muted mt-2">
+                        Create a virtual environment to isolate dependencies.
+                    </p>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="custom-card mb-4">
+                    <h4 class="card-title-custom">{{ step_3_title }}</h4>
+                    <div class="code-block">{{ step_3_code }}</div>
+                    <p class="text-muted mt-2">
+                        Install the required Python packages.
+                    </p>
+                </div>
+
+                <!-- Step 4 -->
+                <div class="custom-card mb-4">
+                    <h4 class="card-title-custom">{{ step_4_title }}</h4>
+                    <div class="code-block">{{ step_4_code }}</div>
+                    <p class="text-muted mt-2">Start the WICARA application.</p>
+                </div>
+
+                <!-- Step 5 -->
+                <div class="custom-card mb-4">
+                    <h4 class="card-title-custom">{{ step_5_title }}</h4>
+                    <div class="code-block">{{ step_5_code }}</div>
+                    <p class="text-muted mt-2">
+                        Open your browser and start using WICARA!
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Configuration Section -->
+<section class="section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 text-center mb-5">
+                <h2 class="section-title">{{ configuration_title }}</h2>
+                <p class="section-subtitle">{{ configuration_description }}</p>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-lg-4">
+                <div class="custom-card h-100">
+                    <div class="text-center mb-3">
+                        <i class="bi bi-gear fs-1 text-primary"></i>
+                    </div>
+                    <h4 class="card-title-custom">{{ config_1_title }}</h4>
+                    <p class="card-description">{{ config_1_description }}</p>
+                    <div class="code-block">
+                        { "sitename": "My Website", "description": "Site
+                        description" }
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="custom-card h-100">
+                    <div class="text-center mb-3">
+                        <i
+                            class="bi bi-file-earmark-text fs-1 text-primary"
+                        ></i>
+                    </div>
+                    <h4 class="card-title-custom">{{ config_2_title }}</h4>
+                    <p class="card-description">{{ config_2_description }}</p>
+                    <div class="code-block">
+                        "pages": [ { "url": "/", "template": "home.html" } ]
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="custom-card h-100">
+                    <div class="text-center mb-3">
+                        <i
+                            class="bi bi-input-cursor-text fs-1 text-primary"
+                        ></i>
+                    </div>
+                    <h4 class="card-title-custom">{{ config_3_title }}</h4>
+                    <p class="card-description">{{ config_3_description }}</p>
+                    <div class="code-block">
+                        "fields": [ { "name": "title", "type": "text" } ]
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Admin Panel Section -->
+<section class="section section-dark">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 text-center mb-5">
+                <h2 class="section-title">{{ admin_title }}</h2>
+                <p class="section-subtitle">{{ admin_description }}</p>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-lg-4">
+                <div class="custom-card text-center">
+                    <i class="bi bi-box-arrow-in-right fs-1 mb-3"></i>
+                    <h5>{{ admin_1_url }}</h5>
+                    <p>{{ admin_1_description }}</p>
+                    <code class="text-light">{{ admin_1_url }}</code>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="custom-card text-center">
+                    <i class="bi bi-key fs-1 mb-3"></i>
+                    <h5>{{ admin_2_password }}</h5>
+                    <p>{{ admin_2_description }}</p>
+                    <code class="text-warning">{{ admin_2_password }}</code>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="custom-card text-center">
+                    <i class="bi bi-pencil-square fs-1 mb-3"></i>
+                    <h5>{{ admin_3_editing }}</h5>
+                    <p>{{ admin_3_description }}</p>
+                    <span class="badge bg-success">Live Updates</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Customization Section -->
+<section class="section section-light">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 text-center mb-5">
+                <h2 class="section-title">{{ customization_title }}</h2>
+                <p class="section-subtitle">{{ customization_description }}</p>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="custom-card">
+                    <h4 class="card-title-custom">{{ custom_1_templates }}</h4>
+                    <p class="card-description">{{ custom_1_description }}</p>
+                    <div class="code-block">
+                        /templates/ ├── base.html ├── home.html └── about.html
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="custom-card">
+                    <h4 class="card-title-custom">{{ custom_2_syntax }}</h4>
+                    <p class="card-description">{{ custom_2_description }}</p>
+                    <div class="code-block">
+                        <!-- Template syntax -->
+                        &lt;h1&gt;{{ page_title }}&lt;/h1&gt; &lt;p&gt;{{
+                        content }}&lt;/p&gt; {% for item in items %}
+                        &lt;div&gt;{{ item }}&lt;/div&gt; {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Deployment Section -->
+<section class="section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 text-center mb-5">
+                <h2 class="section-title">{{ deployment_title }}</h2>
+                <p class="section-subtitle">{{ deployment_description }}</p>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-lg-4">
+                <div class="custom-card h-100">
+                    <div class="text-center mb-3">
+                        <i class="bi bi-server fs-1 text-primary"></i>
+                    </div>
+                    <h4 class="card-title-custom">{{ deployment_1_title }}</h4>
+                    <p class="card-description">
+                        {{ deployment_1_description }}
+                    </p>
+                    <div class="code-block">gunicorn -w 4 app:app</div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="custom-card h-100">
+                    <div class="text-center mb-3">
+                        <i class="bi bi-cloud fs-1 text-primary"></i>
+                    </div>
+                    <h4 class="card-title-custom">{{ deployment_2_title }}</h4>
+                    <p class="card-description">
+                        {{ deployment_2_description }}
+                    </p>
+                    <ul class="feature-list">
+                        <li>Heroku</li>
+                        <li>Railway</li>
+                        <li>Render</li>
+                        <li>DigitalOcean</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="custom-card h-100">
+                    <div class="text-center mb-3">
+                        <i class="bi bi-box fs-1 text-primary"></i>
+                    </div>
+                    <h4 class="card-title-custom">{{ deployment_3_title }}</h4>
+                    <p class="card-description">
+                        {{ deployment_3_description }}
+                    </p>
+                    <div class="code-block">
+                        FROM python:3.9 WORKDIR /app COPY . . RUN pip install -r
+                        requirements.txt CMD ["python", "app.py"]
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center">
+                <h2 class="cta-title">Ready to Start Building?</h2>
+                <p class="cta-description">
+                    Follow our installation guide and have your website running
+                    in minutes.
+                </p>
+                <div class="d-flex gap-3 justify-content-center flex-wrap">
+                    <a
+                        href="https://github.com/yourusername/wicara"
+                        class="btn btn-light btn-lg"
+                        >Get WICARA</a
+                    >
+                    <a href="/contact" class="btn btn-outline-light btn-lg"
+                        >Need Help?</a
+                    >
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %} {% block scripts %}
+<script>
+    // Add smooth scroll behavior
+    document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute("href"));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: "smooth",
+                    block: "start",
+                });
+            }
+        });
+    });
+
+    // Add animation on scroll
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: "0px 0px -50px 0px",
+    };
+
+    const observer = new IntersectionObserver(function (entries) {
+        entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = "1";
+                entry.target.style.transform = "translateY(0)";
+            }
+        });
+    }, observerOptions);
+
+    // Observe cards
+    document.querySelectorAll(".custom-card").forEach((card) => {
+        card.style.opacity = "0";
+        card.style.transform = "translateY(20px)";
+        card.style.transition = "opacity 0.6s ease, transform 0.6s ease";
+        observer.observe(card);
+    });
+</script>
+{% endblock %}

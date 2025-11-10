@@ -526,7 +526,7 @@
           "name": "step-1-code",
           "type": "textarea",
           "label": "Step 1 Code",
-          "value": "git clone https://github.com/yourusername/wicara.git\r\ncd wicara"
+          "value": "git clone https://github.com/yourusername/wicara.git\ncd wicara"
         },
         {
           "name": "step-2-title",
@@ -538,7 +538,7 @@
           "name": "step-2-code",
           "type": "textarea",
           "label": "Step 2 Code",
-          "value": "python -m venv venv\r\nsource venv/bin/activate  # On Windows: venv\\Scripts\\activate"
+          "value": "python -m venv venv\nsource venv/bin/activate  # On Windows: venv\\Scripts\\activate"
         },
         {
           "name": "step-3-title",
@@ -652,7 +652,7 @@
           "name": "admin-2-password",
           "type": "text",
           "label": "Admin 2 Password",
-          "value": "Default: 'Wicara2025' (change immediately!)"
+          "value": "Default: 'wicara2024' (change immediately!)"
         },
         {
           "name": "admin-2-description",

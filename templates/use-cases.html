@@ -1,0 +1,350 @@
+{% extends "base.html" %} {% block title %}{{ page_title }} - {{ sitename }}{%
+endblock %} {% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8 mx-auto text-center">
+                <h1 class="hero-title animate-fade-in">{{ page_title }}</h1>
+                <p class="hero-subtitle animate-fade-in">{{ page_subtitle }}</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Perfect For Section -->
+<section class="section section-light">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 text-center mb-5">
+                <h2 class="section-title">{{ perfect_for_title }}</h2>
+                <p class="section-subtitle">{{ perfect_for_description }}</p>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-lg-4 col-md-6">
+                <div class="custom-card h-100">
+                    <div class="text-center mb-3">
+                        <i class="bi bi-person-circle fs-1 text-primary"></i>
+                    </div>
+                    <h3 class="card-title-custom">{{ use_case_1_title }}</h3>
+                    <p class="card-description">{{ use_case_1_description }}</p>
+                    <div class="mt-auto">
+                        <span class="badge bg-success">Perfect Match</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6">
+                <div class="custom-card h-100">
+                    <div class="text-center mb-3">
+                        <i class="bi bi-megaphone fs-1 text-primary"></i>
+                    </div>
+                    <h3 class="card-title-custom">{{ use_case_2_title }}</h3>
+                    <p class="card-description">{{ use_case_2_description }}</p>
+                    <div class="mt-auto">
+                        <span class="badge bg-success">Perfect Match</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6">
+                <div class="custom-card h-100">
+                    <div class="text-center mb-3">
+                        <i class="bi bi-shop fs-1 text-primary"></i>
+                    </div>
+                    <h3 class="card-title-custom">{{ use_case_3_title }}</h3>
+                    <p class="card-description">{{ use_case_3_description }}</p>
+                    <div class="mt-auto">
+                        <span class="badge bg-success">Perfect Match</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6">
+                <div class="custom-card h-100">
+                    <div class="text-center mb-3">
+                        <i class="bi bi-palette fs-1 text-primary"></i>
+                    </div>
+                    <h3 class="card-title-custom">{{ use_case_4_title }}</h3>
+                    <p class="card-description">{{ use_case_4_description }}</p>
+                    <div class="mt-auto">
+                        <span class="badge bg-success">Perfect Match</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6">
+                <div class="custom-card h-100">
+                    <div class="text-center mb-3">
+                        <i class="bi bi-calendar-event fs-1 text-primary"></i>
+                    </div>
+                    <h3 class="card-title-custom">{{ use_case_5_title }}</h3>
+                    <p class="card-description">{{ use_case_5_description }}</p>
+                    <div class="mt-auto">
+                        <span class="badge bg-success">Perfect Match</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6">
+                <div class="custom-card h-100">
+                    <div class="text-center mb-3">
+                        <i class="bi bi-book fs-1 text-primary"></i>
+                    </div>
+                    <h3 class="card-title-custom">{{ use_case_6_title }}</h3>
+                    <p class="card-description">{{ use_case_6_description }}</p>
+                    <div class="mt-auto">
+                        <span class="badge bg-success">Perfect Match</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Not Recommended Section -->
+<section class="section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 text-center mb-5">
+                <h2 class="section-title">{{ not_recommended_title }}</h2>
+                <p class="section-subtitle">
+                    {{ not_recommended_description }}
+                </p>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <div
+                    class="alert alert-warning border-0"
+                    style="background-color: #fff3cd"
+                >
+                    <div class="d-flex">
+                        <div class="me-3">
+                            <i
+                                class="bi bi-exclamation-triangle-fill fs-3 text-warning"
+                            ></i>
+                        </div>
+                        <div>
+                            <h5 class="alert-heading">
+                                What WICARA is NOT for
+                            </h5>
+                            <p class="mb-3">
+                                We believe in honest positioning. These use
+                                cases are better served by other tools:
+                            </p>
+                            <ul class="mb-0">
+                                <li class="mb-2">{{ limitation_1 }}</li>
+                                <li class="mb-2">{{ limitation_2 }}</li>
+                                <li class="mb-2">{{ limitation_3 }}</li>
+                                <li class="mb-2">{{ limitation_4 }}</li>
+                                <li>{{ limitation_5 }}</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-lg-12 text-center">
+                <h4 class="mb-3">Better Alternatives for Complex Needs</h4>
+                <div class="row g-3">
+                    <div class="col-md-3">
+                        <div class="custom-card">
+                            <h6>WordPress</h6>
+                            <p class="small text-muted mb-0">
+                                Large content sites
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="custom-card">
+                            <h6>Django CMS</h6>
+                            <p class="small text-muted mb-0">
+                                Enterprise solutions
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="custom-card">
+                            <h6>Shopify</h6>
+                            <p class="small text-muted mb-0">E-commerce</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="custom-card">
+                            <h6>Ghost</h6>
+                            <p class="small text-muted mb-0">
+                                Blogging platforms
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Decision Matrix Section -->
+<section class="section section-dark">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 text-center mb-5">
+                <h2 class="section-title">Is WICARA Right for You?</h2>
+                <p class="section-subtitle">
+                    Quick decision matrix to help you choose
+                </p>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-10 mx-auto">
+                <div class="table-responsive">
+                    <table class="table table-dark table-hover">
+                        <thead>
+                            <tr>
+                                <th>Need</th>
+                                <th>WICARA</th>
+                                <th>WordPress</th>
+                                <th>Static Generator</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Simple profile site</td>
+                                <td>
+                                    <span class="badge bg-success"
+                                        >Perfect</span
+                                    >
+                                </td>
+                                <td>
+                                    <span class="badge bg-warning"
+                                        >Overkill</span
+                                    >
+                                </td>
+                                <td><span class="badge bg-info">Good</span></td>
+                            </tr>
+                            <tr>
+                                <td>Client can edit content</td>
+                                <td>
+                                    <span class="badge bg-success"
+                                        >Perfect</span
+                                    >
+                                </td>
+                                <td>
+                                    <span class="badge bg-success">Good</span>
+                                </td>
+                                <td><span class="badge bg-danger">No</span></td>
+                            </tr>
+                            <tr>
+                                <td>No database needed</td>
+                                <td>
+                                    <span class="badge bg-success"
+                                        >Perfect</span
+                                    >
+                                </td>
+                                <td><span class="badge bg-danger">No</span></td>
+                                <td>
+                                    <span class="badge bg-success"
+                                        >Perfect</span
+                                    >
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>100+ pages</td>
+                                <td>
+                                    <span class="badge bg-warning"
+                                        >Limited</span
+                                    >
+                                </td>
+                                <td>
+                                    <span class="badge bg-success">Good</span>
+                                </td>
+                                <td>
+                                    <span class="badge bg-success">Good</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>E-commerce functionality</td>
+                                <td><span class="badge bg-danger">No</span></td>
+                                <td>
+                                    <span class="badge bg-info"
+                                        >With plugins</span
+                                    >
+                                </td>
+                                <td><span class="badge bg-danger">No</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center">
+                <h2 class="cta-title">Still Not Sure?</h2>
+                <p class="cta-description">
+                    Try WICARA for yourself. It's free and takes just 5 minutes
+                    to set up.
+                </p>
+                <div class="d-flex gap-3 justify-content-center flex-wrap">
+                    <a href="/docs" class="btn btn-light btn-lg"
+                        >Try WICARA Now</a
+                    >
+                    <a href="/contact" class="btn btn-outline-light btn-lg"
+                        >Ask Our Team</a
+                    >
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %} {% block scripts %}
+<script>
+    // Add smooth scroll behavior
+    document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute("href"));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: "smooth",
+                    block: "start",
+                });
+            }
+        });
+    });
+
+    // Add animation on scroll
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: "0px 0px -50px 0px",
+    };
+
+    const observer = new IntersectionObserver(function (entries) {
+        entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = "1";
+                entry.target.style.transform = "translateY(0)";
+            }
+        });
+    }, observerOptions);
+
+    // Observe cards
+    document.querySelectorAll(".custom-card").forEach((card) => {
+        card.style.opacity = "0";
+        card.style.transform = "translateY(20px)";
+        card.style.transition = "opacity 0.6s ease, transform 0.6s ease";
+        observer.observe(card);
+    });
+</script>
+{% endblock %}

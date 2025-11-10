@@ -1,51 +1,329 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ page_title }}</title>
-    <meta name="description" content="{{ seo_description }}">
-    <meta name="keywords" content="{{ seo_keywords|join(', ') }}">
-    <link rel="stylesheet" href="/static/css/style.css">
-</head>
-<body>
-    <header>
-        <div class="container">
-            <h1>{{ sitename }}</h1>
-            <nav>
-                <ul>
-                    {% for page in pages %}
-                    <li><a href="{{ page.url }}">{{ page.get('menu_title', page.title) }}</a></li>
-                    {% endfor %}
-                </ul>
-            </nav>
+{% extends "base.html" %} {% block title %}{{ page_title }} - {{ sitename }}{%
+endblock %} {% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8 mx-auto text-center">
+                <h1 class="hero-title animate-fade-in">{{ page_title }}</h1>
+                <p class="hero-subtitle animate-fade-in">{{ page_subtitle }}</p>
+            </div>
         </div>
-    </header>
-    
-    <main>
-        <section class="about">
-            <div class="container">
-                <h1>About Us</h1>
-                <div class="about-content">
-                    <div class="text">
-                        <p>{{ about_content }}</p>
+    </div>
+</section>
+
+<!-- Story Section -->
+<section class="section section-light">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 text-center mb-5">
+                <h2 class="section-title">{{ story_title }}</h2>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <div class="custom-card">
+                    <div class="text-center mb-4">
+                        <i class="bi bi-lightbulb fs-1 text-primary"></i>
                     </div>
-                    {% if team_image %}
-                    <div class="image">
-                        <img src="{{ team_image }}" alt="Our Team">
+                    <div class="prose">
+                        {% set paragraphs = story_content.split('\n\n') %} {%
+                        for paragraph in paragraphs %} {% if paragraph.strip()
+                        %}
+                        <p class="lead">{{ paragraph.strip() }}</p>
+                        {% endif %} {% endfor %}
                     </div>
-                    {% endif %}
                 </div>
             </div>
-        </section>
-    </main>
-    
-    <footer>
-        <div class="container">
-            {% for line in footer %}
-            <p>{{ line }}</p>
-            {% endfor %}
         </div>
-    </footer>
-</body>
-</html>
+    </div>
+</section>
+
+<!-- Philosophy Section -->
+<section class="section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 text-center mb-5">
+                <h2 class="section-title">{{ philosophy_title }}</h2>
+                <p class="section-subtitle">{{ philosophy_description }}</p>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-lg-6">
+                <div class="custom-card h-100">
+                    <div class="text-center mb-3">
+                        <i class="bi bi-slash-circle fs-1 text-primary"></i>
+                    </div>
+                    <h4 class="card-title-custom">{{ philosophy_1_title }}</h4>
+                    <p class="card-description">
+                        {{ philosophy_1_description }}
+                    </p>
+                    <div class="mt-auto">
+                        <small class="text-muted"
+                            >Focus on excellence in specific areas rather than
+                            mediocrity everywhere.</small
+                        >
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="custom-card h-100">
+                    <div class="text-center mb-3">
+                        <i class="bi bi-shield-check fs-1 text-primary"></i>
+                    </div>
+                    <h4 class="card-title-custom">{{ philosophy_2_title }}</h4>
+                    <p class="card-description">
+                        {{ philosophy_2_description }}
+                    </p>
+                    <div class="mt-auto">
+                        <small class="text-muted"
+                            >Less complexity means fewer vulnerabilities and
+                            easier maintenance.</small
+                        >
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="custom-card h-100">
+                    <div class="text-center mb-3">
+                        <i class="bi bi-speedometer2 fs-1 text-primary"></i>
+                    </div>
+                    <h4 class="card-title-custom">{{ philosophy_3_title }}</h4>
+                    <p class="card-description">
+                        {{ philosophy_3_description }}
+                    </p>
+                    <div class="mt-auto">
+                        <small class="text-muted"
+                            >Fast websites convert better and provide superior
+                            user experience.</small
+                        >
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="custom-card h-100">
+                    <div class="text-center mb-3">
+                        <i class="bi bi-bullseye fs-1 text-primary"></i>
+                    </div>
+                    <h4 class="card-title-custom">{{ philosophy_4_title }}</h4>
+                    <p class="card-description">
+                        {{ philosophy_4_description }}
+                    </p>
+                    <div class="mt-auto">
+                        <small class="text-muted"
+                            >Be the best solution for our specific use
+                            cases.</small
+                        >
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Open Source Section -->
+<section class="section section-dark">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 text-center mb-5">
+                <h2 class="section-title">{{ opensource_title }}</h2>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <div class="custom-card">
+                    <div class="text-center mb-4">
+                        <i class="bi bi-heart fs-1 text-primary"></i>
+                    </div>
+                    <div class="prose">
+                        {% set paragraphs = opensource_content.split('\n\n') %}
+                        {% for paragraph in paragraphs %} {% if
+                        paragraph.strip() %}
+                        <p class="lead">{{ paragraph.strip() }}</p>
+                        {% endif %} {% endfor %}
+                    </div>
+
+                    <div class="text-center mt-4">
+                        <div class="d-inline-flex align-items-center gap-3">
+                            <i
+                                class="bi bi-patch-check-fill fs-4 text-success"
+                            ></i>
+                            <div class="text-start">
+                                <h6 class="mb-1">MIT License</h6>
+                                <small class="text-muted"
+                                    >Free for personal and commercial use</small
+                                >
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Contributing Section -->
+<section class="section section-light">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 text-center mb-5">
+                <h2 class="section-title">{{ contributing_title }}</h2>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <div class="custom-card">
+                    <div class="text-center mb-4">
+                        <i class="bi bi-people fs-1 text-primary"></i>
+                    </div>
+                    <p class="lead">{{ contributing_content }}</p>
+
+                    <div class="row g-3 mt-4">
+                        <div class="col-md-4">
+                            <div class="text-center">
+                                <i class="bi bi-bug fs-3 text-primary"></i>
+                                <h6 class="mt-2">Report Issues</h6>
+                                <small class="text-muted"
+                                    >Help us find and fix bugs</small
+                                >
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="text-center">
+                                <i
+                                    class="bi bi-lightbulb fs-3 text-primary"
+                                ></i>
+                                <h6 class="mt-2">Suggest Features</h6>
+                                <small class="text-muted"
+                                    >Share your ideas for improvement</small
+                                >
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="text-center">
+                                <i
+                                    class="bi bi-code-slash fs-3 text-primary"
+                                ></i>
+                                <h6 class="mt-2">Contribute Code</h6>
+                                <small class="text-muted"
+                                    >Submit pull requests</small
+                                >
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Name Meaning Section -->
+<section class="section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 text-center mb-5">
+                <h2 class="section-title">{{ name_meaning_title }}</h2>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <div class="custom-card">
+                    <div class="text-center mb-4">
+                        <i class="bi bi-chat-quote fs-1 text-primary"></i>
+                    </div>
+                    <p class="lead">{{ name_meaning_content }}</p>
+
+                    <div class="text-center mt-4">
+                        <div class="d-inline-block">
+                            <div
+                                class="alert alert-light border-0"
+                                style="background-color: #f8f9fa"
+                            >
+                                <h6 class="text-primary mb-2">WICARA</h6>
+                                <p class="mb-0">
+                                    <em
+                                        >Indonesian for "speech" or
+                                        "conversation"</em
+                                    >
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center">
+                <h2 class="cta-title">Join Our Journey</h2>
+                <p class="cta-description">
+                    Be part of the movement toward simpler, faster web
+                    development.
+                </p>
+                <div class="d-flex gap-3 justify-content-center flex-wrap">
+                    <a
+                        href="https://github.com/yourusername/wicara"
+                        class="btn btn-light btn-lg"
+                        >View on GitHub</a
+                    >
+                    <a href="/contact" class="btn btn-outline-light btn-lg"
+                        >Get in Touch</a
+                    >
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %} {% block scripts %}
+<script>
+    // Add smooth scroll behavior
+    document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute("href"));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: "smooth",
+                    block: "start",
+                });
+            }
+        });
+    });
+
+    // Add animation on scroll
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: "0px 0px -50px 0px",
+    };
+
+    const observer = new IntersectionObserver(function (entries) {
+        entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = "1";
+                entry.target.style.transform = "translateY(0)";
+            }
+        });
+    }, observerOptions);
+
+    // Observe cards
+    document.querySelectorAll(".custom-card").forEach((card) => {
+        card.style.opacity = "0";
+        card.style.transform = "translateY(20px)";
+        card.style.transition = "opacity 0.6s ease, transform 0.6s ease";
+        observer.observe(card);
+    });
+</script>
+{% endblock %}

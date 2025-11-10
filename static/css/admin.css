@@ -100,6 +100,15 @@ body {
     background-color: #c82333;
 }
 
+.btn-warning {
+    background-color: #ffc107;
+    color: #212529;
+}
+
+.btn-warning:hover {
+    background-color: #e0a800;
+}
+
 .login-container {
     display: flex;
     justify-content: center;
@@ -216,6 +225,29 @@ body {
     margin-top: 0.5rem;
     color: #666;
     font-style: italic;
+}
+
+.char-count {
+    display: block;
+    margin-top: 0.25rem;
+    color: #666;
+    font-size: 0.8rem;
+    text-align: right;
+}
+
+.char-count.warning {
+    color: #ff6b6b;
+    font-weight: bold;
+}
+
+input:invalid, textarea:invalid {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.25);
+}
+
+input:valid, textarea:valid {
+    border-color: #28a745;
+    box-shadow: 0 0 0 2px rgba(40, 167, 69, 0.25);
 }
 
 .form-actions {
