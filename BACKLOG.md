@@ -264,36 +264,92 @@
 
 ## 🚀 **ADVANCED FEATURES ROADMAP** (Future Development)
 
-### **Phase 1: App.py Refactoring to Modular Architecture** (2-3 weeks)
-**Priority**: HIGH | **Complexity**: Medium | **Risk**: Medium
+### **Phase 1: App.py Refactoring to Modular Architecture** ✅ COMPLETED
+**Priority**: HIGH | **Complexity**: Medium | **Risk**: Medium | **Status**: ✅ COMPLETED (Nov 11, 2025)
 
-#### **ARC-01**: Application Factory Pattern
-- [ ] Create Flask application factory in `app.py`
-- [ ] Implement blueprints for route organization
-- [ ] Environment-based configuration management
-- [ ] Proper error handling and logging setup
+#### **ARC-01**: Application Factory Pattern ✅
+- [x] Create Flask application factory in `app/__init__.py`
+- [x] Implement blueprints for route organization (auth, admin, public)
+- [x] Environment-based configuration management (dev/prod/test)
+- [x] Proper error handling and logging setup (centralized)
 
-#### **ARC-02**: Core Module Extraction
-- [ ] Extract configuration management to `wicara/core/config_manager.py`
-- [ ] Extract template utilities to `wicara/core/template_manager.py`
-- [ ] Extract file operations to `wicara/core/file_manager.py`
-- [ ] Extract validators to `wicara/core/validators.py`
+**Details**:
+- Implemented `create_app()` factory function
+- Registered 3 feature blueprints with modular organization
+- Configuration classes for different environments
+- Centralized error handlers and structured logging
 
-#### **ARC-03**: Route Module Organization
-- [ ] Create `wicara/admin/` module with routes.py and forms.py
-- [ ] Create `wicara/public/` module with routes.py and utils.py
-- [ ] Create `wicara/auth/` module with routes.py and utils.py
-- [ ] Create `wicara/cli/` module for command-line interface
+#### **ARC-02**: Core Module Extraction ✅
+- [x] Extract configuration management to `app/core/config_manager.py`
+  - ConfigManager class with load/save/validate methods
+  - ~350 lines of clean, documented code
+- [x] Extract template utilities to `app/core/template_manager.py`
+  - Jinja2 compatibility functions
+  - Template context preparation and rendering
+- [x] Extract file operations to `app/core/file_manager.py`
+  - File upload, sanitization, and cleanup utilities
+  - Security features (path traversal prevention)
+- [x] Extract validators to `app/core/validators.py`
+  - Field validation (text, textarea, image)
+  - Configuration schema validation
+  - ~400 lines of comprehensive validation logic
 
-#### **ARC-04**: Configuration Management
-- [ ] Implement `config.py` for environment-based settings
-- [ ] Add development, testing, production configurations
-- [ ] Support for environment variables and .env files
-- [ ] Configuration validation and default values
+**Details**: ~1,000 lines of core functionality, all independently testable
 
-**Benefits**: Maintainable code, easy feature additions, better testing
+#### **ARC-03**: Route Module Organization ✅
+- [x] Create `app/modules/admin/` module with routes.py and forms.py
+  - Dashboard, page editing, settings management
+  - Form validation (SettingsForm, PasswordChangeForm)
+- [x] Create `app/modules/public/` module with routes.py and utils.py
+  - Home page and dynamic page routing
+  - Template integration and rendering
+- [x] Create `app/modules/auth/` module with routes.py and utils.py
+  - Login/logout endpoints
+  - Authentication decorators and helpers
+- [x] Create `app/modules/cli/` module for command-line interface
+  - Page management commands (create, list, delete)
+  - Help documentation
+
+**Details**: Each module self-contained with clear responsibilities, ~1,200 lines
+
+#### **ARC-04**: Configuration Management ✅
+- [x] Implement `app/config.py` for environment-based settings
+  - Base, Development, Production, Testing configs
+  - All settings configurable via environment variables
+- [x] Add development, testing, production configurations
+  - Security hardening for production
+  - Debug mode for development
+  - Testing-specific settings
+- [x] Support for environment variables and .env files
+  - `load_env_file()` in `run.py` for .env parsing
+  - Support for comments and quoted values
+  - Automatic environment variable setting
+- [x] Configuration validation and default values
+  - `.env.example` template with all options
+  - Validation in production mode
+  - Sensible defaults for all settings
+
+**Details**: Full environment configuration support with .env integration, production-ready
+
+**Benefits**:
+- ✅ Maintainable code with clear structure (3,200+ lines organized across 27 files)
+- ✅ Easy feature additions with modular architecture
+- ✅ Better testing with independently testable modules
+- ✅ Production-ready configuration management
+- ✅ Zero breaking changes - fully backward compatible
+
+**Testing Results**: All components tested and working
+- ✓ Application factory creates successfully
+- ✓ All blueprints register correctly (auth, admin, public)
+- ✓ Core modules import and function properly
+- ✓ CLI commands operational (list-pages, create-page, delete-page)
+- ✓ Configuration loading with validation
+- ✓ Error handlers registered
+- ✓ Logging infrastructure operational
+
 **Dependencies**: None (foundation project)
-**Migration Path**: CLI migration tool for existing installations
+**Migration Path**: No migration needed - fully backward compatible
+**Commits**: 2 commits (e3a8620, 9ff46c3)
 
 ---
 
@@ -487,5 +543,16 @@
 
 ---
 
-*Last Updated: November 10, 2025*
-*Status: ✅ PRODUCTION READY | 🚧 ADVANCED FEATURES PLANNED*
+*Last Updated: November 11, 2025*
+*Status: ✅ PRODUCTION READY | ✅ Phase 1 COMPLETED | 🚧 Phase 2-5 PLANNED*
+
+## 📈 **Updated Completion Status**
+- **Phase 1** (ARC-01 to ARC-04): ✅ **100% COMPLETED** (Nov 11, 2025)
+  - Application Factory Pattern: ✅ Done
+  - Core Module Extraction: ✅ Done
+  - Route Module Organization: ✅ Done
+  - Configuration Management: ✅ Done
+- **Phase 2** (Caching): 🚧 Pending
+- **Phase 3** (Import/Export): 🚧 Pending
+- **Phase 4** (Plugin System): 🚧 Pending
+- **Phase 5** (Multi-site): 🚧 Pending
