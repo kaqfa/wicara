@@ -7,7 +7,8 @@ from flask import Flask
 from app.config import get_config
 from app.logger import setup_logger
 from app.errors import register_error_handlers
-from app.blueprints import public_bp, admin_bp
+from app.modules import auth_bp, admin_bp, public_bp
+from app.core import ensure_directories
 
 
 def create_app(config=None):
@@ -39,24 +40,19 @@ def create_app(config=None):
     setup_logger(app)
     app.logger.info('Application factory initialized')
 
+    # Ensure required directories exist
+    ensure_directories(app)
+
     # Register blueprints
     app.logger.info('Registering blueprints...')
-    app.register_blueprint(public_bp)
+    app.register_blueprint(auth_bp)
     app.register_blueprint(admin_bp)
+    app.register_blueprint(public_bp)
     app.logger.info(f'Registered {len(app.blueprints)} blueprints')
 
     # Register error handlers
     app.logger.info('Registering error handlers...')
     register_error_handlers(app)
-
-    # Create upload directory if it doesn't exist
-    import os
-    os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
-
-    # Create logs directory if it doesn't exist
-    log_dir = os.path.dirname(app.config['LOG_FILE'])
-    if log_dir:
-        os.makedirs(log_dir, exist_ok=True)
 
     app.logger.info('===== Application Factory Complete =====')
 
