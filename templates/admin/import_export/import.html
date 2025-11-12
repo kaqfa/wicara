@@ -1,0 +1,294 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Import Site - Admin{% endblock %}
+
+{% block content %}
+<div class="admin-container">
+    <div class="admin-header">
+        <h1>Import Site Package</h1>
+        <p>Restore or import a previously exported site package</p>
+    </div>
+
+    <div class="import-wizard">
+        <form method="POST" enctype="multipart/form-data" class="import-form">
+            <!-- File Upload -->
+            <div class="form-section">
+                <h2>1. Select Export Package</h2>
+                <p>Choose a WICARA export file (.zip) to import:</p>
+
+                <div class="form-group">
+                    <label for="import_file">Export Package File:</label>
+                    <div class="file-input-wrapper">
+                        <input
+                            type="file"
+                            id="import_file"
+                            name="import_file"
+                            accept=".zip,application/zip"
+                            required
+                            class="file-input"
+                        >
+                        <label for="import_file" class="file-input-label">
+                            <span class="file-icon">📦</span>
+                            <span class="file-text">Click to select file or drag and drop</span>
+                            <span class="file-hint">Maximum size: 100MB</span>
+                        </label>
+                    </div>
+                    <small class="help-text">Only .zip files are supported. Must be a valid WICARA export package.</small>
+                </div>
+            </div>
+
+            <!-- Requirements -->
+            <div class="form-section">
+                <h2>2. Important Information</h2>
+                <div class="warning-box">
+                    <h3>⚠️ Before You Import</h3>
+                    <ul>
+                        <li>A backup of your current site will be created automatically</li>
+                        <li>You can choose how to handle conflicting pages</li>
+                        <li>Imported site will be visible immediately after import completes</li>
+                        <li>If anything goes wrong, you can restore from backup</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="form-actions">
+                <a href="{{ url_for('admin.dashboard') }}" class="btn btn-secondary">Cancel</a>
+                <button type="submit" class="btn btn-primary">Next: Review Package</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Recent Imports (placeholder) -->
+    <div class="recent-imports" style="margin-top: 3rem;">
+        <h2>Tips for Importing</h2>
+        <div class="tips-grid">
+            <div class="tip">
+                <h3>📋 Merge Mode (Recommended)</h3>
+                <p>Keeps your existing pages and adds new ones. Duplicate URLs are skipped.</p>
+            </div>
+            <div class="tip">
+                <h3>♻️ Replace Mode</h3>
+                <p>Replaces all pages and settings with imported ones. Use with caution!</p>
+            </div>
+            <div class="tip">
+                <h3>🔍 Content Only</h3>
+                <p>Import only the configuration without templates or images.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const fileInput = document.getElementById('import_file');
+    const fileLabel = document.querySelector('.file-input-label');
+
+    // Drag and drop support
+    fileLabel.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        fileLabel.style.borderColor = '#4CAF50';
+        fileLabel.style.backgroundColor = '#f0f8f0';
+    });
+
+    fileLabel.addEventListener('dragleave', function(e) {
+        e.preventDefault();
+        fileLabel.style.borderColor = '#ddd';
+        fileLabel.style.backgroundColor = '#f9f9f9';
+    });
+
+    fileLabel.addEventListener('drop', function(e) {
+        e.preventDefault();
+        fileLabel.style.borderColor = '#ddd';
+        fileLabel.style.backgroundColor = '#f9f9f9';
+
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+            fileInput.files = files;
+            updateFileLabel(files[0]);
+        }
+    });
+
+    // File selection
+    fileInput.addEventListener('change', function(e) {
+        if (e.target.files.length > 0) {
+            updateFileLabel(e.target.files[0]);
+        }
+    });
+
+    function updateFileLabel(file) {
+        const fileSize = (file.size / 1024 / 1024).toFixed(2);
+        document.querySelector('.file-text').textContent = `Selected: ${file.name}`;
+        document.querySelector('.file-hint').textContent = `Size: ${fileSize} MB`;
+    }
+});
+</script>
+
+<style>
+.import-wizard {
+    max-width: 800px;
+    margin: 2rem auto;
+}
+
+.form-section {
+    background: white;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    border-radius: 8px;
+    border-left: 4px solid #2196F3;
+}
+
+.form-section h2 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    color: #333;
+    font-size: 1.2rem;
+}
+
+.file-input-wrapper {
+    position: relative;
+    margin-bottom: 1rem;
+}
+
+.file-input {
+    display: none;
+}
+
+.file-input-label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    border: 2px dashed #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+}
+
+.file-input-label:hover {
+    border-color: #4CAF50;
+    background-color: #f0f8f0;
+}
+
+.file-icon {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+.file-text {
+    display: block;
+    color: #333;
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+}
+
+.file-hint {
+    display: block;
+    color: #999;
+    font-size: 0.85rem;
+}
+
+.warning-box {
+    background-color: #fff3cd;
+    border-left: 4px solid #ffc107;
+    padding: 1rem;
+    border-radius: 6px;
+    margin-bottom: 1rem;
+}
+
+.warning-box h3 {
+    margin-top: 0;
+    color: #856404;
+}
+
+.warning-box ul {
+    margin: 0.5rem 0;
+    padding-left: 1.5rem;
+}
+
+.warning-box li {
+    margin: 0.5rem 0;
+    color: #856404;
+}
+
+.help-text {
+    display: block;
+    color: #666;
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+}
+
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    padding-top: 1rem;
+    border-top: 1px solid #e0e0e0;
+}
+
+.btn {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background-color: #2196F3;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #1976D2;
+}
+
+.btn-secondary {
+    background-color: #f0f0f0;
+    color: #333;
+    border: 1px solid #ddd;
+}
+
+.btn-secondary:hover {
+    background-color: #e0e0e0;
+}
+
+.recent-imports {
+    background: white;
+    padding: 2rem;
+    border-radius: 8px;
+}
+
+.recent-imports h2 {
+    color: #333;
+    margin-bottom: 1.5rem;
+}
+
+.tips-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+}
+
+.tip {
+    background-color: #f5f5f5;
+    padding: 1rem;
+    border-radius: 6px;
+    border-left: 4px solid #2196F3;
+}
+
+.tip h3 {
+    margin-top: 0;
+    color: #333;
+}
+
+.tip p {
+    color: #666;
+    margin-bottom: 0;
+}
+</style>
+{% endblock %}

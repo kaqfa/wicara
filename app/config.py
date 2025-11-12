@@ -7,6 +7,10 @@ import os
 from pathlib import Path
 
 
+# Application version
+WICARA_VERSION = '1.0.0'
+
+
 class Config:
     """Base configuration class with common settings."""
 
@@ -28,6 +32,9 @@ class Config:
 
     # Configuration File
     CONFIG_FILE = 'config.json'
+
+    # Import/Export
+    EXPORT_DIR = os.environ.get('EXPORT_DIR', 'exports')
 
     # Logging
     LOG_LEVEL = os.environ.get('LOG_LEVEL', 'INFO')

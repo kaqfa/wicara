@@ -110,6 +110,28 @@
                             </div>
                         </a>
                     </div>
+                    <div class="col-md-4 mb-3">
+                        <a href="{{ url_for('import_export.export_page') }}" class="text-decoration-none">
+                            <div class="card page-card h-100">
+                                <div class="card-body text-center">
+                                    <i class="bi bi-download text-warning" style="font-size: 3rem;"></i>
+                                    <h5 class="card-title mt-3">Export Site</h5>
+                                    <p class="card-text text-muted">Create a backup or migration package</p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <a href="{{ url_for('import_export.import_page') }}" class="text-decoration-none">
+                            <div class="card page-card h-100">
+                                <div class="card-body text-center">
+                                    <i class="bi bi-upload text-danger" style="font-size: 3rem;"></i>
+                                    <h5 class="card-title mt-3">Import Site</h5>
+                                    <p class="card-text text-muted">Restore or import a site package</p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>

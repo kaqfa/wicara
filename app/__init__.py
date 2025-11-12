@@ -9,6 +9,7 @@ from app.config import get_config
 from app.logger import setup_logger
 from app.errors import register_error_handlers
 from app.modules import auth_bp, admin_bp, public_bp
+from app.blueprints.import_export import import_export_bp
 from app.core import ensure_directories
 from app.cache.utils import CacheFactory, CacheService
 from app.modules.admin.cache_routes import cache_bp, set_cache_service
@@ -71,6 +72,7 @@ def create_app(config=None):
     app.logger.info('Registering blueprints...')
     app.register_blueprint(auth_bp)
     app.register_blueprint(admin_bp)
+    app.register_blueprint(import_export_bp)
     app.register_blueprint(public_bp)
     if app.cache_service:
         app.register_blueprint(cache_bp)
