@@ -1,0 +1,214 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Cache Management - Admin{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="mb-4">Cache Management</h1>
+
+    <!-- Health Status Alert -->
+    {% if stats.health.status == 'degraded' %}
+    <div class="alert alert-warning" role="alert">
+        <h4 class="alert-heading">Cache Status: Degraded</h4>
+        <p>Error rate: {{ stats.health.error_rate }}%</p>
+        {% if stats.health.recommendations %}
+        <hr>
+        <p><strong>Recommendations:</strong></p>
+        <ul class="mb-0">
+            {% for rec in stats.health.recommendations %}
+            <li>{{ rec }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    </div>
+    {% else %}
+    <div class="alert alert-success" role="alert">
+        Cache Status: Healthy
+    </div>
+    {% endif %}
+
+    <!-- Cache Statistics -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card text-white bg-success">
+                <div class="card-body">
+                    <h5 class="card-title">Hits</h5>
+                    <p class="card-text display-4">{{ stats.manager.hits }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-danger">
+                <div class="card-body">
+                    <h5 class="card-title">Misses</h5>
+                    <p class="card-text display-4">{{ stats.manager.misses }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-info">
+                <div class="card-body">
+                    <h5 class="card-title">Hit Rate</h5>
+                    <p class="card-text display-4">{{ stats.manager.hit_rate }}%</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-primary">
+                <div class="card-body">
+                    <h5 class="card-title">Backend</h5>
+                    <p class="card-text">{{ stats.manager.backend }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Operations Statistics -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0">Operations</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-2">
+                    <p><strong>Sets:</strong> {{ stats.manager.sets }}</p>
+                </div>
+                <div class="col-md-2">
+                    <p><strong>Deletes:</strong> {{ stats.manager.deletes }}</p>
+                </div>
+                <div class="col-md-2">
+                    <p><strong>Clears:</strong> {{ stats.manager.clears }}</p>
+                </div>
+                <div class="col-md-2">
+                    <p><strong>Errors:</strong> {{ stats.manager.errors }}</p>
+                </div>
+                <div class="col-md-4">
+                    <p><strong>Uptime:</strong> {{ stats.manager.uptime_seconds }}s</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cache Control Panel -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0">Cache Control</h5>
+        </div>
+        <div class="card-body">
+            <div class="btn-group" role="group">
+                <form method="POST" action="{{ url_for('cache.clear_cache') }}" class="d-inline">
+                    <input type="hidden" name="type" value="all">
+                    <button type="submit" class="btn btn-danger" onclick="return confirm('Clear all caches?')">
+                        Clear All
+                    </button>
+                </form>
+
+                {% if stats.components.template %}
+                <form method="POST" action="{{ url_for('cache.clear_cache') }}" class="d-inline">
+                    <input type="hidden" name="type" value="template">
+                    <button type="submit" class="btn btn-warning">
+                        Clear Templates
+                    </button>
+                </form>
+                {% endif %}
+
+                {% if stats.components.response %}
+                <form method="POST" action="{{ url_for('cache.clear_cache') }}" class="d-inline">
+                    <input type="hidden" name="type" value="response">
+                    <button type="submit" class="btn btn-warning">
+                        Clear Responses
+                    </button>
+                </form>
+                {% endif %}
+
+                {% if stats.components.config %}
+                <form method="POST" action="{{ url_for('cache.clear_cache') }}" class="d-inline">
+                    <input type="hidden" name="type" value="config">
+                    <button type="submit" class="btn btn-warning">
+                        Clear Config
+                    </button>
+                </form>
+                {% endif %}
+
+                <form method="POST" action="{{ url_for('cache.warm_cache') }}" class="d-inline">
+                    <button type="submit" class="btn btn-success" onclick="return confirm('Warm the cache?')">
+                        Warm Cache
+                    </button>
+                </form>
+
+                <form method="POST" action="{{ url_for('cache.reset_stats') }}" class="d-inline">
+                    <button type="submit" class="btn btn-secondary" onclick="return confirm('Reset statistics?')">
+                        Reset Stats
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Component Details -->
+    {% if stats.components %}
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0">Cache Components</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                {% if stats.components.template %}
+                <div class="col-md-4">
+                    <h6>Template Cache</h6>
+                    <dl class="small">
+                        <dt>Render Functions:</dt>
+                        <dd>{{ stats.components.template.registered_render_functions }}</dd>
+                        <dt>Tracked Dependencies:</dt>
+                        <dd>{{ stats.components.template.tracked_dependencies }}</dd>
+                        <dt>Default TTL:</dt>
+                        <dd>{{ stats.components.template.default_ttl }}s</dd>
+                    </dl>
+                </div>
+                {% endif %}
+
+                {% if stats.components.response %}
+                <div class="col-md-4">
+                    <h6>Response Cache</h6>
+                    <dl class="small">
+                        <dt>Default TTL:</dt>
+                        <dd>{{ stats.components.response.default_ttl }}s</dd>
+                        <dt>Max Age:</dt>
+                        <dd>{{ stats.components.response.max_age }}s</dd>
+                        <dt>Compression:</dt>
+                        <dd>{{ 'Enabled' if stats.components.response.enable_compression else 'Disabled' }}</dd>
+                    </dl>
+                </div>
+                {% endif %}
+
+                {% if stats.components.config %}
+                <div class="col-md-4">
+                    <h6>Config Cache</h6>
+                    <dl class="small">
+                        <dt>Config Path:</dt>
+                        <dd>{{ stats.components.config.config_path }}</dd>
+                        <dt>File Exists:</dt>
+                        <dd>{{ 'Yes' if stats.components.config.file_exists else 'No' }}</dd>
+                        <dt>TTL:</dt>
+                        <dd>{{ stats.components.config.config_cache_ttl }}s</dd>
+                    </dl>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Backend Stats -->
+    {% if stats.manager.backend_stats %}
+    <div class="card mt-4">
+        <div class="card-header">
+            <h5 class="mb-0">Backend Statistics</h5>
+        </div>
+        <div class="card-body">
+            <pre>{{ stats.manager.backend_stats | tojson(indent=2) }}</pre>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
