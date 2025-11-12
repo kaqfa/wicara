@@ -1,0 +1,417 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Import Preview - Admin{% endblock %}
+
+{% block content %}
+<div class="admin-container">
+    <div class="admin-header">
+        <h1>Review Import Package</h1>
+        <p>Review what will be imported before confirming</p>
+    </div>
+
+    <div class="import-preview">
+        <!-- Package Info -->
+        <div class="preview-section">
+            <h2>📦 Package Information</h2>
+            <div class="info-grid">
+                <div class="info-item">
+                    <label>Site Name:</label>
+                    <span>{{ imported_config.sitename }}</span>
+                </div>
+                <div class="info-item">
+                    <label>Version:</label>
+                    <span>{{ manifest.version }}</span>
+                </div>
+                <div class="info-item">
+                    <label>Export Mode:</label>
+                    <span>{{ manifest.export_mode|title }}</span>
+                </div>
+                <div class="info-item">
+                    <label>Exported At:</label>
+                    <span>{{ manifest.exported_at }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content Summary -->
+        <div class="preview-section">
+            <h2>📋 Content Summary</h2>
+            <div class="content-summary">
+                <div class="summary-item">
+                    <span class="summary-icon">📄</span>
+                    <span class="summary-count">{{ imported_config.pages|length }}</span>
+                    <span class="summary-label">Pages</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-icon">🖼️</span>
+                    <span class="summary-count">{{ manifest.export_stats.images_count }}</span>
+                    <span class="summary-label">Images</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-icon">📑</span>
+                    <span class="summary-count">{{ manifest.export_stats.templates_count }}</span>
+                    <span class="summary-label">Templates</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pages List -->
+        <div class="preview-section">
+            <h2>📄 Pages to Import</h2>
+            <div class="pages-list">
+                {% for page in imported_config.pages %}
+                <div class="page-item {% if page.url in current_pages_urls %}conflict{% endif %}">
+                    <div class="page-header">
+                        <span class="page-title">{{ page.title }}</span>
+                        {% if page.url in current_pages_urls %}
+                        <span class="conflict-badge">⚠️ Existing Page</span>
+                        {% endif %}
+                    </div>
+                    <div class="page-details">
+                        <span>URL: <code>{{ page.url }}</code></span>
+                        <span>Template: <code>{{ page.template }}</code></span>
+                        <span>Fields: {{ page.fields|length }}</span>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Conflict Summary -->
+        {% if preview.conflicts %}
+        <div class="preview-section warning">
+            <h2>⚠️ Conflicts Found</h2>
+            <p>The following items will conflict with existing content:</p>
+            <ul class="conflicts-list">
+                {% for conflict in preview.conflicts %}
+                <li>
+                    <strong>{{ conflict.type|replace('_', ' ')|title }}:</strong>
+                    {{ conflict.url or conflict.key }}
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+        <!-- Import Options -->
+        <div class="preview-section">
+            <h2>⚙️ Import Options</h2>
+            <form method="POST" action="{{ url_for('import_export.import_confirm') }}" class="import-options">
+                <div class="form-group">
+                    <label for="conflict_strategy">How to handle conflicts:</label>
+                    <select id="conflict_strategy" name="conflict_strategy" required>
+                        <option value="merge" selected>
+                            Merge (Keep existing pages, add new ones)
+                        </option>
+                        <option value="replace">
+                            Replace (Overwrite everything)
+                        </option>
+                        <option value="skip">
+                            Skip (Don't import conflicting items)
+                        </option>
+                    </select>
+                    <small class="help-text">Choose how to handle pages that already exist in your site.</small>
+                </div>
+
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" name="import_templates" checked>
+                        Import Templates
+                    </label>
+                    <small class="help-text">Include HTML templates from the package</small>
+                </div>
+
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" name="import_images" checked>
+                        Import Images
+                    </label>
+                    <small class="help-text">Include uploaded images from the package</small>
+                </div>
+
+                <!-- Backup Notice -->
+                <div class="backup-notice">
+                    <span class="backup-icon">💾</span>
+                    <span>A backup of your current site will be created before import</span>
+                </div>
+
+                <!-- Actions -->
+                <div class="form-actions">
+                    <a href="{{ url_for('import_export.import_page') }}" class="btn btn-secondary">Cancel</a>
+                    <button type="submit" class="btn btn-danger">Confirm Import</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Show conflict strategy based on conflicts
+    const conflicts = document.querySelectorAll('.page-item.conflict');
+    if (conflicts.length === 0) {
+        console.log('No conflicts found');
+    }
+});
+</script>
+
+<style>
+.import-preview {
+    max-width: 1000px;
+    margin: 2rem auto;
+}
+
+.preview-section {
+    background: white;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    border-radius: 8px;
+    border-left: 4px solid #2196F3;
+}
+
+.preview-section.warning {
+    border-left-color: #ff9800;
+    background-color: #fff8f0;
+}
+
+.preview-section h2 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    color: #333;
+    font-size: 1.1rem;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.info-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.info-item label {
+    color: #666;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+    text-transform: uppercase;
+}
+
+.info-item span {
+    color: #333;
+    font-weight: 500;
+}
+
+.content-summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 1.5rem;
+    text-align: center;
+}
+
+.summary-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1rem;
+    background-color: #f5f5f5;
+    border-radius: 6px;
+}
+
+.summary-icon {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+.summary-count {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #2196F3;
+}
+
+.summary-label {
+    color: #666;
+    font-size: 0.85rem;
+}
+
+.pages-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.page-item {
+    padding: 1rem;
+    background-color: #f9f9f9;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+.page-item:hover {
+    border-color: #2196F3;
+    background-color: #f0f8ff;
+}
+
+.page-item.conflict {
+    border-color: #ff9800;
+    background-color: #fff8f0;
+}
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.page-title {
+    font-weight: 600;
+    color: #333;
+}
+
+.conflict-badge {
+    background-color: #ff9800;
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.page-details {
+    display: flex;
+    gap: 1rem;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.page-details code {
+    background-color: #f0f0f0;
+    padding: 0.2rem 0.4rem;
+    border-radius: 3px;
+    font-family: monospace;
+}
+
+.conflicts-list {
+    margin: 1rem 0;
+    padding-left: 1.5rem;
+    color: #666;
+}
+
+.conflicts-list li {
+    margin: 0.5rem 0;
+}
+
+.import-options {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    margin-bottom: 0.5rem;
+    color: #333;
+    font-weight: 500;
+}
+
+.form-group select,
+.form-group input[type="checkbox"] {
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+.form-group input[type="checkbox"] {
+    width: auto;
+    margin-right: 0.5rem;
+}
+
+.help-text {
+    display: block;
+    color: #666;
+    font-size: 0.85rem;
+    margin-top: 0.25rem;
+}
+
+.backup-notice {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background-color: #e8f5e9;
+    border-left: 4px solid #4CAF50;
+    border-radius: 6px;
+    color: #2e7d32;
+    margin-top: 1rem;
+}
+
+.backup-icon {
+    font-size: 1.5rem;
+}
+
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    padding-top: 1rem;
+    border-top: 1px solid #e0e0e0;
+}
+
+.btn {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background-color: #2196F3;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #1976D2;
+}
+
+.btn-danger {
+    background-color: #f44336;
+    color: white;
+}
+
+.btn-danger:hover {
+    background-color: #da190b;
+}
+
+.btn-secondary {
+    background-color: #f0f0f0;
+    color: #333;
+    border: 1px solid #ddd;
+}
+
+.btn-secondary:hover {
+    background-color: #e0e0e0;
+}
+</style>
+
+<script>
+// Helper to get list of current page URLs
+const currentPagesUrls = [
+    {% for page in current_config.pages %}
+    "{{ page.url }}",
+    {% endfor %}
+];
+console.log('Current pages:', currentPagesUrls);
+</script>
+{% endblock %}

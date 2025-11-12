@@ -1,0 +1,217 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Export Site - Admin{% endblock %}
+
+{% block content %}
+<div class="admin-container">
+    <div class="admin-header">
+        <h1>Export Your Site</h1>
+        <p>Create a backup or transfer your site to another location</p>
+    </div>
+
+    <div class="export-wizard">
+        <form method="POST" class="export-form">
+            <!-- Export Mode Selection -->
+            <div class="form-section">
+                <h2>1. Select Export Mode</h2>
+                <p>Choose what to include in your export package:</p>
+
+                <div class="form-group">
+                    <label class="radio-group">
+                        <input type="radio" name="export_mode" value="full" checked>
+                        <span class="radio-label">
+                            <strong>Full Export</strong>
+                            <small>Includes config, templates, CSS, JS, and uploaded images. Best for site migration.</small>
+                        </span>
+                    </label>
+                </div>
+
+                <div class="form-group">
+                    <label class="radio-group">
+                        <input type="radio" name="export_mode" value="partial">
+                        <span class="radio-label">
+                            <strong>Partial Export</strong>
+                            <small>Includes config and custom templates only. Good for design sharing.</small>
+                        </span>
+                    </label>
+                </div>
+
+                <div class="form-group">
+                    <label class="radio-group">
+                        <input type="radio" name="export_mode" value="content">
+                        <span class="radio-label">
+                            <strong>Content Only</strong>
+                            <small>Includes only config.json. Minimal package size, best for backup.</small>
+                        </span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Template Selection (for Partial Export) -->
+            <div class="form-section" id="template-selection" style="display: none;">
+                <h2>2. Select Templates (Optional)</h2>
+                <p>Choose which templates to include. If none selected, all referenced templates will be included.</p>
+
+                {% if templates %}
+                    {% for template in templates %}
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" name="templates" value="{{ template }}">
+                            {{ template }}
+                        </label>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="info-message">No custom templates found.</p>
+                {% endif %}
+            </div>
+
+            <!-- Summary -->
+            <div class="form-section">
+                <h2>Export Summary</h2>
+                <div class="info-box">
+                    <p><strong>Site:</strong> {{ config.sitename if config else 'Unknown' }}</p>
+                    <p><strong>Pages:</strong> {{ pages|length }}</p>
+                    <p><strong>Export Time:</strong> <span id="export-time">Just now</span></p>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="form-actions">
+                <a href="{{ url_for('admin.dashboard') }}" class="btn btn-secondary">Cancel</a>
+                <button type="submit" class="btn btn-primary">Start Export</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const exportModeRadios = document.querySelectorAll('input[name="export_mode"]');
+    const templateSelection = document.getElementById('template-selection');
+
+    function updateTemplateVisibility() {
+        const selectedMode = document.querySelector('input[name="export_mode"]:checked').value;
+        templateSelection.style.display = selectedMode === 'partial' ? 'block' : 'none';
+    }
+
+    exportModeRadios.forEach(radio => {
+        radio.addEventListener('change', updateTemplateVisibility);
+    });
+
+    // Update time
+    const now = new Date();
+    document.getElementById('export-time').textContent = now.toLocaleString();
+});
+</script>
+
+<style>
+.export-wizard {
+    max-width: 800px;
+    margin: 2rem auto;
+}
+
+.form-section {
+    background: white;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    border-radius: 8px;
+    border-left: 4px solid #4CAF50;
+}
+
+.form-section h2 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    color: #333;
+    font-size: 1.2rem;
+}
+
+.radio-group {
+    display: block;
+    padding: 1rem;
+    margin-bottom: 0.5rem;
+    border: 2px solid #e0e0e0;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.radio-group:hover {
+    border-color: #4CAF50;
+    background-color: #f9f9f9;
+}
+
+.radio-group input[type="radio"] {
+    margin-right: 0.5rem;
+}
+
+.radio-label {
+    display: block;
+}
+
+.radio-label strong {
+    display: block;
+    margin-bottom: 0.25rem;
+}
+
+.radio-label small {
+    color: #666;
+    font-size: 0.85rem;
+}
+
+.info-box {
+    background-color: #f0f8ff;
+    padding: 1rem;
+    border-radius: 6px;
+    border-left: 4px solid #2196F3;
+}
+
+.info-box p {
+    margin: 0.5rem 0;
+}
+
+.info-message {
+    color: #666;
+    font-style: italic;
+    padding: 1rem;
+    background-color: #f5f5f5;
+    border-radius: 6px;
+}
+
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    padding-top: 1rem;
+    border-top: 1px solid #e0e0e0;
+}
+
+.btn {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #45a049;
+}
+
+.btn-secondary {
+    background-color: #f0f0f0;
+    color: #333;
+    border: 1px solid #ddd;
+}
+
+.btn-secondary:hover {
+    background-color: #e0e0e0;
+}
+</style>
+{% endblock %}
