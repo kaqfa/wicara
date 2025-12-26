@@ -1,0 +1,169 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Activity Logs - Wicara Admin{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h1 class="h2">
+                <i class="bi bi-clock-history"></i> Activity Logs
+            </h1>
+            <p class="text-muted">Track system events and user actions</p>
+        </div>
+        <div class="col-md-4 text-end">
+            <a href="{{ url_for('advanced.export_activity') }}" class="btn btn-success">
+                <i class="bi bi-download"></i> Export
+            </a>
+        </div>
+    </div>
+
+    <!-- Statistics -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card bg-light">
+                <div class="card-body">
+                    <h6 class="text-muted">Total Events</h6>
+                    <h3>{{ stats.total_events }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-light">
+                <div class="card-body">
+                    <h6 class="text-muted">Unique Sites</h6>
+                    <h3>{{ stats.unique_sites }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-light">
+                <div class="card-body">
+                    <h6 class="text-muted">Unique Users</h6>
+                    <h3>{{ stats.unique_users }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-light">
+                <div class="card-body">
+                    <h6 class="text-muted">Event Types</h6>
+                    <h3>{{ stats.event_types|length }}</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter Form -->
+    <div class="card mb-4">
+        <div class="card-header bg-white">
+            <h5 class="mb-0">Filter Events</h5>
+        </div>
+        <div class="card-body">
+            <form method="post" class="row g-3">
+                {{ form.hidden_tag() }}
+
+                <div class="col-md-4">
+                    {{ form.event_type(class="form-select") }}
+                </div>
+
+                <div class="col-md-4">
+                    {{ form.user(class="form-control", placeholder="Filter by user") }}
+                </div>
+
+                <div class="col-md-2">
+                    {{ form.days(class="form-select") }}
+                </div>
+
+                <div class="col-md-2">
+                    {{ form.submit(class="btn btn-primary w-100") }}
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Events List -->
+    {% if events %}
+    <div class="card">
+        <div class="card-header bg-white">
+            <h5 class="mb-0">Events ({{ events|length }})</h5>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover table-sm mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Timestamp</th>
+                            <th>Event Type</th>
+                            <th>Site</th>
+                            <th>User</th>
+                            <th>Resource</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for event in events %}
+                        <tr>
+                            <td>
+                                <small class="text-muted">{{ event.timestamp[:19].replace('T', ' ') }}</small>
+                            </td>
+                            <td>
+                                <code>{{ event.event_type.value }}</code>
+                            </td>
+                            <td>
+                                <code>{{ event.site_id }}</code>
+                            </td>
+                            <td>
+                                {% if event.user_id %}
+                                    {{ event.user_id }}
+                                {% else %}
+                                    <span class="text-muted">System</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if event.resource_id %}
+                                    <code>{{ event.resource_id }}</code>
+                                {% else %}
+                                    <span class="text-muted">-</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if event.status == 'success' %}
+                                    <span class="badge bg-success">Success</span>
+                                {% elif event.status == 'failure' %}
+                                    <span class="badge bg-danger">Failure</span>
+                                {% else %}
+                                    <span class="badge bg-warning">{{ event.status }}</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="alert alert-info">
+        <i class="bi bi-info-circle"></i>
+        <strong>No events found.</strong>
+        Adjust your filters or check back later.
+    </div>
+    {% endif %}
+</div>
+
+<style>
+.card {
+    border: none;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+code {
+    background-color: #f8f9fa;
+    padding: 0.2rem 0.4rem;
+    border-radius: 0.25rem;
+    font-size: 0.85em;
+}
+</style>
+{% endblock %}
