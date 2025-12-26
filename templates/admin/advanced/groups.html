@@ -1,0 +1,141 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Site Groups - Wicara Admin{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h1 class="h2">
+                <i class="bi bi-diagram-3"></i> Site Groups
+            </h1>
+            <p class="text-muted">Organize sites into hierarchical groups</p>
+        </div>
+        <div class="col-md-4 text-end">
+            <a href="{{ url_for('advanced.create_group') }}" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i> Create Group
+            </a>
+        </div>
+    </div>
+
+    <!-- Statistics -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card bg-light">
+                <div class="card-body">
+                    <h6 class="text-muted">Total Groups</h6>
+                    <h3>{{ stats.total_groups }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-light">
+                <div class="card-body">
+                    <h6 class="text-muted">Total Sites</h6>
+                    <h3>{{ stats.total_sites }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-light">
+                <div class="card-body">
+                    <h6 class="text-muted">Root Groups</h6>
+                    <h3>{{ stats.root_groups }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-light">
+                <div class="card-body">
+                    <h6 class="text-muted">Max Depth</h6>
+                    <h3>{{ stats.max_hierarchy_depth }}</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Groups List -->
+    {% if groups %}
+    <div class="card">
+        <div class="card-header bg-white">
+            <h5 class="mb-0">Groups ({{ groups|length }})</h5>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Group ID</th>
+                            <th>Name</th>
+                            <th>Parent</th>
+                            <th>Sites</th>
+                            <th>Created</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for group_id, group in groups.items() %}
+                        <tr>
+                            <td><code>{{ group_id }}</code></td>
+                            <td>
+                                <strong>{{ group.name }}</strong>
+                                {% if group.description %}
+                                <br><small class="text-muted">{{ group.description }}</small>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if group.parent_id %}
+                                    <code>{{ group.parent_id }}</code>
+                                {% else %}
+                                    <span class="text-muted">Root</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <span class="badge bg-info">{{ group.sites|length }}</span>
+                            </td>
+                            <td>
+                                <small class="text-muted">{{ group.created_at[:10] }}</small>
+                            </td>
+                            <td>
+                                <a href="{{ url_for('advanced.edit_group', group_id=group_id) }}"
+                                   class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <form method="post" action="{{ url_for('advanced.delete_group', group_id=group_id) }}"
+                                      style="display: inline;"
+                                      onsubmit="return confirm('Delete this group?');">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="alert alert-info">
+        <i class="bi bi-info-circle"></i>
+        <strong>No groups yet.</strong>
+        <a href="{{ url_for('advanced.create_group') }}">Create your first group</a>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+.card {
+    border: none;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+code {
+    background-color: #f8f9fa;
+    padding: 0.2rem 0.4rem;
+    border-radius: 0.25rem;
+}
+</style>
+{% endblock %}

@@ -1,0 +1,180 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Create New Site - Wicara Admin{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h1 class="h2">
+                <i class="bi bi-plus-circle"></i> Create New Site
+            </h1>
+            <p class="text-muted">Add a new website to this Wicara instance</p>
+        </div>
+        <div class="col-md-4 text-end">
+            <a href="{{ url_for('sites.dashboard') }}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Back to Sites
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Site Information</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post" action="{{ url_for('sites.create') }}" novalidate>
+                        {{ form.hidden_tag() }}
+
+                        <!-- Site ID -->
+                        <div class="mb-3">
+                            <label for="site_id" class="form-label">Site ID</label>
+                            {{ form.site_id(class="form-control" + (" is-invalid" if form.site_id.errors else "")) }}
+                            <small class="form-text text-muted">
+                                Lowercase letters, numbers, and hyphens only. Must be unique.
+                            </small>
+                            {% if form.site_id.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.site_id.errors %}
+                                    <i class="bi bi-exclamation-circle"></i> {{ error }}<br>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Site Name -->
+                        <div class="mb-3">
+                            <label for="sitename" class="form-label">Site Name</label>
+                            {{ form.sitename(class="form-control" + (" is-invalid" if form.sitename.errors else "")) }}
+                            <small class="form-text text-muted">
+                                Display name for this website
+                            </small>
+                            {% if form.sitename.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.sitename.errors %}
+                                    <i class="bi bi-exclamation-circle"></i> {{ error }}<br>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Description -->
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Description</label>
+                            {{ form.description(class="form-control" + (" is-invalid" if form.description.errors else "")) }}
+                            {% if form.description.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.description.errors %}
+                                    <i class="bi bi-exclamation-circle"></i> {{ error }}<br>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Template Site -->
+                        <div class="mb-3">
+                            <label for="template_site" class="form-label">Clone from Template</label>
+                            {{ form.template_site(class="form-select" + (" is-invalid" if form.template_site.errors else "")) }}
+                            <small class="form-text text-muted">
+                                Select an existing site to clone templates and structure from
+                            </small>
+                            {% if form.template_site.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.template_site.errors %}
+                                    <i class="bi bi-exclamation-circle"></i> {{ error }}<br>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Submit -->
+                        <div class="d-grid gap-2">
+                            {{ form.submit(class="btn btn-primary btn-lg") }}
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Info Sidebar -->
+        <div class="col-lg-6">
+            <div class="card bg-light">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">
+                        <i class="bi bi-info-circle"></i> What happens next?
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <ol class="mb-0">
+                        <li>
+                            <strong>Site Created</strong>
+                            <p class="text-muted small mb-2">
+                                A new site directory will be created with initial configuration and templates
+                            </p>
+                        </li>
+                        <li>
+                            <strong>Configure</strong>
+                            <p class="text-muted small mb-2">
+                                You can edit site settings like name, description, and keywords
+                            </p>
+                        </li>
+                        <li>
+                            <strong>Map Domains</strong>
+                            <p class="text-muted small mb-2">
+                                Add domain names to route requests to this site
+                            </p>
+                        </li>
+                        <li>
+                            <strong>Customize</strong>
+                            <p class="text-muted small mb-0">
+                                Edit templates and content through the admin panel
+                            </p>
+                        </li>
+                    </ol>
+
+                    <hr>
+
+                    <div class="alert alert-info mb-0">
+                        <i class="bi bi-lightbulb"></i>
+                        <strong>Tip:</strong> Clone templates from an existing site to save setup time
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mt-3">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Site ID Rules</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="small mb-0">
+                        <li>Must be 3-50 characters long</li>
+                        <li>Can contain lowercase letters, numbers, and hyphens</li>
+                        <li>Must be unique across all sites</li>
+                        <li>Example: <code>my-site</code>, <code>blog-1</code></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.card {
+    border: none;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: #198754;
+    box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.25);
+}
+
+.invalid-feedback {
+    color: #dc3545;
+}
+</style>
+{% endblock %}

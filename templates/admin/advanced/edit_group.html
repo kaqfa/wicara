@@ -1,0 +1,196 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Edit Group - Wicara Admin{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h1 class="h2">
+                <i class="bi bi-pencil"></i> Edit Group: <code>{{ group.id }}</code>
+            </h1>
+            <p class="text-muted">Update group settings and membership</p>
+        </div>
+        <div class="col-md-4 text-end">
+            <a href="{{ url_for('advanced.groups_dashboard') }}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Back to Groups
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Edit Form -->
+        <div class="col-lg-8">
+            <div class="card mb-4">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Group Settings</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post" novalidate>
+                        {{ form.hidden_tag() }}
+
+                        <!-- Group Name -->
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Group Name</label>
+                            {{ form.name(class="form-control" + (" is-invalid" if form.name.errors else "")) }}
+                            {% if form.name.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.name.errors %}
+                                    {{ error }}<br>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Description -->
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Description</label>
+                            {{ form.description(class="form-control" + (" is-invalid" if form.description.errors else ""), rows="4") }}
+                            {% if form.description.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.description.errors %}
+                                    {{ error }}<br>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Submit -->
+                        <div class="d-grid gap-2">
+                            {{ form.submit(class="btn btn-primary") }}
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Sites in Group -->
+            <div class="card">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">
+                        Sites in Group <span class="badge bg-secondary">{{ sites|length }}</span>
+                    </h5>
+                </div>
+                {% if sites %}
+                <div class="card-body p-0">
+                    <div class="list-group list-group-flush">
+                        {% for site_id in sites %}
+                        <div class="list-group-item">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <strong>{{ site_id }}</strong>
+                                </div>
+                                <form method="post" style="display: inline;"
+                                      onsubmit="return confirm('Remove site from group?');">
+                                    <input type="hidden" name="site_id" value="{{ site_id }}">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">
+                                        Remove
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% else %}
+                <div class="card-body">
+                    <p class="text-muted mb-0">No sites in this group yet</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            <!-- Group Info -->
+            <div class="card mb-3">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Group Information</h5>
+                </div>
+                <div class="card-body">
+                    <dl class="row small mb-0">
+                        <dt class="col-6">Group ID:</dt>
+                        <dd class="col-6"><code>{{ group.id }}</code></dd>
+
+                        <dt class="col-6">Created:</dt>
+                        <dd class="col-6">{{ group.created_at[:10] }}</dd>
+
+                        <dt class="col-6">Parent:</dt>
+                        <dd class="col-6">
+                            {% if group.parent_id %}
+                                <code>{{ group.parent_id }}</code>
+                            {% else %}
+                                <span class="text-muted">Root</span>
+                            {% endif %}
+                        </dd>
+
+                        <dt class="col-6">Sites:</dt>
+                        <dd class="col-6">{{ sites|length }}</dd>
+
+                        <dt class="col-6">Subgroups:</dt>
+                        <dd class="col-6">{{ subgroups|length }}</dd>
+                    </dl>
+                </div>
+            </div>
+
+            <!-- Subgroups -->
+            {% if subgroups %}
+            <div class="card">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">
+                        Subgroups <span class="badge bg-secondary">{{ subgroups|length }}</span>
+                    </h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="list-group list-group-flush">
+                        {% for subgroup_id in subgroups %}
+                        <a href="{{ url_for('advanced.edit_group', group_id=subgroup_id) }}"
+                           class="list-group-item list-group-item-action">
+                            <code>{{ subgroup_id }}</code>
+                            <i class="bi bi-arrow-right float-end"></i>
+                        </a>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Delete -->
+            <div class="card mt-3 border-danger">
+                <div class="card-header bg-danger text-white">
+                    <h5 class="mb-0">Danger Zone</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post" action="{{ url_for('advanced.delete_group', group_id=group.id) }}"
+                          onsubmit="return confirm('Delete this group? This action cannot be undone.');">
+                        <button type="submit" class="btn btn-danger w-100">
+                            <i class="bi bi-trash"></i> Delete Group
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.card {
+    border: none;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+.card.border-danger {
+    border: 2px solid #dc3545 !important;
+}
+
+code {
+    background-color: #f8f9fa;
+    padding: 0.2rem 0.4rem;
+    border-radius: 0.25rem;
+}
+
+dl {
+    margin-bottom: 0;
+}
+</style>
+{% endblock %}
