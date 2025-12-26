@@ -218,3 +218,16 @@ def cleanup():
         current_app.logger.error('Image cleanup failed')
 
     return redirect(url_for('admin.settings'))
+
+
+# ============================================================================
+# Multi-site Management (MULTI-03)
+# ============================================================================
+
+from .site_routes import register_site_routes
+
+# Register site management routes when module loads
+def init_admin_routes(app):
+    """Initialize admin routes with app."""
+    app.register_blueprint(admin_bp)
+    register_site_routes(app)
