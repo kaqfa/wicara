@@ -225,9 +225,11 @@ def cleanup():
 # ============================================================================
 
 from .site_routes import register_site_routes
+from .advanced_routes import init_advanced_routes
 
 # Register site management routes when module loads
 def init_admin_routes(app):
     """Initialize admin routes with app."""
     app.register_blueprint(admin_bp)
     register_site_routes(app)
+    init_advanced_routes(app)

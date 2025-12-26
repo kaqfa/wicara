@@ -187,6 +187,22 @@
                 <a href="{{ url_for('sites.dashboard') }}" class="nav-link">
                     <i class="bi bi-diagram-3 me-1"></i>Sites
                 </a>
+                <div class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="advancedDropdown" role="button" data-bs-toggle="dropdown">
+                        <i class="bi bi-shield-lock me-1"></i>Advanced
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="advancedDropdown">
+                        <li><a class="dropdown-item" href="{{ url_for('advanced.groups_dashboard') }}">
+                            <i class="bi bi-diagram-3 me-2"></i>Groups
+                        </a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('advanced.activity_logs') }}">
+                            <i class="bi bi-clock-history me-2"></i>Activity Logs
+                        </a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('advanced.quotas_dashboard') }}">
+                            <i class="bi bi-speedometer2 me-2"></i>Quotas
+                        </a></li>
+                    </ul>
+                </div>
                 <a href="{{ url_for('admin_settings') }}" class="nav-link">
                     <i class="bi bi-gear me-1"></i>Settings
                 </a>
