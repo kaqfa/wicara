@@ -1,0 +1,188 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Export Activity Logs - Wicara Admin{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h1 class="h2">
+                <i class="bi bi-download"></i> Export Activity Logs
+            </h1>
+            <p class="text-muted">Export activity logs for analysis and compliance</p>
+        </div>
+        <div class="col-md-4 text-end">
+            <a href="{{ url_for('advanced.activity_logs') }}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Back to Activity
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Export Options</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post" novalidate>
+                        {{ form.hidden_tag() }}
+
+                        <!-- Format Selection -->
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">Export Format</label>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" id="format_json"
+                                               name="format_type" value="json" checked>
+                                        <label class="form-check-label" for="format_json">
+                                            <strong>JSON</strong>
+                                            <small class="d-block text-muted">
+                                                Structured format with full metadata
+                                            </small>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" id="format_csv"
+                                               name="format_type" value="csv">
+                                        <label class="form-check-label" for="format_csv">
+                                            <strong>CSV</strong>
+                                            <small class="d-block text-muted">
+                                                Spreadsheet-friendly format
+                                            </small>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Event Type Filter -->
+                        <div class="mb-4">
+                            <label for="event_type" class="form-label fw-bold">Event Type Filter (optional)</label>
+                            {{ form.event_type(class="form-select") }}
+                            <small class="form-text text-muted d-block mt-2">
+                                Leave empty to export all events
+                            </small>
+                        </div>
+
+                        <!-- Submit -->
+                        <div class="d-grid gap-2">
+                            {{ form.submit(class="btn btn-success btn-lg") }}
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            <!-- Export Info -->
+            <div class="card mb-3 bg-light">
+                <div class="card-body">
+                    <h6><i class="bi bi-info-circle"></i> Export Information</h6>
+                    <ul class="small mb-0">
+                        <li>Export file includes metadata</li>
+                        <li>Files are timestamped</li>
+                        <li>Maximum 10,000 events per export</li>
+                        <li>Exports available for download immediately</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Format Comparison -->
+            <div class="card">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Format Comparison</h5>
+                </div>
+                <div class="card-body small">
+                    <table class="table table-sm mb-0">
+                        <tr>
+                            <th></th>
+                            <th>JSON</th>
+                            <th>CSV</th>
+                        </tr>
+                        <tr>
+                            <td><strong>Readable</strong></td>
+                            <td><i class="bi bi-check-circle text-success"></i></td>
+                            <td><i class="bi bi-check-circle text-success"></i></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Metadata</strong></td>
+                            <td><i class="bi bi-check-circle text-success"></i></td>
+                            <td><i class="bi bi-dash-circle"></i></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Spreadsheet</strong></td>
+                            <td><i class="bi bi-dash-circle"></i></td>
+                            <td><i class="bi bi-check-circle text-success"></i></td>
+                        </tr>
+                        <tr>
+                            <td><strong>API-Ready</strong></td>
+                            <td><i class="bi bi-check-circle text-success"></i></td>
+                            <td><i class="bi bi-dash-circle"></i></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Use Cases -->
+            <div class="card mt-3">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Use Cases</h5>
+                </div>
+                <div class="card-body small">
+                    <dl class="mb-0">
+                        <dt>Compliance</dt>
+                        <dd>Audit trails for regulations</dd>
+
+                        <dt>Analysis</dt>
+                        <dd>Understand usage patterns</dd>
+
+                        <dt>Integration</dt>
+                        <dd>Feed to external systems</dd>
+
+                        <dt>Reporting</dt>
+                        <dd>Create custom reports</dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.card {
+    border: none;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+.form-check {
+    padding: 0.75rem;
+    border: 1px solid #e9ecef;
+    border-radius: 0.5rem;
+    margin-bottom: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.form-check:hover {
+    background-color: #f8f9fa;
+}
+
+.form-check input:checked + label {
+    font-weight: 600;
+}
+
+dl {
+    margin-bottom: 0;
+}
+
+dt {
+    font-weight: 600;
+    margin-top: 0.5rem;
+}
+</style>
+{% endblock %}
