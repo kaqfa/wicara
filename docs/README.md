@@ -1,149 +1,224 @@
-# WICARA CMS Documentation
+# WICARA CMS - Documentation Index
 
-## 📚 Documentation Index
+**Version**: 1.0.0
+**Last Updated**: 2026-01-09
 
-This directory contains comprehensive documentation for WICARA CMS, covering everything from basic setup to advanced development.
+## 📚 Quick Navigation
 
-### 🔧 User Documentation
+### Getting Started
+- **[Setup Guide](guides/SETUP_GUIDE.md)** - Installation, configuration, and deployment
+- **[User Guide](guides/USER_GUIDE.md)** - End-user documentation for the admin panel
 
-#### **[USER_GUIDE.md](./USER_GUIDE.md)**
-Complete guide for end users and website administrators
-- **Quick Start**: Get WICARA running in minutes
-- **Admin Panel**: Full interface walkthrough
-- **Content Management**: Pages, images, and text editing
-- **Settings**: Global configuration and SEO
-- **Security**: Built-in security features and best practices
-- **Troubleshooting**: Common issues and solutions
-- **FAQ**: Frequently asked questions
+### Developer Resources
+- **[Developer Guide](guides/DEVELOPER_GUIDE.md)** - Template creation, field types, and API reference
+- **[Architecture](ARCHITECTURE.md)** - Technical architecture, design patterns, and system overview
 
-#### **[SETUP_GUIDE.md](./SETUP_GUIDE.md)**
-Step-by-step installation and setup instructions
-- **System Requirements**: Minimum and recommended specs
-- **Installation**: Multiple installation methods
-- **Configuration**: Initial setup and customization
-- **Testing**: Verify your installation works
-- **Production Deployment**: Live server setup
-- **Troubleshooting**: Installation-specific issues
+### Project Management
+- **[Backlog](BACKLOG.md)** - Development roadmap, feature status, and progress tracking
 
-### 👨‍💻 Developer Documentation
+### Feature Specifications
+- **[Engine-Content Separation](specs/ENGINE_CONTENT_SEPARATION.md)** - Plan for separating engine and user content
+- **[Plugin System](specs/PHASE4_PLUGIN_SYSTEM.md)** - Plugin architecture and development guide
+- **[Multi-site System](specs/PHASE5_MULTISITE_SYSTEM.md)** - Multi-site support implementation
 
-#### **[DEVELOPER_GUIDE.md](./DEVELOPER_GUIDE.md)**
-Comprehensive developer documentation
-- **Template Creation**: Jinja2 templating with examples
-- **Field Type Reference**: All available field types and validation
-- **API Documentation**: Core functions and Flask routes
-- **Contribution Guidelines**: Code standards and development workflow
-- **CLI Reference**: Command-line interface reference
-- **Code Architecture**: Application structure and design patterns
+### Reference Documentation
+- **[Caching Strategy](reference/CACHING.md)** - Caching system documentation (Phase 2)
+- **[Import/Export](reference/IMPORT_EXPORT_IMPLEMENTATION.md)** - Import/Export feature (Phase 3)
 
-### 📋 Planning Documentation
-
-#### **[wicara-content-summary.md](./wicara-content-summary.md)**
-Content strategy and planning document
-- **Brand Identity**: WICARA positioning and messaging
-- **Page Content**: Complete content structure for all pages
-- **Target Audience**: Primary and secondary user groups
-- **Content Strategy**: Tone, voice, and SEO approach
-- **Unique Selling Points**: Differentiation from competitors
-
-## 🚀 Quick Links
-
-### For New Users
-1. **[Installation](./SETUP_GUIDE.md#installation)** - Get WICARA running
-2. **[Quick Start](./USER_GUIDE.md#quick-start)** - Basic usage guide
-3. **[Admin Panel](./USER_GUIDE.md#admin-panel-guide)** - Content management
-4. **[Troubleshooting](./USER_GUIDE.md#troubleshooting)** - Common issues
-
-### For Developers
-1. **[Development Setup](./DEVELOPER_GUIDE.md#getting-started)** - Development environment
-2. **[Template Guide](./DEVELOPER_GUIDE.md#template-creation-guide)** - Create custom templates
-3. **[API Reference](./DEVELOPER_GUIDE.md#api-documentation)** - Core functions
-4. **[Contribution](./DEVELOPER_GUIDE.md#contribution-guidelines)** - How to contribute
-
-### For Administrators
-1. **[Security Guide](./USER_GUIDE.md#security)** - Security best practices
-2. **[Settings Management](./USER_GUIDE.md#settings-management)** - Global configuration
-3. **[Production Deployment](./SETUP_GUIDE.md#production-deployment)** - Live server setup
-4. **[Maintenance](./USER_GUIDE.md#troubleshooting)** - Ongoing maintenance
-
-## 📖 How to Use This Documentation
-
-### Reading Order
-1. **Start Here**: If you're new to WICARA, begin with [SETUP_GUIDE.md](./SETUP_GUIDE.md)
-2. **Users**: Continue with [USER_GUIDE.md](./USER_GUIDE.md) for daily usage
-3. **Developers**: See [DEVELOPER_GUIDE.md](./DEVELOPER_GUIDE.md) for technical details
-4. **Content Planning**: Reference [wicara-content-summary.md](./wicara-content-summary.md) for content strategy
-
-### Navigation Tips
-- Use **Table of Contents** in each document for quick navigation
-- **Search**: Use Ctrl+F to find specific topics
-- **Cross-references**: Links between related topics are provided throughout
-- **Code examples**: All code blocks are ready to copy and use
-
-### Documentation Formats
-- **Markdown**: Readable in any text editor or GitHub
-- **Code blocks**: Syntax-highlighted for easy reading
-- **Links**: Internal links for navigation
-- **Examples**: Practical, copy-paste ready examples
-
-## 🛠️ Documentation Maintenance
-
-### Last Updated
-- **USER_GUIDE.md**: November 10, 2025
-- **SETUP_GUIDE.md**: November 10, 2025
-- **DEVELOPER_GUIDE.md**: November 10, 2025
-- **wicara-content-summary.md**: November 9, 2025
-
-### Version Compatibility
-- All documentation is compatible with WICARA CMS v1.0
-- Version-specific features are clearly marked
-- Legacy features are documented with upgrade notes
-
-### Contributing to Documentation
-- Found an error? Please open an issue on GitHub
-- Want to improve documentation? See [Contribution Guidelines](./DEVELOPER_GUIDE.md#contribution-guidelines)
-- Documentation follows the same standards as code contributions
-
-## 🔍 Need Help?
-
-### Self-Service Resources
-1. **Search these docs** first - most questions are answered here
-2. **Check FAQ** in [USER_GUIDE.md](./USER_GUIDE.md#faq)
-3. **Review Troubleshooting** in both user and setup guides
-
-### Community Support
-1. **GitHub Issues**: Report bugs and request features
-2. **Discord Community**: Chat with other users and developers
-3. **Email Support**: For enterprise support inquiries
-
-### Getting Help Checklist
-Before asking for help, please:
-- [ ] Read the relevant documentation sections
-- [ ] Search existing GitHub issues
-- [ ] Check the FAQ section
-- [ ] Note your WICARA version
-- [ ] Gather error messages and logs
-- [ ] Describe what you've tried already
-
-## 📝 Documentation Feedback
-
-We welcome feedback on improving this documentation:
-
-### What's Helpful
-- ✅ Clear, specific suggestions
-- ✅ Examples of confusing sections
-- ✅ Missing topics you'd like covered
-- ✅ Typos and grammatical errors
-- ✅ Outdated information
-
-### How to Provide Feedback
-1. **GitHub Issues**: Create an issue with "documentation" label
-2. **Pull Requests**: Direct improvements are welcome
-3. **Email**: Contact the development team
-4. **Discord**: Share suggestions in the community
+### Legacy Documents
+- **[SRS](legacy/wicara-srs.md)** - Software Requirements Specification
+- **[Vision](legacy/wicara-vision.md)** - Project vision and goals
+- **[Content Summary](legacy/wicara-content-summary.md)** - Site identity and overview
 
 ---
 
-**Happy coding with WICARA CMS!** 🎉
+## 📖 Documentation Structure
 
-*This documentation is part of the WICARA CMS project. For the main codebase, see the root directory.*
+```
+docs/
+├── README.md                          # This file - documentation index
+├── BACKLOG.md                         # Master development backlog
+├── ARCHITECTURE.md                    # Technical architecture
+│
+├── guides/                            # User and developer guides
+│   ├── SETUP_GUIDE.md                 # Installation & setup
+│   ├── USER_GUIDE.md                  # End-user guide
+│   └── DEVELOPER_GUIDE.md             # Developer documentation
+│
+├── specs/                             # Feature specifications
+│   ├── ENGINE_CONTENT_SEPARATION.md   # ECS implementation plan
+│   ├── PHASE4_PLUGIN_SYSTEM.md        # Plugin system spec
+│   └── PHASE5_MULTISITE_SYSTEM.md     # Multi-site spec
+│
+├── reference/                         # Technical reference
+│   ├── CACHING.md                     # Caching system reference
+│   └── IMPORT_EXPORT_IMPLEMENTATION.md # Import/export reference
+│
+└── legacy/                            # Legacy/project documents
+    ├── wicara-srs.md                  # Requirements specification
+    ├── wicara-vision.md               # Project vision
+    └── wicara-content-summary.md      # Content overview
+```
+
+---
+
+## 🚀 Quick Start
+
+### For Users
+1. Read [Setup Guide](guides/SETUP_GUIDE.md) to install WICARA
+2. Follow [User Guide](guides/USER_GUIDE.md) to manage your content
+
+### For Developers
+1. Read [Architecture](ARCHITECTURE.md) to understand the system
+2. Follow [Developer Guide](guides/DEVELOPER_GUIDE.md) to extend functionality
+3. Check [Backlog](BACKLOG.md) for contribution opportunities
+
+---
+
+## 📊 Project Status
+
+**Overall Progress**: 90% Complete
+
+| Component | Status | Documentation |
+|-----------|--------|---------------|
+| Core System | ✅ Complete | [ARCHITECTURE.md](ARCHITECTURE.md) |
+| Phase 1: Modular Architecture | ✅ Complete | [ARCHITECTURE.md](ARCHITECTURE.md) |
+| Phase 2: Caching Strategy | ✅ Complete | [reference/CACHING.md](reference/CACHING.md) |
+| Phase 3: Import/Export System | ✅ Complete | [reference/IMPORT_EXPORT_IMPLEMENTATION.md](reference/IMPORT_EXPORT_IMPLEMENTATION.md) |
+| Phase 4: Plugin System | 🚧 In Progress | [specs/PHASE4_PLUGIN_SYSTEM.md](specs/PHASE4_PLUGIN_SYSTEM.md) |
+| Phase 5: Multi-site Support | ✅ Complete | [specs/PHASE5_MULTISITE_SYSTEM.md](specs/PHASE5_MULTISITE_SYSTEM.md) |
+| Engine-Content Separation | 📋 Planned | [specs/ENGINE_CONTENT_SEPARATION.md](specs/ENGINE_CONTENT_SEPARATION.md) |
+
+---
+
+## 🎯 Key Features
+
+- **Flat-file CMS**: No database required, all content in `config.json`
+- **Modular Architecture**: Clean separation with blueprints and core modules
+- **High Performance**: Multi-layer caching (50-80% improvement)
+- **Portable**: Single file backup and restore
+- **Extensible**: Plugin system for custom functionality
+- **Multi-site Ready**: Support for multiple sites from one installation
+
+---
+
+## 📝 Documentation Guidelines
+
+### Writing Documentation
+1. **Keep it simple** - Clear, concise language
+2. **Be specific** - Use exact file paths and line numbers
+3. **Show examples** - Code snippets and sample configs
+4. **Stay organized** - Use consistent formatting
+
+### File Organization
+
+#### **guides/** - How-to Documentation
+- Step-by-step instructions
+- User workflows
+- Developer tutorials
+- Examples: SETUP_GUIDE.md, USER_GUIDE.md, DEVELOPER_GUIDE.md
+
+#### **specs/** - Feature Specifications
+- Technical implementation plans
+- Architecture decisions
+- API specifications
+- Examples: ENGINE_CONTENT_SEPARATION.md, PHASE4_PLUGIN_SYSTEM.md
+
+#### **reference/** - Technical Reference
+- System documentation
+- Implementation details
+- Configuration reference
+- Examples: CACHING.md, IMPORT_EXPORT_IMPLEMENTATION.md
+
+#### **legacy/** - Historical Documents
+- Original project documents
+- Requirements and vision
+- Kept for historical reference
+- Examples: wicara-srs.md, wicara-vision.md
+
+### Updating the Backlog
+- Use emojis: ✅ Complete, 🚧 In Progress, 📋 Planned
+- Include file names and line counts
+- Link to relevant documentation
+- Update progress percentages
+
+### Adding New Features
+1. Create specification document in `docs/specs/` (if complex)
+2. Add to BACKLOG.md with tracking status
+3. Implement following architecture patterns
+4. Update all related documentation
+5. Add tests (if applicable)
+
+---
+
+## 🔍 Finding Information
+
+### I want to...
+- **Install WICARA**: → [guides/SETUP_GUIDE.md](guides/SETUP_GUIDE.md)
+- **Edit content**: → [guides/USER_GUIDE.md](guides/USER_GUIDE.md)
+- **Create templates**: → [guides/DEVELOPER_GUIDE.md](guides/DEVELOPER_GUIDE.md)
+- **Understand the code**: → [ARCHITECTURE.md](ARCHITECTURE.md)
+- **Add features**: → [BACKLOG.md](BACKLOG.md) → [guides/DEVELOPER_GUIDE.md](guides/DEVELOPER_GUIDE.md)
+- **Report issues**: → Check [BACKLOG.md](BACKLOG.md) first
+- **Contribute**: → [BACKLOG.md](BACKLOG.md) → "Contribution Guidelines"
+
+---
+
+## 📞 Support
+
+### Documentation Issues
+If you find errors or omissions in the documentation:
+1. Check [BACKLOG.md](BACKLOG.md) for known issues
+2. Update the documentation directly
+3. Add a task to BACKLOG.md if it's a larger issue
+
+### Technical Issues
+- Check [guides/SETUP_GUIDE.md](guides/SETUP_GUIDE.md) troubleshooting section
+- Review [ARCHITECTURE.md](ARCHITECTURE.md) for design patterns
+- See [guides/USER_GUIDE.md](guides/USER_GUIDE.md) for common tasks
+
+---
+
+## 🗂️ Document Descriptions
+
+### Guides (`guides/`)
+| Document | Description | Audience |
+|----------|-------------|----------|
+| [SETUP_GUIDE.md](guides/SETUP_GUIDE.md) | Installation, configuration, deployment | Users, Developers |
+| [USER_GUIDE.md](guides/USER_GUIDE.md) | Admin panel usage, content management | Users |
+| [DEVELOPER_GUIDE.md](guides/DEVELOPER_GUIDE.md) | Templates, field types, API, CLI | Developers |
+
+### Specifications (`specs/`)
+| Document | Description | Status |
+|----------|-------------|--------|
+| [ENGINE_CONTENT_SEPARATION.md](specs/ENGINE_CONTENT_SEPARATION.md) | ECS implementation plan | 📋 Planned |
+| [PHASE4_PLUGIN_SYSTEM.md](specs/PHASE4_PLUGIN_SYSTEM.md) | Plugin system (70% complete) | 🚧 In Progress |
+| [PHASE5_MULTISITE_SYSTEM.md](specs/PHASE5_MULTISITE_SYSTEM.md) | Multi-site support | ✅ Complete |
+
+### Reference (`reference/`)
+| Document | Description | Phase |
+|----------|-------------|-------|
+| [CACHING.md](reference/CACHING.md) | Cache system implementation | Phase 2 |
+| [IMPORT_EXPORT_IMPLEMENTATION.md](reference/IMPORT_EXPORT_IMPLEMENTATION.md) | Import/export feature | Phase 3 |
+
+### Legacy (`legacy/`)
+| Document | Description | Type |
+|----------|-------------|------|
+| [wicara-srs.md](legacy/wicara-srs.md) | Software requirements | Historical |
+| [wicara-vision.md](legacy/wicara-vision.md) | Project vision | Historical |
+
+---
+
+## 📈 Version History
+
+### v1.0.0 (2026-01-09)
+- Initial documentation structure
+- Added ARCHITECTURE.md
+- Reorganized BACKLOG.md
+- Created documentation index
+- Organized files into guides/, specs/, reference/, legacy/
+
+---
+
+*Last Updated: 2026-01-09*
+*Documentation Version: 1.0.0*
