@@ -32,27 +32,23 @@ wicara/
 │   └── js/
 │       └── admin.js
 │
-├── content/                     # DEFAULT CONTENT DIRECTORY (NEW)
-│   ├── config.json              # Move from root
-│   ├── config.json.backup       # Move from root
-│   ├── templates/               # USER TEMPLATES ONLY (move from root templates/)
-│   │   ├── base.html
-│   │   ├── home.html
-│   │   ├── about.html
-│   │   └── ...
-│   └── static/                  # USER STATIC FILES (NEW - move from root static/)
-│       ├── css/
-│       │   └── style.css
-│       ├── js/
-│       └── images/
-│           └── uploads/         # Move from static/images/uploads
-│
-├── sites/                       # Multi-site directories (NEW - structure ready)
-│   ├── site1/
-│   │   ├── config.json
-│   │   ├── templates/
-│   │   └── static/
-│   └── site2/
+├── sites/                       # ALL SITES (NEW - unified directory)
+│   ├── default/                 # Default site (migrate current content here)
+│   │   ├── config.json          # Move from root
+│   │   ├── config.json.backup   # Move from root
+│   │   ├── templates/           # USER TEMPLATES (move from root templates/)
+│   │   │   ├── base.html
+│   │   │   ├── home.html
+│   │   │   ├── about.html
+│   │   │   └── ...
+│   │   └── static/              # USER STATIC FILES (move from root static/)
+│   │       ├── css/
+│   │       │   └── style.css
+│   │       ├── js/
+│   │       └── images/
+│   │           └── uploads/     # Move from static/images/uploads
+│   │
+│   └── site2/                   # Additional sites (future)
 │       ├── config.json
 │       ├── templates/
 │       └── static/
@@ -63,86 +59,87 @@ wicara/
 
 ## Implementation Steps
 
-### Step 1: Create ContentManager Module
-**File**: `app/core/content_manager.py` (new)
+### Step 1: Create SiteManager Module
+**File**: `app/core/site_manager.py` (new)
 
-Manages content directory paths and configuration:
-- `get_config_path(site_id)` - Get config file path for site
-- `get_templates_dir(site_id)` - Get templates directory
-- `get_static_dir(site_id)` - Get static files directory
-- `get_uploads_dir(site_id)` - Get uploads directory
+Manages site directory paths and configuration:
+- `get_config_path(site_id='default')` - Get config file path for site
+- `get_templates_dir(site_id='default')` - Get templates directory
+- `get_static_dir(site_id='default')` - Get static files directory
+- `get_uploads_dir(site_id='default')` - Get uploads directory
 - `site_exists(site_id)` - Check if site exists
 - `get_all_sites()` - Get all available sites
+- `create_site(site_id)` - Create new site directory structure
 
 ### Step 2: Update Configuration
 **File**: `app/config.py` (modify)
 
 Add new environment variables:
-- `CONTENT_DIR=content` - Default content directory
-- `SITES_DIR=sites` - Multi-sites directory
+- `SITES_DIR=sites` - Sites directory (all sites here)
+- `DEFAULT_SITE=default` - Default site ID
 - `LEGACY_MODE=false` - Backward compatibility flag
 
 Update properties:
-- `CONFIG_FILE` - Dynamic path based on content dir
-- `UPLOAD_FOLDER` - Dynamic path based on content dir
+- `CONFIG_FILE` - Dynamic path based on sites dir and default site
+- `UPLOAD_FOLDER` - Dynamic path based on sites dir and default site
 
 ### Step 3: Update Application Factory
 **File**: `app/__init__.py` (modify)
 
 Changes:
-- Initialize `ContentManager` and attach to app
-- Configure Jinja2 with ChoiceLoader for engine (app/templates) + content (content/templates) templates
-- Add `/content/static/<path:filename>` route for user static files
+- Initialize `SiteManager` and attach to app
+- Configure Jinja2 with ChoiceLoader for engine (app/templates) + site (sites/default/templates) templates
+- Add `/sites/<site_id>/static/<path:filename>` route for site static files
 - Keep engine static at `/static/` (Flask default)
 - Support legacy mode for backward compatibility
 
 ### Step 4: Update Core Modules
 
 **ConfigManager** (`app/core/config_manager.py`):
-- Accept `content_manager` parameter for dynamic path resolution
-- Use `content_manager.get_config_path()` instead of hardcoded path
+- Accept `site_manager` parameter for dynamic path resolution
+- Use `site_manager.get_config_path()` instead of hardcoded path
 
 **TemplateManager** (`app/core/template_manager.py`):
 - Template rendering automatically uses Jinja2 ChoiceLoader
 - No changes needed - Flask handles template resolution
 
 **FileManager** (`app/core/file_manager.py`):
-- Use `content_manager.get_uploads_dir()` for upload folder
-- Update `cleanup_unused_images()` to use content-aware paths
+- Use `site_manager.get_uploads_dir()` for upload folder
+- Update `cleanup_unused_images()` to use site-aware paths
 
 ### Step 5: Update Routes
 
 **Public Routes** (`app/modules/public/routes.py`):
-- Use `current_app.content_manager.get_config_path()` for config loading
+- Use `current_app.site_manager.get_config_path()` for config loading
 
 **Admin Routes** (`app/modules/admin/routes.py`):
-- Use `current_app.content_manager` for all path resolutions
-- Update upload handling to use content-aware upload directory
+- Use `current_app.site_manager` for all path resolutions
+- Update upload handling to use site-aware upload directory
 
 ### Step 6: Update Import/Export
 **File**: `app/modules/import_export/exporter.py` (modify)
 
-- Use content-aware paths for export operations
-- Include content directory in export packages
+- Use site-aware paths for export operations
+- Include site directory in export packages
 
 ### Step 7: Create Migration Script
-**File**: `scripts/migrate_to_content.py` (new)
+**File**: `scripts/migrate_to_sites.py` (new)
 
 Automated migration script:
-1. Create `content/` directory structure
-2. Move user templates from `templates/` (non-admin) to `content/templates/`
+1. Create `sites/default/` directory structure
+2. Move user templates from `templates/` (non-admin) to `sites/default/templates/`
 3. Move admin templates from `templates/admin/` to `app/templates/admin/`
-4. Move user static files (css/style.css, js/) to `content/static/`
+4. Move user static files (css/style.css, js/) to `sites/default/static/`
 5. Keep admin static files (admin.css, admin.js) in `static/`
-6. Move uploads from `static/images/uploads` to `content/static/images/uploads`
-7. Move `config.json` to `content/`
+6. Move uploads from `static/images/uploads` to `sites/default/static/images/uploads`
+7. Move `config.json` to `sites/default/`
 8. Update `.env` with new configuration
 9. Clean up empty `templates/` directory if needed
 
 ### Step 8: Update CLI Commands
 **File**: `app/modules/cli/commands.py` (modify)
 
-- Update existing commands to use content-aware paths
+- Update existing commands to use site-aware paths
 - Add new command: `python run.py create-site <site_id> <site_name>`
 - Add migration command: `python run.py migrate`
 
@@ -151,16 +148,16 @@ Automated migration script:
 
 - Add support for new CLI commands
 - Load environment variables before creating app
-- Display content directory info on startup
+- Display sites directory info on startup
 
 ### Step 10: Update Environment Variables
 **File**: `.env.example` (modify)
 
 Add new variables:
 ```bash
-# Content Configuration
-CONTENT_DIR=content              # Default site content directory
-SITES_DIR=sites                  # Multi-sites directory (optional)
+# Sites Configuration
+SITES_DIR=sites                  # All sites directory
+DEFAULT_SITE=default             # Default site ID to use
 
 # Migration (temporary)
 LEGACY_MODE=false               # Enable backward compatibility mode
@@ -170,7 +167,7 @@ LEGACY_MODE=false               # Enable backward compatibility mode
 
 ### Phase 1: Preparation (No Breaking Changes)
 1. Add new environment variables
-2. Create ContentManager class
+2. Create SiteManager class
 3. Add LEGACY_MODE flag (default: true)
 4. Document upcoming changes
 
@@ -188,35 +185,35 @@ LEGACY_MODE=false               # Enable backward compatibility mode
 ### Rollback Plan
 If issues occur:
 1. Set `LEGACY_MODE=true` in `.env`
-2. Restore from backup: `cp content/config.json.backup config.json`
+2. Restore from backup: `cp sites/default/config.json.backup config.json`
 3. Manual rollback if needed
 
 ## Critical Files to Modify
 
-1. **`app/__init__.py`** - Application factory, initialize ContentManager
-2. **`app/config.py`** - Add content configuration variables
-3. **`app/core/content_manager.py`** - NEW: Content path management
-4. **`app/core/config_manager.py`** - Use ContentManager for paths
-5. **`app/core/file_manager.py`** - Use ContentManager for upload paths
+1. **`app/__init__.py`** - Application factory, initialize SiteManager
+2. **`app/config.py`** - Add sites configuration variables
+3. **`app/core/site_manager.py`** - NEW: Site path management
+4. **`app/core/config_manager.py`** - Use SiteManager for paths
+5. **`app/core/file_manager.py`** - Use SiteManager for upload paths
 6. **`app/modules/admin/routes.py`** - Update all path references
 7. **`app/modules/public/routes.py`** - Update config loading
 8. **`run.py`** - Add migration command
 9. **`.env.example`** - Add new environment variables
-10. **`scripts/migrate_to_content.py`** - NEW: Migration script
+10. **`scripts/migrate_to_sites.py`** - NEW: Migration script
 
 ## Verification Plan
 
 ### Testing Checklist
 - [ ] Legacy mode (`LEGACY_MODE=true`) works with existing structure
 - [ ] New mode (`LEGACY_MODE=false`) works with migrated structure
-- [ ] Template rendering works in both modes (admin from app/templates, user from content/templates)
-- [ ] File uploads work correctly to content/static/images/uploads
+- [ ] Template rendering works in both modes (admin from app/templates, user from sites/default/templates)
+- [ ] File uploads work correctly to sites/default/static/images/uploads
 - [ ] Admin panel can edit pages and settings
 - [ ] Import/export functions work
-- [ ] CLI commands work with content-aware paths
+- [ ] CLI commands work with site-aware paths
 - [ ] Engine static files served at `/static/` (admin.css, admin.js)
-- [ ] User static files served at `/content/static/` (style.css, user uploads)
-- [ ] Sites directory structure is created but routing not yet implemented
+- [ ] User static files served at `/sites/default/static/` (style.css, user uploads)
+- [ ] Sites directory structure is created and ready for multi-site
 
 ### Manual Testing Commands
 ```bash
@@ -238,16 +235,16 @@ python run.py create-site mysite "My Site"
 ### Access Verification
 - Public site: http://localhost:5555
 - Admin panel: http://localhost:5555/admin
-- User static files: http://localhost:5555/content/static/css/style.css (NEW route)
-- User uploads: http://localhost:5555/content/static/images/uploads/filename.jpg (NEW route)
+- User static files: http://localhost:5555/sites/default/static/css/style.css (NEW route)
+- User uploads: http://localhost:5555/sites/default/static/images/uploads/filename.jpg (NEW route)
 - Engine static files: http://localhost:5555/static/css/admin.css (EXISTING route)
 
 ## Benefits
 
 1. **Independent Development**: Engine updates won't affect user content
-2. **Easy Static Management**: User CSS/JS co-located dengan templates di `content/static/`
-3. **Multi-Site Ready**: Struktur `sites/` siap untuk multi-site di masa depan
-4. **Clean Upgrades**: Engine (app/) bisa diupdate tanpa touch content directory
+2. **Easy Static Management**: User CSS/JS co-located dengan templates di `sites/default/static/`
+3. **Multi-Site Ready**: Struktur `sites/` sudah siap untuk multi-site, tinggal add folder baru
+4. **Clean Upgrades**: Engine (app/) bisa diupdate tanpa touch sites directory
 5. **Backward Compatible**: Legacy mode allows gradual migration
 
 ## Post-Implementation Enhancements
