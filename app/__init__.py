@@ -32,7 +32,11 @@ def create_app(config=None):
         Configured Flask application instance
     """
     # Create Flask app instance
-    app = Flask(__name__, instance_relative_config=False)
+    # Set template_folder to parent directory (templates/ is outside app/)
+    template_folder = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'templates')
+    static_folder = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'static')
+    app = Flask(__name__, instance_relative_config=False,
+                template_folder=template_folder, static_folder=static_folder)
 
     # Load configuration
     if config is None:

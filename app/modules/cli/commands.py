@@ -5,6 +5,8 @@ Page management and utility commands for command-line use.
 
 import json
 import os
+import getpass
+from werkzeug.security import generate_password_hash
 from app.core import load_config, save_config
 
 
@@ -79,6 +81,67 @@ def list_pages():
         print()
 
 
+def change_password(new_password=None):
+    """
+    Change admin password via CLI.
+
+    Uses the same validation logic as the admin panel change password form.
+
+    Args:
+        new_password: New password (optional). If not provided, prompts securely.
+
+    Returns:
+        True if successful, False otherwise
+    """
+    config = load_config('config.json', validate=False)
+    if not config:
+        return False
+
+    # Get password securely if not provided
+    if new_password is None:
+        new_password = getpass.getpass('Enter new admin password: ')
+        confirm_password = getpass.getpass('Confirm new admin password: ')
+    else:
+        confirm_password = new_password
+
+    # Validate password (same logic as PasswordChangeForm in admin/forms.py)
+    errors = []
+
+    if not new_password:
+        errors.append('New password is required')
+    else:
+        if len(new_password) < 8:
+            errors.append('New password must be at least 8 characters long')
+        if not any(c.isupper() for c in new_password):
+            errors.append('New password must contain at least one uppercase letter')
+        if not any(c.islower() for c in new_password):
+            errors.append('New password must contain at least one lowercase letter')
+        if not any(c.isdigit() for c in new_password):
+            errors.append('New password must contain at least one number')
+
+    # Validate password confirmation
+    if new_password != confirm_password:
+        errors.append('Password confirmation does not match')
+
+    # Show errors if any
+    if errors:
+        print('Error: Password validation failed')
+        for error in errors:
+            print(f'  - {error}')
+        return False
+
+    # Hash password with scrypt (same method as admin)
+    hashed_password = generate_password_hash(new_password, method='scrypt')
+    config['admin-password'] = hashed_password
+
+    if save_config(config, 'config.json', validate=False):
+        print('Successfully changed admin password')
+        return True
+    else:
+        print('Error: Failed to save password')
+        return False
+
+
 def delete_page(url):
     """
     Delete a page by URL via CLI.
@@ -129,6 +192,11 @@ def show_help():
     print('  delete-page <url>')
     print('    Delete a page by URL')
     print('    Example: python run.py delete-page /about')
+    print()
+    print('  change-password [password]')
+    print('    Change admin password')
+    print('    Example: python run.py change-password')
+    print('    Example: python run.py change-password "newpassword123"')
     print()
     print('  help')
     print('    Show this help message')

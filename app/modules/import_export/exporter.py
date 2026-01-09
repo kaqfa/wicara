@@ -54,7 +54,7 @@ class Exporter:
 
     def export(
         self,
-        output_path: str,
+        output_path,
         mode: str = EXPORT_FULL,
         include_templates: Optional[List[str]] = None,
         progress_callback=None
@@ -63,7 +63,7 @@ class Exporter:
         Export WICARA site as ZIP package.
 
         Args:
-            output_path: Output ZIP file path
+            output_path: Output ZIP file path (str) or file-like object (BytesIO)
             mode: Export mode (full, partial, content)
             include_templates: List of specific templates to include (for partial export)
             progress_callback: Callback function for progress updates
@@ -85,6 +85,9 @@ class Exporter:
             validation_errors = self._validate_config(config)
             if validation_errors:
                 raise ExportError(f"Config validation failed: {validation_errors[0]}")
+
+            # Detect if output_path is file-like object or string path
+            is_file_object = hasattr(output_path, 'write')
 
             # Create ZIP file
             with zipfile.ZipFile(output_path, 'w', zipfile.ZIP_DEFLATED) as zip_file:
@@ -123,7 +126,11 @@ class Exporter:
 
             # Update export stats
             self.export_stats['created_at'] = datetime.datetime.now().isoformat()
-            self.export_stats['total_size'] = os.path.getsize(output_path)
+            # Get size - handle both file paths and BytesIO objects
+            if is_file_object:
+                self.export_stats['total_size'] = output_path.tell()
+            else:
+                self.export_stats['total_size'] = os.path.getsize(output_path)
 
             if progress_callback:
                 progress_callback(100, "Export completed successfully")

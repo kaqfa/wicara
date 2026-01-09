@@ -13,10 +13,10 @@
             <h2>Internal Server Error</h2>
             <p>Something went wrong on our end. Please try again later.</p>
             <div class="error-actions">
-                <a href="{{ url_for('index') }}" class="btn">Go Home</a>
+                <a href="{{ url_for('public.index') }}" class="btn">Go Home</a>
                 <a href="javascript:history.back()" class="btn btn-secondary">Go Back</a>
                 {% if pages %}
-                <a href="{{ url_for('admin_dashboard') }}" class="btn btn-secondary">Admin Panel</a>
+                <a href="{{ url_for('admin.dashboard') }}" class="btn btn-secondary">Admin Panel</a>
                 {% endif %}
             </div>
         </div>

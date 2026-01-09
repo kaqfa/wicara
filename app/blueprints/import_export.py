@@ -10,6 +10,7 @@ Handles:
 
 import os
 import json
+import io
 from datetime import datetime
 from functools import wraps
 
@@ -59,18 +60,17 @@ def export_page():
             # Generate filename
             timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
             filename = f"wicara_export_{timestamp}.zip"
-            filepath = os.path.join(current_app.config.get('EXPORT_DIR', 'exports'), filename)
-
-            # Create exports directory if needed
-            os.makedirs(os.path.dirname(filepath), exist_ok=True)
 
             # Create exporter
             config_path = current_app.config['CONFIG_FILE']
             exporter = Exporter(config_path=config_path)
 
-            # Perform export
+            # Create in-memory file for export
+            zip_buffer = io.BytesIO()
+
+            # Perform export to memory
             success, message, stats = exporter.export(
-                filepath,
+                zip_buffer,
                 mode=mode,
                 include_templates=include_templates if include_templates else None
             )
@@ -82,13 +82,15 @@ def export_page():
 
             # Log export
             current_app.logger.info(f'Export successful: {filename}, Stats: {stats}')
-            flash('Export completed successfully. Your file is ready for download.', 'success')
 
-            # Store filename in session for download
-            session['export_filename'] = filename
-            session['export_filepath'] = filepath
-
-            return redirect(url_for('import_export.download_export'))
+            # Send file directly to browser
+            zip_buffer.seek(0)
+            return send_file(
+                zip_buffer,
+                mimetype='application/zip',
+                as_attachment=True,
+                download_name=filename
+            )
 
         except Exception as e:
             flash(f'Export error: {str(e)}', 'error')

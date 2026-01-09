@@ -2,176 +2,311 @@
 
 {% block title %}Dashboard{% endblock %}
 
+{% block page_title %}Dashboard{% endblock %}
+
 {% block content %}
-<div class="row">
-    <div class="col-12">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h1 class="h3 mb-0">
-                <i class="bi bi-speedometer2 me-2"></i>Dashboard
-            </h1>
-            <div>
-                <a href="{{ url_for('admin_logout') }}" class="btn btn-danger">
-                    <i class="bi bi-box-arrow-right me-1"></i>Logout
-                </a>
-            </div>
-        </div>
-
-        <!-- Statistics -->
-        <div class="row mb-4">
-            <div class="col-md-3 mb-3">
-                <div class="card stats-card h-100">
-                    <div class="d-flex align-items-center">
-                        <div class="flex-grow-1">
-                            <div class="stats-number">{{ pages|length }}</div>
-                            <div class="stats-label">Total Pages</div>
-                        </div>
-                        <div class="text-primary">
-                            <i class="bi bi-file-earmark-text" style="font-size: 2rem;"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3 mb-3">
-                <div class="card stats-card h-100">
-                    <div class="d-flex align-items-center">
-                        <div class="flex-grow-1">
-                            <div class="stats-number">{{ sitename|length }}</div>
-                            <div class="stats-label">Site Name Length</div>
-                        </div>
-                        <div class="text-info">
-                            <i class="bi bi-type" style="font-size: 2rem;"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3 mb-3">
-                <div class="card stats-card h-100">
-                    <div class="d-flex align-items-center">
-                        <div class="flex-grow-1">
-                            <div class="stats-number">{{ description|length }}</div>
-                            <div class="stats-label">Description Length</div>
-                        </div>
-                        <div class="text-success">
-                            <i class="bi bi-text-paragraph" style="font-size: 2rem;"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3 mb-3">
-                <div class="card stats-card h-100">
-                    <div class="d-flex align-items-center">
-                        <div class="flex-grow-1">
-                            <div class="stats-number">{{ keywords|length }}</div>
-                            <div class="stats-label">Keywords Length</div>
-                        </div>
-                        <div class="text-warning">
-                            <i class="bi bi-tags" style="font-size: 2rem;"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Quick Actions -->
-        <div class="row mb-4">
-            <div class="col-12">
-                <h2 class="section-title">Quick Actions</h2>
-                <div class="row">
-                    <div class="col-md-4 mb-3">
-                        <a href="{{ url_for('admin_settings') }}" class="text-decoration-none">
-                            <div class="card page-card h-100">
-                                <div class="card-body text-center">
-                                    <i class="bi bi-gear text-primary" style="font-size: 3rem;"></i>
-                                    <h5 class="card-title mt-3">Site Settings</h5>
-                                    <p class="card-text text-muted">Configure site information and SEO settings</p>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="col-md-4 mb-3">
-                        <a href="{{ url_for('change_password') }}" class="text-decoration-none">
-                            <div class="card page-card h-100">
-                                <div class="card-body text-center">
-                                    <i class="bi bi-key text-info" style="font-size: 3rem;"></i>
-                                    <h5 class="card-title mt-3">Change Password</h5>
-                                    <p class="card-text text-muted">Update your admin password</p>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="col-md-4 mb-3">
-                        <a href="{{ url_for('index') }}" target="_blank" class="text-decoration-none">
-                            <div class="card page-card h-100">
-                                <div class="card-body text-center">
-                                    <i class="bi bi-globe text-success" style="font-size: 3rem;"></i>
-                                    <h5 class="card-title mt-3">View Site</h5>
-                                    <p class="card-text text-muted">Open your website in a new tab</p>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="col-md-4 mb-3">
-                        <a href="{{ url_for('import_export.export_page') }}" class="text-decoration-none">
-                            <div class="card page-card h-100">
-                                <div class="card-body text-center">
-                                    <i class="bi bi-download text-warning" style="font-size: 3rem;"></i>
-                                    <h5 class="card-title mt-3">Export Site</h5>
-                                    <p class="card-text text-muted">Create a backup or migration package</p>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="col-md-4 mb-3">
-                        <a href="{{ url_for('import_export.import_page') }}" class="text-decoration-none">
-                            <div class="card page-card h-100">
-                                <div class="card-body text-center">
-                                    <i class="bi bi-upload text-danger" style="font-size: 3rem;"></i>
-                                    <h5 class="card-title mt-3">Import Site</h5>
-                                    <p class="card-text text-muted">Restore or import a site package</p>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Pages List -->
-        <div class="row">
-            <div class="col-12">
-                <h2 class="section-title">Pages</h2>
-                <div class="row">
-                    {% for page in pages %}
-                    <div class="col-md-6 col-lg-4 mb-3">
-                        <div class="card page-card h-100">
-                            <div class="card-body">
-                                <h5 class="page-title">{{ page.get('menu_title', page.title) }}</h5>
-                                <p class="page-meta">
-                                    <i class="bi bi-link-45deg me-1"></i>{{ page.url }}
-                                </p>
-                                <p class="page-meta">
-                                    <i class="bi bi-file-code me-1"></i>{{ page.template }}
-                                </p>
-                                {% if page.get('seo-description') %}
-                                <p class="page-meta">
-                                    <i class="bi bi-search me-1"></i>{{ page.get('seo-description')[:50] }}{% if page.get('seo-description')|length > 50 %}...{% endif %}
-                                </p>
-                                {% endif %}
-                                <div class="mt-3">
-                                    <a href="{{ url_for('edit_page', page_index=loop.index0) }}" class="btn btn-primary btn-action btn-sm me-2">
-                                        <i class="bi bi-pencil me-1"></i>Edit
-                                    </a>
-                                    <a href="{{ url_for('index') }}{{ page.url }}" target="_blank" class="btn btn-outline-secondary btn-action btn-sm">
-                                        <i class="bi bi-eye me-1"></i>View
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    {% endfor %}
-                </div>
-            </div>
-        </div>
+<!-- Statistics Overview -->
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-number">{{ pages|length }}</div>
+        <div class="stat-label">Total Pages</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-number">{{ pages|map(attribute='fields')|map('length')|sum }}</div>
+        <div class="stat-label">Total Fields</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-number">{{ keywords|length }}</div>
+        <div class="stat-label">Keywords</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-number">{{ description|length if description else 0 }}</div>
+        <div class="stat-label">Description Chars</div>
     </div>
 </div>
+
+<!-- Pages Table -->
+<div class="table-container">
+    <div class="table-header">
+        <h2>Pages Management</h2>
+        <div class="table-actions">
+            <input type="text" id="tableSearch" placeholder="Search pages..." class="search-input">
+            <select id="tablePerPage" class="per-page-select">
+                <option value="10">10 per page</option>
+                <option value="25">25 per page</option>
+                <option value="50">50 per page</option>
+                <option value="100">100 per page</option>
+            </select>
+            <a href="{{ url_for('admin.settings') }}" class="btn-primary">
+                <i class="bi bi-plus-lg"></i>
+                Add Page
+            </a>
+        </div>
+    </div>
+
+    <div class="table-wrapper">
+        <table class="modern-table" id="pagesTable">
+            <thead>
+                <tr>
+                    <th class="checkbox-col">
+                        <input type="checkbox" id="selectAll">
+                    </th>
+                    <th class="sortable" data-sort="title">
+                        Page Title <i class="bi bi-arrow-down-up sort-icon"></i>
+                    </th>
+                    <th class="sortable" data-sort="url">
+                        URL <i class="bi bi-arrow-down-up sort-icon"></i>
+                    </th>
+                    <th>Template</th>
+                    <th>Fields</th>
+                    <th class="text-center">Actions</th>
+                </tr>
+            </thead>
+            <tbody id="pagesTableBody">
+                {% for page in pages %}
+                <tr data-page-id="{{ loop.index0 }}" data-title="{{ page.get('menu-title', page['title'])|lower }}" data-url="{{ page['url']|lower }}">
+                    <td><input type="checkbox" class="row-checkbox" data-page-id="{{ loop.index0 }}"></td>
+                    <td>
+                        <span class="page-title">{{ page.get('menu-title', page['title']) }}</span>
+                        {% if page.get('seo-description') %}
+                        <span class="page-seo">{{ page.get('seo-description')[:60] }}{% if page.get('seo-description')|length > 60 %}...{% endif %}</span>
+                        {% endif %}
+                    </td>
+                    <td><code class="url-badge">{{ page['url'] }}</code></td>
+                    <td><span class="template-badge">{{ page['template'] }}</span></td>
+                    <td><span class="date-badge">{{ page['fields']|length }} fields</span></td>
+                    <td class="text-center">
+                        <div class="action-buttons">
+                            <a href="{{ url_for('admin.edit_page', page_index=loop.index0) }}"
+                               class="btn-icon" title="Edit Page">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <a href="{{ url_for('public.index') }}{{ page['url'] }}"
+                               target="_blank" class="btn-icon" title="View Page">
+                                <i class="bi bi-eye"></i>
+                            </a>
+                            <button class="btn-icon btn-delete" title="Delete Page"
+                                    data-page-url="{{ page['url'] }}" data-page-title="{{ page.get('menu-title', page['title']) }}">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination -->
+    <div class="table-pagination">
+        <button class="btn-page" id="prevPage" disabled>
+            <i class="bi bi-chevron-left"></i> Previous
+        </button>
+        <span class="page-info" id="pageInfo">Showing 1-{{ [pages|length, 10]|min }} of {{ pages|length }}</span>
+        <button class="btn-page" id="nextPage" {% if pages|length <= 10 %}disabled{% endif %}>
+            Next <i class="bi bi-chevron-right"></i>
+        </button>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="stats-grid" style="margin-top: 2rem; margin-bottom: 0;">
+    <a href="{{ url_for('admin.settings') }}" class="stat-card" style="text-decoration: none; display: block;">
+        <div style="display: flex; align-items: center; gap: 1rem;">
+            <i class="bi bi-gear" style="font-size: 2rem; color: var(--accent-primary);"></i>
+            <div>
+                <div style="font-weight: 600; color: var(--text-primary);">Site Settings</div>
+                <div style="font-size: 0.875rem; color: var(--text-secondary);">Configure site information</div>
+            </div>
+        </div>
+    </a>
+    <a href="{{ url_for('admin.change_password') }}" class="stat-card" style="text-decoration: none; display: block;">
+        <div style="display: flex; align-items: center; gap: 1rem;">
+            <i class="bi bi-key" style="font-size: 2rem; color: var(--info);"></i>
+            <div>
+                <div style="font-weight: 600; color: var(--text-primary);">Change Password</div>
+                <div style="font-size: 0.875rem; color: var(--text-secondary);">Update admin password</div>
+            </div>
+        </div>
+    </a>
+    <a href="{{ url_for('cache.cache_dashboard') }}" class="stat-card" style="text-decoration: none; display: block;">
+        <div style="display: flex; align-items: center; gap: 1rem;">
+            <i class="bi bi-hdd-network" style="font-size: 2rem; color: var(--success);"></i>
+            <div>
+                <div style="font-weight: 600; color: var(--text-primary);">Cache Dashboard</div>
+                <div style="font-size: 0.875rem; color: var(--text-secondary);">Manage cache settings</div>
+            </div>
+        </div>
+    </a>
+    <a href="{{ url_for('import_export.export_page') }}" class="stat-card" style="text-decoration: none; display: block;">
+        <div style="display: flex; align-items: center; gap: 1rem;">
+            <i class="bi bi-arrow-left-right" style="font-size: 2rem; color: var(--warning);"></i>
+            <div>
+                <div style="font-weight: 600; color: var(--text-primary);">Import/Export</div>
+                <div style="font-size: 0.875rem; color: var(--text-secondary);">Backup or restore site</div>
+            </div>
+        </div>
+    </a>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Table state
+let currentPage = 1;
+let rowsPerPage = 10;
+let currentSort = { column: null, direction: 'asc' };
+let filteredRows = [];
+
+// Initialize
+document.addEventListener('DOMContentLoaded', function() {
+    const tableBody = document.getElementById('pagesTableBody');
+    const allRows = Array.from(tableBody.querySelectorAll('tr'));
+    filteredRows = allRows;
+
+    // Search functionality
+    const searchInput = document.getElementById('tableSearch');
+    searchInput.addEventListener('input', function() {
+        const searchTerm = this.value.toLowerCase();
+        filteredRows = allRows.filter(row => {
+            const title = row.dataset.title || '';
+            const url = row.dataset.url || '';
+            return title.includes(searchTerm) || url.includes(searchTerm);
+        });
+        currentPage = 1;
+        renderTable();
+    });
+
+    // Rows per page
+    const perPageSelect = document.getElementById('tablePerPage');
+    perPageSelect.addEventListener('change', function() {
+        rowsPerPage = parseInt(this.value);
+        currentPage = 1;
+        renderTable();
+    });
+
+    // Pagination
+    document.getElementById('prevPage').addEventListener('click', function() {
+        if (currentPage > 1) {
+            currentPage--;
+            renderTable();
+        }
+    });
+
+    document.getElementById('nextPage').addEventListener('click', function() {
+        const maxPage = Math.ceil(filteredRows.length / rowsPerPage);
+        if (currentPage < maxPage) {
+            currentPage++;
+            renderTable();
+        }
+    });
+
+    // Select all checkbox
+    document.getElementById('selectAll').addEventListener('change', function() {
+        const checkboxes = tableBody.querySelectorAll('.row-checkbox');
+        checkboxes.forEach(cb => {
+            if (cb.closest('tr').style.display !== 'none') {
+                cb.checked = this.checked;
+            }
+        }, this);
+    });
+
+    // Sorting
+    document.querySelectorAll('.sortable').forEach(th => {
+        th.addEventListener('click', function() {
+            const sortBy = this.dataset.sort;
+            const icon = this.querySelector('.sort-icon');
+
+            // Reset other icons
+            document.querySelectorAll('.sort-icon').forEach(i => {
+                if (i !== icon) {
+                    i.className = 'bi bi-arrow-down-up sort-icon';
+                }
+            });
+
+            // Toggle direction
+            if (currentSort.column === sortBy) {
+                currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
+            } else {
+                currentSort.column = sortBy;
+                currentSort.direction = 'asc';
+            }
+
+            // Update icon
+            icon.className = currentSort.direction === 'asc'
+                ? 'bi bi-arrow-up sort-icon'
+                : 'bi bi-arrow-down sort-icon';
+
+            // Sort rows
+            filteredRows.sort((a, b) => {
+                let aVal = a.dataset[sortBy];
+                let bVal = b.dataset[sortBy];
+
+                if (currentSort.direction === 'asc') {
+                    return aVal.localeCompare(bVal);
+                } else {
+                    return bVal.localeCompare(aVal);
+                }
+            });
+
+            renderTable();
+        });
+    });
+
+    // Delete button handling
+    document.querySelectorAll('.btn-delete').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const pageUrl = this.dataset.pageUrl;
+            const pageTitle = this.dataset.pageTitle;
+
+            if (confirm(`Are you sure you want to delete "${pageTitle}"?\n\nURL: ${pageUrl}`)) {
+                // In a real app, you would make an AJAX call here
+                // For now, just remove the row visually
+                const row = this.closest('tr');
+                row.style.opacity = '0.5';
+                setTimeout(() => {
+                    window.location.href = `/admin/delete-page/${pageUrl}`;
+                }, 300);
+            }
+        });
+    });
+
+    // Initial render
+    renderTable();
+});
+
+function renderTable() {
+    const tableBody = document.getElementById('pagesTableBody');
+    const allRows = Array.from(tableBody.querySelectorAll('tr'));
+
+    // Hide all rows first
+    allRows.forEach(row => row.style.display = 'none');
+
+    // Calculate pagination
+    const start = (currentPage - 1) * rowsPerPage;
+    const end = start + rowsPerPage;
+    const visibleRows = filteredRows.slice(start, end);
+
+    // Show filtered rows for current page
+    visibleRows.forEach(row => {
+        row.style.display = '';
+    });
+
+    // Update page info
+    const totalRows = filteredRows.length;
+    const showStart = totalRows === 0 ? 0 : start + 1;
+    const showEnd = Math.min(end, totalRows);
+    document.getElementById('pageInfo').textContent =
+        `Showing ${showStart}-${showEnd} of ${totalRows}`;
+
+    // Update pagination buttons
+    document.getElementById('prevPage').disabled = currentPage === 1;
+    document.getElementById('nextPage').disabled = end >= totalRows;
+
+    // Uncheck select all if no rows are selected
+    if (start === 0) {
+        document.getElementById('selectAll').checked = false;
+    }
+}
+</script>
 {% endblock %}

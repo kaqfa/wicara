@@ -1,5 +1,5 @@
 {
-  "admin-password": "scrypt:32768:8:1$cp7B9RoDqQotJhbY$86e6ad0b7fb6cdd91e8e1a4f3bfe7dc1b36888633c368b45b74daedeae9de2a09d512ea51920d957f8585b8e0b31125b560d695296e818ca5c95d9fa4eec5010",
+  "admin-password": "scrypt:32768:8:1$DReccMgIty5mRou7$93e07038ee861c87980eca29be910a59dfef215a4ab9d31393bfd43ad9ffc14b611fcc4c3a2af8ada7842879cbd84c28bcd2508a68713909e9ebd805a8ff3174",
   "sitename": "WICARA - Editable Static CMS",
   "description": "Lightweight, database-free CMS built with Flask that lets you create beautiful websites without complexity",
   "keywords": [
@@ -526,7 +526,7 @@
           "name": "step-1-code",
           "type": "textarea",
           "label": "Step 1 Code",
-          "value": "git clone https://github.com/yourusername/wicara.git\ncd wicara"
+          "value": "git clone https://github.com/yourusername/wicara.git\r\ncd wicara"
         },
         {
           "name": "step-2-title",
@@ -538,7 +538,7 @@
           "name": "step-2-code",
           "type": "textarea",
           "label": "Step 2 Code",
-          "value": "python -m venv venv\nsource venv/bin/activate  # On Windows: venv\\Scripts\\activate"
+          "value": "python -m venv venv\r\nsource venv/bin/activate  # On Windows: venv\\Scripts\\activate"
         },
         {
           "name": "step-3-title",
@@ -652,7 +652,7 @@
           "name": "admin-2-password",
           "type": "text",
           "label": "Admin 2 Password",
-          "value": "Default: 'wicara2024' (change immediately!)"
+          "value": "Default: 'Wicara2025' (change immediately!)"
         },
         {
           "name": "admin-2-description",

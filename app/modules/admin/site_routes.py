@@ -5,9 +5,9 @@ Admin interface for managing multiple sites.
 """
 
 from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify, g
-from flask_login import login_required
-from app.multisite import get_site_manager
-from app.modules.auth.utils import login_required as require_auth
+from app.modules.auth.utils import login_required
+# TODO: Uncomment when multisite is integrated
+# from app.multisite import get_site_manager
 from .site_forms import CreateSiteForm, EditSiteForm, DomainForm, DeleteSiteForm, BackupSiteForm
 import logging
 

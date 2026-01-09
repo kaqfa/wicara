@@ -1,5 +1,5 @@
 {
-  "admin-password": "scrypt:32768:8:1$cp7B9RoDqQotJhbY$86e6ad0b7fb6cdd91e8e1a4f3bfe7dc1b36888633c368b45b74daedeae9de2a09d512ea51920d957f8585b8e0b31125b560d695296e818ca5c95d9fa4eec5010",
+  "admin-password": "scrypt:32768:8:1$Vb5lHUtoEO4Nb6Bg$3f654a9f378776ea49b2782a7eb691ccaa45507fac037638ec159de79adf871b53d70c3019f621d26bc31617cc424a8aa62654aff20b35358622bd05042a74e3",
   "sitename": "WICARA - Editable Static CMS",
   "description": "Lightweight, database-free CMS built with Flask that lets you create beautiful websites without complexity",
   "keywords": [

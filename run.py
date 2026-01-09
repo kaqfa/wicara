@@ -10,7 +10,7 @@ import sys
 from pathlib import Path
 
 from app import create_app
-from app.modules.cli import create_page, list_pages, delete_page, show_help
+from app.modules.cli import create_page, list_pages, delete_page, change_password, show_help
 
 
 # ============================================================================
@@ -69,13 +69,14 @@ def load_env_file(env_file='.env'):
 # ============================================================================
 
 def run_server():
-    """Start the Flask development server."""
+    """Start the Flask development server with hot reload in development mode."""
     app = create_app()
     host = os.environ.get('HOST', '0.0.0.0')
     port = int(os.environ.get('PORT', 5555))
-    debug = os.environ.get('FLASK_ENV') == 'development'
+    env = os.environ.get('FLASK_ENV', 'development')
+    debug = env == 'development'
 
-    app.logger.info(f'Starting server on {host}:{port}')
+    app.logger.info(f'Starting server on {host}:{port} (debug={debug}, hot_reload={debug})')
     app.run(debug=debug, host=host, port=port, use_reloader=debug)
 
 
@@ -115,6 +116,11 @@ def main():
                 sys.exit(1)
             url = sys.argv[2]
             success = delete_page(url)
+            sys.exit(0 if success else 1)
+
+        elif command == 'change-password':
+            new_password = sys.argv[2] if len(sys.argv) > 2 else None
+            success = change_password(new_password)
             sys.exit(0 if success else 1)
 
         elif command == 'help':

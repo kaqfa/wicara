@@ -8,221 +8,150 @@
     <!-- Bootstrap 5 CDN -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-    <style>
-        body {
-            background: #f8f9fa;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        .admin-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        .navbar-brand {
-            color: white !important;
-            font-size: 24px;
-            font-weight: 600;
-        }
-        .navbar-brand i {
-            margin-right: 10px;
-        }
-        .navbar-nav .nav-link {
-            color: rgba(255, 255, 255, 0.9) !important;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
-        }
-        .navbar-nav .nav-link:hover {
-            color: white !important;
-            background: rgba(255, 255, 255, 0.1);
-            transform: translateY(-1px);
-        }
-        .page-card {
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
-            border: none;
-            overflow: hidden;
-        }
-        .page-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
-        }
-        .page-card .card-body {
-            padding: 25px;
-        }
-        .page-title {
-            color: #333;
-            font-size: 20px;
-            font-weight: 600;
-            margin-bottom: 15px;
-        }
-        .page-meta {
-            color: #666;
-            font-size: 14px;
-        }
-        .btn-action {
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 500;
-            transition: all 0.3s ease;
-        }
-        .btn-action:hover {
-            transform: translateY(-2px);
-        }
-        .stats-card {
-            background: white;
-            border-radius: 15px;
-            padding: 1.5rem;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
-            border-left: 4px solid #667eea;
-        }
-        .stats-number {
-            font-size: 32px;
-            font-weight: 700;
-            color: #667eea;
-        }
-        .stats-label {
-            color: #666;
-            font-size: 14px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        .section-title {
-            color: #333;
-            font-size: 24px;
-            font-weight: 600;
-            margin-bottom: 25px;
-            position: relative;
-            padding-left: 15px;
-        }
-        .section-title::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 4px;
-            height: 24px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 2px;
-        }
-        .form-section {
-            background: white;
-            border-radius: 15px;
-            padding: 2rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        .form-label {
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 0.5rem;
-        }
-        .form-control, .form-select {
-            border-radius: 8px;
-            border: 1px solid #ddd;
-            padding: 0.75rem;
-            transition: all 0.3s ease;
-        }
-        .form-control:focus, .form-select:focus {
-            border-color: #667eea;
-            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
-        }
-        .page-info {
-            background: #f8f9fa;
-            border-radius: 10px;
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-        }
-        .page-info h5 {
-            color: #333;
-            font-weight: 600;
-            margin-bottom: 1rem;
-        }
-        .page-info p {
-            margin-bottom: 0.5rem;
-            color: #666;
-        }
-        .image-preview {
-            max-width: 200px;
-            max-height: 150px;
-            object-fit: cover;
-            border-radius: 8px;
-            border: 1px solid #ddd;
-        }
-        .footer-item {
-            background: #f8f9fa;
-            border-radius: 10px;
-            padding: 1rem;
-            margin-bottom: 1rem;
-            border: 1px solid #e9ecef;
-        }
-        .btn-remove {
-            background: #dc3545;
-            color: white;
-            border: none;
-            padding: 0.25rem 0.5rem;
-            border-radius: 5px;
-            font-size: 12px;
-            cursor: pointer;
-        }
-        .btn-remove:hover {
-            background: #c82333;
-        }
-    </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
     {% block extra_css %}{% endblock %}
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-dark admin-header">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="{{ url_for('admin_dashboard') }}">
-                <i class="bi bi-speedometer2"></i>{{ sitename }} Admin
-            </a>
-            <div class="navbar-nav ms-auto">
-                <a href="{{ url_for('sites.dashboard') }}" class="nav-link">
-                    <i class="bi bi-diagram-3 me-1"></i>Sites
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <a href="{{ url_for('admin.dashboard') }}" class="sidebar-brand">
+                    <i class="bi bi-speedometer2"></i>
+                    <span class="brand-text">Wicara</span>
                 </a>
-                <div class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="advancedDropdown" role="button" data-bs-toggle="dropdown">
-                        <i class="bi bi-shield-lock me-1"></i>Advanced
-                    </a>
-                    <ul class="dropdown-menu" aria-labelledby="advancedDropdown">
-                        <li><a class="dropdown-item" href="{{ url_for('advanced.groups_dashboard') }}">
-                            <i class="bi bi-diagram-3 me-2"></i>Groups
-                        </a></li>
-                        <li><a class="dropdown-item" href="{{ url_for('advanced.activity_logs') }}">
-                            <i class="bi bi-clock-history me-2"></i>Activity Logs
-                        </a></li>
-                        <li><a class="dropdown-item" href="{{ url_for('advanced.quotas_dashboard') }}">
-                            <i class="bi bi-speedometer2 me-2"></i>Quotas
-                        </a></li>
-                    </ul>
-                </div>
-                <a href="{{ url_for('admin_settings') }}" class="nav-link">
-                    <i class="bi bi-gear me-1"></i>Settings
-                </a>
-                <a href="{{ url_for('change_password') }}" class="nav-link">
-                    <i class="bi bi-key me-1"></i>Change Password
-                </a>
-                <a href="{{ url_for('admin_logout') }}" class="nav-link">
-                    <i class="bi bi-box-arrow-right me-1"></i>Logout
-                </a>
+                <button class="sidebar-toggle" id="sidebarToggle">
+                    <i class="bi bi-list"></i>
+                </button>
             </div>
-        </div>
-    </nav>
 
-    <!-- Main Content -->
-    <div class="container py-4" style="max-width: 1200px;">
-        {% block content %}{% endblock %}
+            <nav class="sidebar-nav">
+                <a href="{{ url_for('admin.dashboard') }}" class="nav-item active">
+                    <i class="bi bi-grid-1x2"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="{{ url_for('admin.settings') }}" class="nav-item">
+                    <i class="bi bi-gear"></i>
+                    <span>Settings</span>
+                </a>
+                <a href="{{ url_for('admin.change_password') }}" class="nav-item">
+                    <i class="bi bi-key"></i>
+                    <span>Change Password</span>
+                </a>
+                <a href="{{ url_for('cache.cache_dashboard') }}" class="nav-item">
+                    <i class="bi bi-hdd-network"></i>
+                    <span>Cache</span>
+                </a>
+                <div class="nav-divider"></div>
+                <a href="{{ url_for('import_export.export_page') }}" class="nav-item">
+                    <i class="bi bi-arrow-left-right"></i>
+                    <span>Import/Export</span>
+                </a>
+                <!-- Sites menu - TODO: Uncomment when multi-site is integrated -->
+                {# <a href="/admin/sites" class="nav-item">
+                    <i class="bi bi-diagram-3"></i>
+                    <span>Sites</span>
+                </a> #}
+                <!-- Advanced menu - TODO: Uncomment when advanced features are integrated -->
+                {# <div class="nav-item nav-group">
+                    <a href="#" class="nav-group-toggle" data-bs-toggle="collapse">
+                        <i class="bi bi-shield-lock"></i>
+                        <span>Advanced</span>
+                        <i class="bi bi-chevron-down"></i>
+                    </a>
+                    <div class="collapse nav-group-items">
+                        <a href="/admin/advanced/groups" class="nav-item">
+                            <i class="bi bi-diagram-3"></i>
+                            <span>Groups</span>
+                        </a>
+                        <a href="/admin/advanced/activity" class="nav-item">
+                            <i class="bi bi-clock-history"></i>
+                            <span>Activity Logs</span>
+                        </a>
+                        <a href="/admin/advanced/quotas" class="nav-item">
+                            <i class="bi bi-speedometer2"></i>
+                            <span>Quotas</span>
+                        </a>
+                    </div>
+                </div> #}
+                <div class="nav-divider"></div>
+                <a href="{{ url_for('auth.logout') }}" class="nav-item nav-logout">
+                    <i class="bi bi-box-arrow-right"></i>
+                    <span>Logout</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-header">
+                <div class="header-left">
+                    <button class="mobile-toggle" id="mobileToggle">
+                        <i class="bi bi-list"></i>
+                    </button>
+                    <h1 class="page-title">{% block page_title %}Dashboard{% endblock %}</h1>
+                </div>
+                <div class="header-right">
+                    <a href="{{ url_for('public.index') }}" target="_blank" class="btn-view-site">
+                        <i class="bi bi-box-arrow-up-right"></i>
+                        <span>View Site</span>
+                    </a>
+                    <div class="user-menu">
+                        <span class="user-name">Admin</span>
+                    </div>
+                </div>
+            </header>
+
+            <div class="content-body">
+                {% block content %}{% endblock %}
+            </div>
+        </main>
     </div>
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Sidebar toggle functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const sidebar = document.getElementById('sidebar');
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            const mobileToggle = document.getElementById('mobileToggle');
+
+            // Desktop sidebar collapse
+            if (sidebarToggle) {
+                sidebarToggle.addEventListener('click', function() {
+                    sidebar.classList.toggle('collapsed');
+                });
+            }
+
+            // Mobile sidebar toggle
+            if (mobileToggle) {
+                mobileToggle.addEventListener('click', function() {
+                    sidebar.classList.toggle('active');
+                });
+            }
+
+            // Close sidebar when clicking outside on mobile
+            document.addEventListener('click', function(e) {
+                if (window.innerWidth <= 768) {
+                    if (!sidebar.contains(e.target) && !mobileToggle.contains(e.target)) {
+                        sidebar.classList.remove('active');
+                    }
+                }
+            });
+
+            // Active nav item highlighting
+            const currentPath = window.location.pathname;
+            document.querySelectorAll('.nav-item').forEach(item => {
+                const href = item.getAttribute('href');
+                if (href && currentPath.startsWith(href.replace('/admin/', '/')) && href !== '/admin/logout') {
+                    item.classList.add('active');
+                } else if (href && href !== '/admin/logout') {
+                    item.classList.remove('active');
+                }
+            });
+        });
+    </script>
     {% block extra_js %}{% endblock %}
 </body>
 </html>
