@@ -34,16 +34,25 @@ class Exporter:
     EXPORT_PARTIAL = 'partial'     # Config and custom templates only
     EXPORT_CONTENT = 'content'     # Only config.json (content-only)
 
-    def __init__(self, config_path: str = 'config.json', app_root: str = '.'):
+    def __init__(self, config_path: str = 'config.json', app_root: str = '.', site_manager=None):
         """
         Initialize exporter.
 
         Args:
             config_path: Path to config.json file
             app_root: Root directory of the application
+            site_manager: Optional SiteManager instance for ECS path resolution
         """
-        self.config_path = config_path
-        self.app_root = app_root
+        self.site_manager = site_manager
+
+        # Use SiteManager for path resolution if available, otherwise use provided paths
+        if site_manager:
+            self.config_path = site_manager.get_config_path()
+            self.app_root = app_root  # Still needed for relative path calculations
+        else:
+            self.config_path = config_path
+            self.app_root = app_root
+
         self.export_stats = {
             'config_size': 0,
             'templates_count': 0,
@@ -189,7 +198,11 @@ class Exporter:
         include_list: Optional[List[str]] = None
     ):
         """Add templates to ZIP based on export mode."""
-        templates_dir = os.path.join(self.app_root, 'templates')
+        # Use SiteManager for path resolution if available
+        if self.site_manager:
+            templates_dir = self.site_manager.get_templates_dir()
+        else:
+            templates_dir = os.path.join(self.app_root, 'templates')
 
         if not os.path.exists(templates_dir):
             return
@@ -233,7 +246,11 @@ class Exporter:
 
     def _add_static_to_zip(self, zip_file: zipfile.ZipFile, config: Dict):
         """Add static files (CSS, JS, images) to ZIP."""
-        static_dir = os.path.join(self.app_root, 'static')
+        # Use SiteManager for path resolution if available
+        if self.site_manager:
+            static_dir = self.site_manager.get_static_dir()
+        else:
+            static_dir = os.path.join(self.app_root, 'static')
 
         if not os.path.exists(static_dir):
             return

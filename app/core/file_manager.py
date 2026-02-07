@@ -33,17 +33,31 @@ def sanitize_filename(filename):
     return filename
 
 
-def save_upload_file(file, upload_folder):
+def save_upload_file(file, upload_folder=None, site_manager=None, site_id=None):
     """
     Save uploaded file to upload folder with unique name.
 
+    Supports both legacy mode (upload_folder parameter) and sites mode (site_manager).
+    If site_manager is provided, it takes precedence over upload_folder parameter.
+
     Args:
         file: File object to save
-        upload_folder: Target upload folder path
+        upload_folder: Target upload folder path (legacy mode, optional)
+        site_manager: SiteManager instance for ECS (takes precedence, optional)
+        site_id: Site identifier for multi-site support (optional, uses default if None)
 
     Returns:
         Tuple of (file_path, unique_filename)
+
+    Raises:
+        ValueError: If neither upload_folder nor site_manager is provided
     """
+    # ECS-05: Support site_manager for multi-site uploads
+    if site_manager is not None:
+        upload_folder = site_manager.get_uploads_dir(site_id)
+    elif upload_folder is None:
+        raise ValueError("Either upload_folder or site_manager must be provided")
+
     safe_filename = sanitize_filename(file.filename)
     unique_filename = f"{uuid.uuid4().hex}_{safe_filename}"
     file_path = os.path.join(upload_folder, unique_filename)
@@ -110,50 +124,96 @@ def create_backup(config_file):
     return None
 
 
-def cleanup_unused_images(config, logger=None):
+def cleanup_unused_images(config, logger=None, site_manager=None, site_id=None, upload_dir=None):
     """
     Remove images that are not referenced in config.
+
+    Supports both legacy mode (hardcoded upload_dir) and sites mode (site_manager).
+    If site_manager is provided, uses site-specific upload directory.
 
     Args:
         config: Configuration dictionary
         logger: Logger instance for logging
+        site_manager: SiteManager instance for ECS (optional)
+        site_id: Site identifier for multi-site support (optional, uses default if None)
+        upload_dir: Custom upload directory (optional, for testing purposes)
+                   If not provided, uses default paths
 
     Returns:
         True if successful, False otherwise
     """
     try:
+        # ECS-05: Support site_manager for multi-site cleanup
+        if site_manager is not None:
+            upload_dir = site_manager.get_uploads_dir(site_id)
+            # In sites mode, paths should be relative to site root
+            path_prefix = '/sites/'
+            if site_id is None:
+                site_id = site_manager.default_site
+        elif upload_dir is None:
+            # Legacy mode with default path
+            upload_dir = os.path.join('static', 'images', 'uploads')
+            path_prefix = '/static/images/uploads/'
+        else:
+            # Custom upload_dir provided (for testing)
+            path_prefix = '/static/images/uploads/'
+
         # Get all referenced image paths
         referenced_images = set()
 
-        # Check page fields
+        # Check page fields and extract filenames (not full paths)
+        referenced_filenames = set()
+
         for page in config.get('pages', []):
             for field in page.get('fields', []):
                 if field.get('type') == 'image' and field.get('value'):
                     value = field['value']
-                    if value.startswith('/static/images/uploads/'):
-                        referenced_images.add(value[1:])  # Remove leading slash
+
+                    # Extract just the filename from various path formats
+                    if value.startswith(f'/sites/') and '/static/images/uploads/' in value:
+                        # Sites mode path: /sites/{site_id}/static/images/uploads/filename
+                        filename = value.split('/static/images/uploads/')[-1]
+                        referenced_filenames.add(filename)
+                    elif value.startswith('/static/images/uploads/'):
+                        # Legacy mode path: /static/images/uploads/filename
+                        filename = value.split('/static/images/uploads/')[-1]
+                        referenced_filenames.add(filename)
 
         # Get all uploaded images
-        upload_dir = os.path.join('static', 'images', 'uploads')
         if not os.path.exists(upload_dir):
+            if logger:
+                logger.debug(f'Upload directory does not exist: {upload_dir}')
             return True
 
-        uploaded_images = set()
+        # Compare filenames, not full paths
+        uploaded_files = []
         for filename in os.listdir(upload_dir):
             file_path = os.path.join(upload_dir, filename)
             if os.path.isfile(file_path):
-                uploaded_images.add(os.path.join('static', 'images', 'uploads', filename))
+                uploaded_files.append((filename, file_path))
 
-        # Remove unused images
-        unused_images = uploaded_images - referenced_images
-        for image_path in unused_images:
-            try:
-                os.remove(image_path)
-                if logger:
-                    logger.info(f'Removed unused image: {image_path}')
-            except Exception as e:
-                if logger:
-                    logger.error(f'Failed to remove {image_path}: {e}')
+        # Remove unused images by comparing filenames
+        removed_count = 0
+
+        # Debug logging
+        if logger:
+            logger.debug(f'Referenced filenames: {referenced_filenames}')
+            logger.debug(f'Uploaded files: {[f[0] for f in uploaded_files]}')
+
+        for filename, file_path in uploaded_files:
+            if filename not in referenced_filenames:
+                # This file is not referenced in the config
+                try:
+                    os.remove(file_path)
+                    removed_count += 1
+                    if logger:
+                        logger.info(f'Removed unused image: {file_path}')
+                except Exception as e:
+                    if logger:
+                        logger.error(f'Failed to remove {file_path}: {e}')
+
+        if logger and removed_count > 0:
+            logger.info(f'Cleaned up {removed_count} unused image(s)')
 
         return True
     except Exception as e:

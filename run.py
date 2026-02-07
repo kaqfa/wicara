@@ -10,6 +10,7 @@ import sys
 from pathlib import Path
 
 from app import create_app
+from app.core.site_manager import SiteManager
 from app.modules.cli import (
     create_page, list_pages, delete_page, change_password, show_help,
     plugin_list, plugin_install, plugin_uninstall, plugin_enable, plugin_disable,
@@ -96,6 +97,18 @@ def main():
     if env_loaded > 0:
         print(f'Loaded {env_loaded} environment variable(s) from .env file')
 
+    # Initialize SiteManager for CLI context (ECS-10)
+    # Use environment variable LEGACY_MODE to determine mode (defaults to True for backward compatibility)
+    legacy_mode = os.environ.get('LEGACY_MODE', 'true').lower() in ['true', '1', 'yes']
+    sites_dir = os.environ.get('SITES_DIR', 'sites')
+    default_site = os.environ.get('DEFAULT_SITE', 'default')
+
+    site_manager = SiteManager(
+        sites_dir=sites_dir,
+        default_site=default_site,
+        legacy_mode=legacy_mode
+    )
+
     if len(sys.argv) > 1:
         command = sys.argv[1]
 
@@ -108,11 +121,11 @@ def main():
             template = sys.argv[3]
             url = sys.argv[4]
             menu_title = sys.argv[5] if len(sys.argv) > 5 else None
-            success = create_page(title, template, url, menu_title)
+            success = create_page(title, template, url, menu_title, site_manager=site_manager)
             sys.exit(0 if success else 1)
 
         elif command == 'list-pages':
-            list_pages()
+            list_pages(site_manager=site_manager)
 
         elif command == 'delete-page':
             if len(sys.argv) < 3:
@@ -120,12 +133,12 @@ def main():
                 print('Usage: python run.py delete-page <url>')
                 sys.exit(1)
             url = sys.argv[2]
-            success = delete_page(url)
+            success = delete_page(url, site_manager=site_manager)
             sys.exit(0 if success else 1)
 
         elif command == 'change-password':
             new_password = sys.argv[2] if len(sys.argv) > 2 else None
-            success = change_password(new_password)
+            success = change_password(new_password, site_manager=site_manager)
             sys.exit(0 if success else 1)
 
         elif command == 'help':
@@ -223,6 +236,18 @@ def main():
 
         elif command == 'hook-stats':
             hook_stats()
+
+        elif command == 'migrate':
+            # Import migration script
+            try:
+                sys.path.insert(0, str(Path(__file__).parent))
+                from scripts.migrate_to_sites import migrate_to_sites
+                success = migrate_to_sites()
+                sys.exit(0 if success else 1)
+            except ImportError as e:
+                print(f'Error: Could not import migration script: {e}')
+                print('Make sure scripts/migrate_to_sites.py exists')
+                sys.exit(1)
 
         else:
             print(f'Error: Unknown command "{command}"')

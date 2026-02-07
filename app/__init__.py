@@ -4,13 +4,15 @@ Flask application factory and initialization.
 """
 
 import os
-from flask import Flask
+from flask import Flask, send_from_directory
+from jinja2 import ChoiceLoader, FileSystemLoader
 from app.config import get_config
 from app.logger import setup_logger
 from app.errors import register_error_handlers
 from app.modules import auth_bp, admin_bp, public_bp
 from app.blueprints.import_export import import_export_bp
 from app.core import ensure_directories
+from app.core.site_manager import SiteManager
 from app.cache.utils import CacheFactory, CacheService
 from app.modules.admin.cache_routes import cache_bp, set_cache_service
 from app.modules.admin.plugin_routes import plugin_bp
@@ -50,8 +52,58 @@ def create_app(config=None):
     setup_logger(app)
     app.logger.info('Application factory initialized')
 
+    # Initialize SiteManager for ECS (Engine-Content Separation)
+    app.logger.info('Initializing SiteManager...')
+    try:
+        sites_dir = app.config.get('SITES_DIR', 'sites')
+        default_site = app.config.get('DEFAULT_SITE', 'default')
+        legacy_mode = app.config.get('LEGACY_MODE', True)  # Default to True for backward compatibility
+
+        site_manager = SiteManager(sites_dir, default_site, legacy_mode)
+        app.site_manager = site_manager
+
+        app.logger.info(f'SiteManager initialized (legacy_mode={legacy_mode}, '
+                       f'sites_dir={sites_dir}, default_site={default_site})')
+
+        # Ensure site directory structure exists
+        if not site_manager.ensure_site_structure():
+            app.logger.warning('Failed to ensure site directory structure')
+
+    except Exception as e:
+        app.logger.error(f'SiteManager initialization failed: {str(e)}')
+        # Fall back to legacy mode
+        site_manager = SiteManager(legacy_mode=True)
+        app.site_manager = site_manager
+        app.logger.warning('Falling back to legacy mode')
+
     # Ensure required directories exist
     ensure_directories(app)
+
+    # Configure Jinja2 ChoiceLoader for sites mode (ECS-03)
+    if not app.site_manager.legacy_mode:
+        app.logger.info('Configuring Jinja2 ChoiceLoader for sites mode...')
+        try:
+            # Engine templates directory (admin templates, base templates)
+            engine_templates = os.path.join(os.path.dirname(__file__), '..', 'templates')
+            engine_templates = os.path.abspath(engine_templates)
+
+            # Site-specific templates directory
+            site_templates = app.site_manager.get_templates_dir()
+
+            # Create ChoiceLoader with priority: site templates first, then engine templates
+            loader = ChoiceLoader([
+                FileSystemLoader(site_templates),    # Priority 1: Site-specific templates
+                FileSystemLoader(engine_templates)    # Priority 2: Engine templates (fallback)
+            ])
+
+            app.jinja_loader = loader
+            app.logger.info(f'Jinja2 ChoiceLoader configured: site={site_templates}, '
+                           f'engine={engine_templates}')
+
+        except Exception as e:
+            app.logger.error(f'Failed to configure Jinja2 ChoiceLoader: {str(e)}')
+    else:
+        app.logger.info('Using legacy template loading (single template directory)')
 
     # Initialize caching system
     app.logger.info('Initializing cache system...')
@@ -108,6 +160,38 @@ def create_app(config=None):
     # Register error handlers
     app.logger.info('Registering error handlers...')
     register_error_handlers(app)
+
+    # Register site static route for sites mode (ECS-03)
+    if not app.site_manager.legacy_mode:
+        @app.route('/sites/<site_id>/static/<path:filename>')
+        def site_static(site_id, filename):
+            """
+            Serve static files from site-specific directories.
+
+            This route allows each site to have its own static files in sites mode.
+            In legacy mode, static files are served from the root static/ directory.
+
+            Args:
+                site_id: Site identifier
+                filename: Path to static file relative to site's static directory
+
+            Returns:
+                Static file or 404 if not found
+            """
+            try:
+                static_dir = app.site_manager.get_static_dir(site_id)
+
+                # Security check: ensure site exists
+                if not app.site_manager.site_exists(site_id):
+                    app.logger.warning(f'Attempt to access non-existent site: {site_id}')
+                    return "Site not found", 404
+
+                return send_from_directory(static_dir, filename)
+            except Exception as e:
+                app.logger.error(f'Error serving static file for site {site_id}: {str(e)}')
+                return "File not found", 404
+
+        app.logger.info('Site static route registered')
 
     app.logger.info('===== Application Factory Complete =====')
 

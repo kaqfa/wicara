@@ -10,7 +10,7 @@ from werkzeug.security import generate_password_hash
 from app.core import load_config, save_config
 
 
-def create_page(title, template, url, menu_title=None):
+def create_page(title, template, url, menu_title=None, site_manager=None):
     """
     Create a new page via CLI.
 
@@ -19,11 +19,15 @@ def create_page(title, template, url, menu_title=None):
         template: Template file name
         url: Page URL
         menu_title: Menu title (optional)
+        site_manager: Optional SiteManager instance for ECS path resolution
 
     Returns:
         True if successful, False otherwise
     """
-    config = load_config('config.json', validate=False)
+    # Use SiteManager for path resolution if available (ECS-10)
+    config_path = site_manager.get_config_path() if site_manager else 'config.json'
+
+    config = load_config(config_path, validate=False)
     if not config:
         return False
 
@@ -46,16 +50,24 @@ def create_page(title, template, url, menu_title=None):
 
     config['pages'].append(new_page)
 
-    if save_config(config, 'config.json', validate=False):
+    if save_config(config, config_path, validate=False):
         print(f'Successfully created page: {title} ({url})')
         return True
     else:
         return False
 
 
-def list_pages():
-    """List all pages via CLI."""
-    config = load_config('config.json', validate=False)
+def list_pages(site_manager=None):
+    """
+    List all pages via CLI.
+
+    Args:
+        site_manager: Optional SiteManager instance for ECS path resolution
+    """
+    # Use SiteManager for path resolution if available (ECS-10)
+    config_path = site_manager.get_config_path() if site_manager else 'config.json'
+
+    config = load_config(config_path, validate=False)
     if not config:
         return
 
@@ -81,7 +93,7 @@ def list_pages():
         print()
 
 
-def change_password(new_password=None):
+def change_password(new_password=None, site_manager=None):
     """
     Change admin password via CLI.
 
@@ -89,11 +101,15 @@ def change_password(new_password=None):
 
     Args:
         new_password: New password (optional). If not provided, prompts securely.
+        site_manager: Optional SiteManager instance for ECS path resolution
 
     Returns:
         True if successful, False otherwise
     """
-    config = load_config('config.json', validate=False)
+    # Use SiteManager for path resolution if available (ECS-10)
+    config_path = site_manager.get_config_path() if site_manager else 'config.json'
+
+    config = load_config(config_path, validate=False)
     if not config:
         return False
 
@@ -134,7 +150,7 @@ def change_password(new_password=None):
     hashed_password = generate_password_hash(new_password, method='scrypt')
     config['admin-password'] = hashed_password
 
-    if save_config(config, 'config.json', validate=False):
+    if save_config(config, config_path, validate=False):
         print('Successfully changed admin password')
         return True
     else:
@@ -142,17 +158,21 @@ def change_password(new_password=None):
         return False
 
 
-def delete_page(url):
+def delete_page(url, site_manager=None):
     """
     Delete a page by URL via CLI.
 
     Args:
         url: Page URL to delete
+        site_manager: Optional SiteManager instance for ECS path resolution
 
     Returns:
         True if successful, False otherwise
     """
-    config = load_config('config.json', validate=False)
+    # Use SiteManager for path resolution if available (ECS-10)
+    config_path = site_manager.get_config_path() if site_manager else 'config.json'
+
+    config = load_config(config_path, validate=False)
     if not config:
         return False
 
@@ -166,7 +186,7 @@ def delete_page(url):
         print(f'Error: Page with URL "{url}" not found')
         return False
 
-    if save_config(config, 'config.json', validate=False):
+    if save_config(config, config_path, validate=False):
         print(f'Successfully deleted page: {url}')
         return True
     else:
@@ -255,6 +275,11 @@ def show_help():
     print('    Change admin password')
     print('    Example: python run.py change-password')
     print('    Example: python run.py change-password "newpassword123"')
+    print()
+    print('  migrate')
+    print('    Migrate from legacy structure to sites/ structure (ECS)')
+    print('    This command safely copies content to sites/default/ directory')
+    print('    Example: python run.py migrate')
     print()
     print('  help')
     print('    Show this help message')

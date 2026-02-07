@@ -81,8 +81,9 @@ def export_page():
             timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
             filename = f"wicara_export_{timestamp}.zip"
 
-            # Create exporter
-            exporter = Exporter(config_path=config_path)
+            # Create exporter with SiteManager support (ECS-09)
+            site_manager = getattr(current_app, 'site_manager', None)
+            exporter = Exporter(config_path=config_path, site_manager=site_manager)
 
             # Create in-memory file for export
             zip_buffer = io.BytesIO()
@@ -258,8 +259,9 @@ def import_preview():
         with open(config_path, 'r', encoding='utf-8') as f:
             current_config = json.load(f)
 
-        # Generate preview
-        importer = Importer(config_path=config_path)
+        # Generate preview with SiteManager support (ECS-09)
+        site_manager = getattr(current_app, 'site_manager', None)
+        importer = Importer(config_path=config_path, site_manager=site_manager)
         preview = importer._generate_import_preview(
             current_config,
             imported_config,
@@ -329,11 +331,13 @@ def import_confirm():
         except Exception as e:
             current_app.logger.debug(f'Plugin hook before_import error: {e}')
 
-        # Create importer
+        # Create importer with SiteManager support (ECS-09)
         config_path = current_app.config['CONFIG_FILE']
+        site_manager = getattr(current_app, 'site_manager', None)
         importer = Importer(
             config_path=config_path,
-            backup_enabled=True
+            backup_enabled=True,
+            site_manager=site_manager
         )
 
         # Perform import

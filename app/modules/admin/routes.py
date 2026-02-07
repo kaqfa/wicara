@@ -12,6 +12,7 @@ from app.core import (
     load_config, save_config, validate_field_value, validate_image_file,
     sanitize_filename, cleanup_unused_images, ensure_directories
 )
+from app.core.config_manager import ConfigManager
 from app.modules.auth.utils import login_required
 from app.modules.admin.forms import SettingsForm, PasswordChangeForm
 
@@ -26,7 +27,13 @@ def dashboard():
 
     Displays list of pages that can be edited.
     """
-    config = load_config(current_app.config['CONFIG_FILE'], logger=current_app.logger)
+    # ECS-07: Use ConfigManager with site_manager for Engine-Content Separation
+    config_manager = ConfigManager(
+        site_manager=getattr(current_app, 'site_manager', None),
+        logger=current_app.logger
+    )
+    config = config_manager.load()
+
     if not config:
         return render_template('admin/500.html'), 500
 
@@ -42,7 +49,13 @@ def edit_page(page_index):
     GET: Display page editor
     POST: Save page changes
     """
-    config = load_config(current_app.config['CONFIG_FILE'], logger=current_app.logger)
+    # ECS-07: Use ConfigManager with site_manager for Engine-Content Separation
+    config_manager = ConfigManager(
+        site_manager=getattr(current_app, 'site_manager', None),
+        logger=current_app.logger
+    )
+    config = config_manager.load()
+
     if not config:
         return render_template('admin/500.html'), 500
     if page_index >= len(config['pages']):
@@ -52,6 +65,14 @@ def edit_page(page_index):
 
     if request.method == 'POST':
         validation_errors = []
+
+        # ECS-07: Get upload directory from site_manager
+        site_manager = getattr(current_app, 'site_manager', None)
+        if site_manager:
+            upload_folder = site_manager.get_uploads_dir()
+        else:
+            # Fallback to legacy path
+            upload_folder = current_app.config.get('UPLOAD_FOLDER', os.path.join('static', 'images', 'uploads'))
 
         for field in page.get('fields', []):
             field_name = field['name']
@@ -73,10 +94,10 @@ def edit_page(page_index):
                                 if os.path.exists(old_file_path):
                                     os.remove(old_file_path)
 
-                            # Save new image
+                            # Save new image with site-aware path
                             safe_filename = sanitize_filename(file.filename)
                             unique_filename = f"{uuid.uuid4().hex}_{safe_filename}"
-                            file_path = os.path.join('static', 'images', 'uploads', unique_filename)
+                            file_path = os.path.join(upload_folder, unique_filename)
                             os.makedirs(os.path.dirname(file_path), exist_ok=True)
                             file.save(file_path)
                             field['value'] = f"/static/images/uploads/{unique_filename}"
@@ -96,7 +117,7 @@ def edit_page(page_index):
         if validation_errors:
             for error in validation_errors:
                 flash(error, 'error')
-        elif save_config(config, current_app.config['CONFIG_FILE'], logger=current_app.logger):
+        elif config_manager.save(config):
             flash('Page updated successfully', 'success')
             current_app.logger.info(f'Page updated: {page.get("title")}')
             return redirect(url_for('admin.dashboard'))
@@ -113,7 +134,13 @@ def settings():
     GET: Display settings form
     POST: Save site settings
     """
-    config = load_config(current_app.config['CONFIG_FILE'], logger=current_app.logger)
+    # ECS-07: Use ConfigManager with site_manager for Engine-Content Separation
+    config_manager = ConfigManager(
+        site_manager=getattr(current_app, 'site_manager', None),
+        logger=current_app.logger
+    )
+    config = config_manager.load()
+
     if not config:
         return render_template('admin/500.html'), 500
 
@@ -137,7 +164,7 @@ def settings():
             config.update(validated_data)
 
             # Save config
-            if save_config(config, current_app.config['CONFIG_FILE'], logger=current_app.logger):
+            if config_manager.save(config):
                 flash('Settings updated successfully', 'success')
                 current_app.logger.info('Settings updated')
                 return redirect(url_for('admin.settings'))
@@ -163,7 +190,13 @@ def change_password():
         new_password = request.form.get('new_password', '').strip()
         confirm_password = request.form.get('confirm_password', '').strip()
 
-        config = load_config(current_app.config['CONFIG_FILE'], logger=current_app.logger)
+        # ECS-07: Use ConfigManager with site_manager for Engine-Content Separation
+        config_manager = ConfigManager(
+            site_manager=getattr(current_app, 'site_manager', None),
+            logger=current_app.logger
+        )
+        config = config_manager.load()
+
         if not config:
             flash('Configuration error', 'error')
             return render_template('admin/change_password.html')
@@ -187,7 +220,7 @@ def change_password():
         else:
             # Update password
             config['admin-password'] = generate_password_hash(new_password, method='scrypt')
-            if save_config(config, current_app.config['CONFIG_FILE'], logger=current_app.logger):
+            if config_manager.save(config):
                 flash('Password changed successfully', 'success')
                 current_app.logger.info('Admin password changed')
                 return redirect(url_for('admin.dashboard'))
@@ -205,7 +238,13 @@ def cleanup():
 
     Removes image files that are not referenced in any page configuration.
     """
-    config = load_config(current_app.config['CONFIG_FILE'], logger=current_app.logger)
+    # ECS-07: Use ConfigManager with site_manager for Engine-Content Separation
+    config_manager = ConfigManager(
+        site_manager=getattr(current_app, 'site_manager', None),
+        logger=current_app.logger
+    )
+    config = config_manager.load()
+
     if not config:
         flash('Configuration error', 'error')
         return redirect(url_for('admin.settings'))
