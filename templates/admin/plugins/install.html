@@ -1,0 +1,267 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Install Plugin{% endblock %}
+
+{% block page_title %}Install Plugin{% endblock %}
+
+{% block extra_css %}
+<style>
+    .upload-area {
+        border: 2px dashed rgba(139, 92, 246, 0.3);
+        border-radius: 16px;
+        padding: 3rem;
+        text-align: center;
+        background: linear-gradient(135deg, rgba(139, 92, 246, 0.05), rgba(59, 130, 246, 0.05));
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+
+    .upload-area:hover {
+        border-color: rgba(139, 92, 246, 0.6);
+        background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(59, 130, 246, 0.1));
+        transform: translateY(-2px);
+    }
+
+    .upload-area.drag-over {
+        border-color: var(--accent-primary);
+        background: linear-gradient(135deg, rgba(139, 92, 246, 0.15), rgba(59, 130, 246, 0.15));
+    }
+
+    .upload-icon {
+        font-size: 4rem;
+        color: var(--accent-primary);
+        margin-bottom: 1rem;
+    }
+
+    .upload-text {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 0.5rem;
+    }
+
+    .upload-hint {
+        font-size: 0.875rem;
+        color: var(--text-secondary);
+    }
+
+    .file-info {
+        margin-top: 1rem;
+        padding: 1rem;
+        background: rgba(139, 92, 246, 0.1);
+        border-radius: 12px;
+        display: none;
+    }
+
+    .file-info.show {
+        display: block;
+    }
+
+    .requirements-list {
+        list-style: none;
+        padding: 0;
+    }
+
+    .requirements-list li {
+        padding: 0.5rem 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .requirements-list li:last-child {
+        border-bottom: none;
+    }
+
+    .requirements-list i {
+        color: var(--success);
+        margin-right: 0.5rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Flash Messages -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
+<!-- Installation Wizard -->
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <!-- Upload Form -->
+        <div class="card mb-4" style="background: var(--glass-bg); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 16px; overflow: hidden;">
+            <div class="card-header" style="background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(59, 130, 246, 0.1)); border-bottom: 1px solid rgba(255, 255, 255, 0.1); padding: 1.5rem;">
+                <h3 class="mb-0" style="color: var(--text-primary); font-weight: 600;">
+                    <i class="bi bi-cloud-upload"></i>
+                    Upload Plugin Package
+                </h3>
+            </div>
+            <div class="card-body" style="padding: 2rem;">
+                <form method="POST" enctype="multipart/form-data" id="uploadForm">
+                    <div class="upload-area" id="uploadArea">
+                        <i class="bi bi-cloud-arrow-up upload-icon"></i>
+                        <div class="upload-text">Drop plugin ZIP file here</div>
+                        <div class="upload-hint">or click to browse</div>
+                        <input type="file" name="plugin_file" id="pluginFile" accept=".zip" style="display: none;">
+                    </div>
+
+                    <div class="file-info" id="fileInfo">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div>
+                                <i class="bi bi-file-earmark-zip" style="font-size: 2rem; color: var(--accent-primary);"></i>
+                                <span id="fileName" style="margin-left: 1rem; font-weight: 600;"></span>
+                            </div>
+                            <button type="button" class="btn btn-sm btn-outline-danger" onclick="clearFile()">
+                                <i class="bi bi-x-lg"></i>
+                            </button>
+                        </div>
+                        <div style="margin-top: 1rem; font-size: 0.875rem; color: var(--text-secondary);">
+                            Size: <span id="fileSize"></span>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 d-flex gap-2">
+                        <button type="submit" class="btn btn-primary" id="installBtn" disabled>
+                            <i class="bi bi-download"></i>
+                            Install Plugin
+                        </button>
+                        <a href="{{ url_for('plugins.index') }}" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left"></i>
+                            Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Requirements -->
+        <div class="card" style="background: var(--glass-bg); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 16px;">
+            <div class="card-header" style="background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(59, 130, 246, 0.1)); border-bottom: 1px solid rgba(255, 255, 255, 0.1); padding: 1.5rem;">
+                <h3 class="mb-0" style="color: var(--text-primary); font-weight: 600;">
+                    <i class="bi bi-info-circle"></i>
+                    Plugin Package Requirements
+                </h3>
+            </div>
+            <div class="card-body" style="padding: 2rem;">
+                <ul class="requirements-list">
+                    <li>
+                        <i class="bi bi-check-circle-fill"></i>
+                        <strong>ZIP Format:</strong> Plugin must be packaged as a ZIP file
+                    </li>
+                    <li>
+                        <i class="bi bi-check-circle-fill"></i>
+                        <strong>Directory Structure:</strong> ZIP should contain a single plugin directory
+                    </li>
+                    <li>
+                        <i class="bi bi-check-circle-fill"></i>
+                        <strong>__init__.py:</strong> Plugin directory must contain __init__.py file
+                    </li>
+                    <li>
+                        <i class="bi bi-check-circle-fill"></i>
+                        <strong>plugin.json:</strong> Manifest file with metadata (name, version, author, description)
+                    </li>
+                    <li>
+                        <i class="bi bi-check-circle-fill"></i>
+                        <strong>BasePlugin:</strong> Plugin class must inherit from BasePlugin
+                    </li>
+                </ul>
+
+                <div class="alert alert-info mt-3" role="alert" style="background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.2); color: var(--text-primary);">
+                    <i class="bi bi-lightbulb"></i>
+                    <strong>Example Structure:</strong>
+                    <pre style="margin-top: 1rem; background: rgba(0, 0, 0, 0.2); padding: 1rem; border-radius: 8px; font-size: 0.75rem;">my-plugin.zip
+└── my-plugin/
+    ├── __init__.py
+    ├── plugin.py
+    ├── plugin.json
+    ├── templates/ (optional)
+    └── static/ (optional)</pre>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const uploadArea = document.getElementById('uploadArea');
+const pluginFile = document.getElementById('pluginFile');
+const fileInfo = document.getElementById('fileInfo');
+const fileName = document.getElementById('fileName');
+const fileSize = document.getElementById('fileSize');
+const installBtn = document.getElementById('installBtn');
+const uploadForm = document.getElementById('uploadForm');
+
+// Click to browse
+uploadArea.addEventListener('click', () => {
+    pluginFile.click();
+});
+
+// File selection
+pluginFile.addEventListener('change', (e) => {
+    handleFile(e.target.files[0]);
+});
+
+// Drag and drop
+uploadArea.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    uploadArea.classList.add('drag-over');
+});
+
+uploadArea.addEventListener('dragleave', () => {
+    uploadArea.classList.remove('drag-over');
+});
+
+uploadArea.addEventListener('drop', (e) => {
+    e.preventDefault();
+    uploadArea.classList.remove('drag-over');
+
+    const files = e.dataTransfer.files;
+    if (files.length > 0) {
+        const file = files[0];
+        if (file.name.endsWith('.zip')) {
+            pluginFile.files = files;
+            handleFile(file);
+        } else {
+            alert('Only ZIP files are allowed');
+        }
+    }
+});
+
+function handleFile(file) {
+    if (!file) return;
+
+    fileName.textContent = file.name;
+    fileSize.textContent = formatFileSize(file.size);
+    fileInfo.classList.add('show');
+    installBtn.disabled = false;
+}
+
+function clearFile() {
+    pluginFile.value = '';
+    fileInfo.classList.remove('show');
+    installBtn.disabled = true;
+}
+
+function formatFileSize(bytes) {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+}
+
+// Form submission
+uploadForm.addEventListener('submit', (e) => {
+    installBtn.disabled = true;
+    installBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Installing...';
+});
+</script>
+{% endblock %}

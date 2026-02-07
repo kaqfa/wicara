@@ -10,7 +10,12 @@ import sys
 from pathlib import Path
 
 from app import create_app
-from app.modules.cli import create_page, list_pages, delete_page, change_password, show_help
+from app.modules.cli import (
+    create_page, list_pages, delete_page, change_password, show_help,
+    plugin_list, plugin_install, plugin_uninstall, plugin_enable, plugin_disable,
+    plugin_info, plugin_create, plugin_validate, plugin_package,
+    hook_list, hook_handlers, hook_stats
+)
 
 
 # ============================================================================
@@ -128,6 +133,96 @@ def main():
 
         elif command == 'run':
             run_server()
+
+        # Plugin Management Commands
+        elif command == 'plugin-list':
+            plugin_list()
+
+        elif command == 'plugin-install':
+            if len(sys.argv) < 3:
+                print('Error: Missing source argument')
+                print('Usage: python run.py plugin-install <source>')
+                print('  source: Path to ZIP file or plugin directory')
+                sys.exit(1)
+            source = sys.argv[2]
+            success = plugin_install(source)
+            sys.exit(0 if success else 1)
+
+        elif command == 'plugin-uninstall':
+            if len(sys.argv) < 3:
+                print('Error: Missing plugin name argument')
+                print('Usage: python run.py plugin-uninstall <name> [--force]')
+                sys.exit(1)
+            plugin_name = sys.argv[2]
+            force = '--force' in sys.argv or '-f' in sys.argv
+            success = plugin_uninstall(plugin_name, force)
+            sys.exit(0 if success else 1)
+
+        elif command == 'plugin-enable':
+            if len(sys.argv) < 3:
+                print('Error: Missing plugin name argument')
+                print('Usage: python run.py plugin-enable <name>')
+                sys.exit(1)
+            plugin_name = sys.argv[2]
+            success = plugin_enable(plugin_name)
+            sys.exit(0 if success else 1)
+
+        elif command == 'plugin-disable':
+            if len(sys.argv) < 3:
+                print('Error: Missing plugin name argument')
+                print('Usage: python run.py plugin-disable <name>')
+                sys.exit(1)
+            plugin_name = sys.argv[2]
+            success = plugin_disable(plugin_name)
+            sys.exit(0 if success else 1)
+
+        elif command == 'plugin-info':
+            if len(sys.argv) < 3:
+                print('Error: Missing plugin name argument')
+                print('Usage: python run.py plugin-info <name>')
+                sys.exit(1)
+            plugin_name = sys.argv[2]
+            success = plugin_info(plugin_name)
+            sys.exit(0 if success else 1)
+
+        # Plugin Development Commands
+        elif command == 'plugin-create':
+            success = plugin_create()
+            sys.exit(0 if success else 1)
+
+        elif command == 'plugin-validate':
+            if len(sys.argv) < 3:
+                print('Error: Missing plugin name argument')
+                print('Usage: python run.py plugin-validate <name>')
+                sys.exit(1)
+            plugin_name = sys.argv[2]
+            success = plugin_validate(plugin_name)
+            sys.exit(0 if success else 1)
+
+        elif command == 'plugin-package':
+            if len(sys.argv) < 3:
+                print('Error: Missing plugin name argument')
+                print('Usage: python run.py plugin-package <name>')
+                sys.exit(1)
+            plugin_name = sys.argv[2]
+            success = plugin_package(plugin_name)
+            sys.exit(0 if success else 1)
+
+        # Hook Inspection Commands
+        elif command == 'hook-list':
+            hook_list()
+
+        elif command == 'hook-handlers':
+            if len(sys.argv) < 3:
+                print('Error: Missing hook name argument')
+                print('Usage: python run.py hook-handlers <hook-name>')
+                sys.exit(1)
+            hook_name = sys.argv[2]
+            success = hook_handlers(hook_name)
+            sys.exit(0 if success else 1)
+
+        elif command == 'hook-stats':
+            hook_stats()
 
         else:
             print(f'Error: Unknown command "{command}"')

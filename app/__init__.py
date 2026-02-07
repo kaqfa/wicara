@@ -13,6 +13,8 @@ from app.blueprints.import_export import import_export_bp
 from app.core import ensure_directories
 from app.cache.utils import CacheFactory, CacheService
 from app.modules.admin.cache_routes import cache_bp, set_cache_service
+from app.modules.admin.plugin_routes import plugin_bp
+from app.plugins import init_plugins, get_plugin_manager
 
 
 def create_app(config=None):
@@ -72,6 +74,26 @@ def create_app(config=None):
         app.logger.warning(f'Cache system initialization failed: {str(e)}')
         app.cache_service = None
 
+    # Initialize plugin system
+    app.logger.info('Initializing plugin system...')
+    try:
+        plugin_manager = init_plugins(app, plugin_dir='app/plugins/installed')
+
+        # Load all enabled plugins
+        loaded_plugins = plugin_manager.load_all()
+        app.logger.info(f'Loaded {len(loaded_plugins)} plugins')
+
+        # Register plugin-defined template filters
+        _register_plugin_template_filters(app, plugin_manager)
+
+        # Register plugin-defined template globals
+        _register_plugin_template_globals(app, plugin_manager)
+
+        app.logger.info('Plugin system initialized successfully')
+    except Exception as e:
+        app.logger.warning(f'Plugin system initialization failed: {str(e)}')
+        # Plugin system failure should not prevent app from starting
+
     # Register blueprints
     app.logger.info('Registering blueprints...')
     app.register_blueprint(auth_bp)
@@ -80,6 +102,7 @@ def create_app(config=None):
     app.register_blueprint(public_bp)
     if app.cache_service:
         app.register_blueprint(cache_bp)
+    app.register_blueprint(plugin_bp)
     app.logger.info(f'Registered {len(app.blueprints)} blueprints')
 
     # Register error handlers
@@ -89,3 +112,48 @@ def create_app(config=None):
     app.logger.info('===== Application Factory Complete =====')
 
     return app
+
+
+def _register_plugin_template_filters(app, plugin_manager):
+    """
+    Register template filters provided by plugins.
+
+    Args:
+        app: Flask application instance
+        plugin_manager: PluginManager instance
+    """
+    try:
+        # Execute register_template_filters hook to collect filters from all plugins
+        filters_list = plugin_manager.hooks.execute_multiple('register_template_filters')
+
+        # Merge all filter dictionaries
+        for filters in filters_list:
+            if filters and isinstance(filters, dict):
+                for filter_name, filter_func in filters.items():
+                    if callable(filter_func):
+                        app.jinja_env.filters[filter_name] = filter_func
+                        app.logger.debug(f"Registered template filter: {filter_name}")
+    except Exception as e:
+        app.logger.error(f'Error registering plugin template filters: {str(e)}')
+
+
+def _register_plugin_template_globals(app, plugin_manager):
+    """
+    Register template global variables provided by plugins.
+
+    Args:
+        app: Flask application instance
+        plugin_manager: PluginManager instance
+    """
+    try:
+        # Execute register_template_globals hook to collect globals from all plugins
+        globals_list = plugin_manager.hooks.execute_multiple('register_template_globals')
+
+        # Merge all global dictionaries
+        for globals_dict in globals_list:
+            if globals_dict and isinstance(globals_dict, dict):
+                for global_name, global_value in globals_dict.items():
+                    app.jinja_env.globals[global_name] = global_value
+                    app.logger.debug(f"Registered template global: {global_name}")
+    except Exception as e:
+        app.logger.error(f'Error registering plugin template globals: {str(e)}')

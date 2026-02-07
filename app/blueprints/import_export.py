@@ -57,12 +57,31 @@ def export_page():
                 flash(f'Invalid export mode: {mode}', 'error')
                 return redirect(url_for('import_export.export_page'))
 
+            # Load config for hook
+            config_path = current_app.config['CONFIG_FILE']
+            try:
+                with open(config_path, 'r', encoding='utf-8') as f:
+                    config = json.load(f)
+            except:
+                config = {}
+
+            # Execute before_export hook
+            try:
+                from app.plugins import get_plugin_manager
+                manager = get_plugin_manager()
+                if manager:
+                    result = manager.hooks.execute('before_export', mode, config)
+                    # If hook returns modified config, use it (would need to save temporarily)
+                    if result is not None and isinstance(result, dict):
+                        config = result
+            except Exception as e:
+                current_app.logger.debug(f'Plugin hook before_export error: {e}')
+
             # Generate filename
             timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
             filename = f"wicara_export_{timestamp}.zip"
 
             # Create exporter
-            config_path = current_app.config['CONFIG_FILE']
             exporter = Exporter(config_path=config_path)
 
             # Create in-memory file for export
@@ -79,6 +98,22 @@ def export_page():
                 flash(f'Export failed: {message}', 'error')
                 current_app.logger.error(f'Export error: {message}')
                 return redirect(url_for('import_export.export_page'))
+
+            # Execute after_export hook
+            try:
+                from app.plugins import get_plugin_manager
+                manager = get_plugin_manager()
+                if manager:
+                    # Create manifest with export info
+                    manifest = {
+                        'filename': filename,
+                        'mode': mode,
+                        'timestamp': timestamp,
+                        'stats': stats
+                    }
+                    manager.hooks.execute('after_export', filename, manifest)
+            except Exception as e:
+                current_app.logger.debug(f'Plugin hook after_export error: {e}')
 
             # Log export
             current_app.logger.info(f'Export successful: {filename}, Stats: {stats}')
@@ -271,6 +306,29 @@ def import_confirm():
             flash('Invalid conflict strategy', 'error')
             return redirect(url_for('import_export.import_preview'))
 
+        # Load import data for hook
+        import_data = {
+            'conflict_strategy': conflict_strategy,
+            'import_templates': import_templates,
+            'import_images': import_images,
+            'temp_file': tmp_file
+        }
+
+        # Execute before_import hook
+        try:
+            from app.plugins import get_plugin_manager
+            manager = get_plugin_manager()
+            if manager:
+                result = manager.hooks.execute('before_import', tmp_file, import_data)
+                # If hook returns modified import_data, use it
+                if result is not None and isinstance(result, dict):
+                    import_data = result
+                    conflict_strategy = import_data.get('conflict_strategy', conflict_strategy)
+                    import_templates = import_data.get('import_templates', import_templates)
+                    import_images = import_data.get('import_images', import_images)
+        except Exception as e:
+            current_app.logger.debug(f'Plugin hook before_import error: {e}')
+
         # Create importer
         config_path = current_app.config['CONFIG_FILE']
         importer = Importer(
@@ -297,6 +355,22 @@ def import_confirm():
             flash(f'Import failed: {message}', 'error')
             current_app.logger.error(f'Import error: {message}')
             return redirect(url_for('import_export.import_page'))
+
+        # Load updated config for hook
+        try:
+            with open(config_path, 'r', encoding='utf-8') as f:
+                updated_config = json.load(f)
+        except:
+            updated_config = {}
+
+        # Execute after_import hook
+        try:
+            from app.plugins import get_plugin_manager
+            manager = get_plugin_manager()
+            if manager:
+                manager.hooks.execute('after_import', import_data, updated_config)
+        except Exception as e:
+            current_app.logger.debug(f'Plugin hook after_import error: {e}')
 
         # Log successful import
         current_app.logger.info(f'Import successful: {message}, Stats: {stats}')

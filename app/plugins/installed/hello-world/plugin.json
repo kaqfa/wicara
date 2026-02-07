@@ -1,0 +1,7 @@
+{
+  "name": "Hello World",
+  "version": "1.0.0",
+  "author": "Wicara Team",
+  "description": "Example plugin demonstrating the Wicara plugin system. This plugin adds a comment to all rendered pages and provides custom template filters.",
+  "min_version": "1.0.0"
+}

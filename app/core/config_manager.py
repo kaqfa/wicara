@@ -39,6 +39,16 @@ class ConfigManager:
             Configuration dictionary or None if error
         """
         try:
+            # Execute before_config_load hook
+            try:
+                from app.plugins import get_plugin_manager
+                manager = get_plugin_manager()
+                if manager:
+                    manager.hooks.execute('before_config_load', self.config_file)
+            except Exception as e:
+                if self.logger:
+                    self.logger.debug(f'Plugin hook before_config_load error: {e}')
+
             with open(self.config_file, 'r', encoding='utf-8') as f:
                 config = json.load(f)
 
@@ -50,6 +60,19 @@ class ConfigManager:
                     if self.logger:
                         self.logger.error(f'Config validation errors: {errors}')
                     return None
+
+            # Execute after_config_load hook
+            try:
+                from app.plugins import get_plugin_manager
+                manager = get_plugin_manager()
+                if manager:
+                    result = manager.hooks.execute('after_config_load', config)
+                    # If hook returns modified config, use it
+                    if result is not None and isinstance(result, dict):
+                        config = result
+            except Exception as e:
+                if self.logger:
+                    self.logger.debug(f'Plugin hook after_config_load error: {e}')
 
             self._config = config
             return config
@@ -98,6 +121,19 @@ class ConfigManager:
                         self.logger.error(f'Config validation errors: {errors}')
                     return False
 
+            # Execute before_config_save hook
+            try:
+                from app.plugins import get_plugin_manager
+                manager = get_plugin_manager()
+                if manager:
+                    result = manager.hooks.execute('before_config_save', config)
+                    # If hook returns modified config, use it
+                    if result is not None and isinstance(result, dict):
+                        config = result
+            except Exception as e:
+                if self.logger:
+                    self.logger.debug(f'Plugin hook before_config_save error: {e}')
+
             # Create backup before saving
             create_backup(self.config_file)
 
@@ -105,6 +141,17 @@ class ConfigManager:
                 json.dump(config, f, indent=2, ensure_ascii=False)
 
             self._config = config
+
+            # Execute after_config_save hook
+            try:
+                from app.plugins import get_plugin_manager
+                manager = get_plugin_manager()
+                if manager:
+                    manager.hooks.execute('after_config_save', config)
+            except Exception as e:
+                if self.logger:
+                    self.logger.debug(f'Plugin hook after_config_save error: {e}')
+
             return True
 
         except PermissionError:

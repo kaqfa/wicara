@@ -113,8 +113,36 @@ def render_page_template(template_name, config, page_data=None, logger=None):
     # Prepare template context
     template_data = prepare_template_context(config, page_data)
 
+    # Execute before_page_render hook
     try:
-        return render_template(template_name, **template_data)
+        from app.plugins import get_plugin_manager
+        manager = get_plugin_manager()
+        if manager:
+            result = manager.hooks.execute('before_page_render', page_data, template_data)
+            # If hook returns modified context, use it
+            if result is not None and isinstance(result, dict):
+                template_data = result
+    except Exception as e:
+        if logger:
+            logger.debug(f'Plugin hook before_page_render error: {e}')
+
+    try:
+        html = render_template(template_name, **template_data)
+
+        # Execute after_page_render hook
+        try:
+            from app.plugins import get_plugin_manager
+            manager = get_plugin_manager()
+            if manager:
+                result = manager.hooks.execute('after_page_render', page_data, html)
+                # If hook returns modified HTML, use it
+                if result is not None and isinstance(result, str):
+                    html = result
+        except Exception as e:
+            if logger:
+                logger.debug(f'Plugin hook after_page_render error: {e}')
+
+        return html
     except Exception as e:
         if logger:
             logger.error(f'Template rendering error for {template_name}: {e}')

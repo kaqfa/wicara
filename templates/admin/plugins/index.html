@@ -1,0 +1,275 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Plugin Management{% endblock %}
+
+{% block page_title %}Plugin Management{% endblock %}
+
+{% block content %}
+<!-- Statistics Overview -->
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-number">{{ stats.total_plugins }}</div>
+        <div class="stat-label">Total Plugins</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-number">{{ stats.enabled_plugins }}</div>
+        <div class="stat-label">Enabled Plugins</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-number">{{ stats.total_handlers }}</div>
+        <div class="stat-label">Hook Handlers</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-number">{{ plugins|length }}</div>
+        <div class="stat-label">Installed Plugins</div>
+    </div>
+</div>
+
+<!-- Flash Messages -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
+<!-- Plugin Management -->
+<div class="table-container">
+    <div class="table-header">
+        <h2>Installed Plugins</h2>
+        <div class="table-actions">
+            <a href="{{ url_for('plugins.hooks') }}" class="btn-secondary">
+                <i class="bi bi-link-45deg"></i>
+                View Hooks
+            </a>
+            <a href="{{ url_for('plugins.install') }}" class="btn-primary">
+                <i class="bi bi-plus-lg"></i>
+                Install Plugin
+            </a>
+        </div>
+    </div>
+
+    {% if plugins %}
+    <div class="table-wrapper">
+        <table class="modern-table">
+            <thead>
+                <tr>
+                    <th>Plugin</th>
+                    <th>Version</th>
+                    <th>Author</th>
+                    <th>Description</th>
+                    <th class="text-center">Status</th>
+                    <th class="text-center">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for plugin in plugins %}
+                <tr data-plugin-name="{{ plugin.name }}">
+                    <td>
+                        <a href="{{ url_for('plugins.detail', plugin_name=plugin.name) }}"
+                           class="page-title" style="text-decoration: none;">
+                            {{ plugin.metadata.get('name', plugin.name) }}
+                        </a>
+                    </td>
+                    <td>
+                        <span class="template-badge">v{{ plugin.metadata.get('version', 'unknown') }}</span>
+                    </td>
+                    <td>{{ plugin.metadata.get('author', 'Unknown') }}</td>
+                    <td>
+                        <span class="page-seo">
+                            {{ plugin.metadata.get('description', 'No description')[:80] }}
+                            {% if plugin.metadata.get('description', '')|length > 80 %}...{% endif %}
+                        </span>
+                    </td>
+                    <td class="text-center">
+                        {% if plugin.status == 'enabled' %}
+                            <span class="badge bg-success">
+                                <i class="bi bi-check-circle"></i> Enabled
+                            </span>
+                        {% elif plugin.status == 'disabled' %}
+                            <span class="badge bg-warning">
+                                <i class="bi bi-dash-circle"></i> Disabled
+                            </span>
+                        {% else %}
+                            <span class="badge bg-secondary">
+                                <i class="bi bi-x-circle"></i> Not Loaded
+                            </span>
+                        {% endif %}
+                    </td>
+                    <td class="text-center">
+                        <div class="action-buttons">
+                            <a href="{{ url_for('plugins.detail', plugin_name=plugin.name) }}"
+                               class="btn-icon" title="View Details">
+                                <i class="bi bi-info-circle"></i>
+                            </a>
+
+                            {% if plugin.loaded %}
+                                {% if plugin.enabled %}
+                                    <button class="btn-icon btn-disable"
+                                            title="Disable Plugin"
+                                            data-plugin-name="{{ plugin.name }}"
+                                            onclick="togglePlugin('{{ plugin.name }}', 'disable')">
+                                        <i class="bi bi-pause-circle"></i>
+                                    </button>
+                                {% else %}
+                                    <button class="btn-icon btn-enable"
+                                            title="Enable Plugin"
+                                            data-plugin-name="{{ plugin.name }}"
+                                            onclick="togglePlugin('{{ plugin.name }}', 'enable')">
+                                        <i class="bi bi-play-circle"></i>
+                                    </button>
+                                {% endif %}
+                            {% else %}
+                                <button class="btn-icon"
+                                        title="Load Plugin"
+                                        onclick="loadPlugin('{{ plugin.name }}')">
+                                    <i class="bi bi-arrow-clockwise"></i>
+                                </button>
+                            {% endif %}
+
+                            <button class="btn-icon btn-delete"
+                                    title="Uninstall Plugin"
+                                    data-plugin-name="{{ plugin.name }}"
+                                    onclick="uninstallPlugin('{{ plugin.name }}')">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="alert alert-info" role="alert">
+        <i class="bi bi-info-circle"></i>
+        No plugins installed yet. <a href="{{ url_for('plugins.install') }}">Install your first plugin</a>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Quick Actions -->
+<div class="stats-grid" style="margin-top: 2rem; margin-bottom: 0;">
+    <a href="{{ url_for('plugins.install') }}" class="stat-card" style="text-decoration: none; display: block;">
+        <div style="display: flex; align-items: center; gap: 1rem;">
+            <i class="bi bi-cloud-download" style="font-size: 2rem; color: var(--accent-primary);"></i>
+            <div>
+                <div style="font-weight: 600; color: var(--text-primary);">Install Plugin</div>
+                <div style="font-size: 0.875rem; color: var(--text-secondary);">Upload a plugin ZIP file</div>
+            </div>
+        </div>
+    </a>
+    <a href="{{ url_for('plugins.hooks') }}" class="stat-card" style="text-decoration: none; display: block;">
+        <div style="display: flex; align-items: center; gap: 1rem;">
+            <i class="bi bi-link-45deg" style="font-size: 2rem; color: var(--info);"></i>
+            <div>
+                <div style="font-weight: 600; color: var(--text-primary);">View Hooks</div>
+                <div style="font-size: 0.875rem; color: var(--text-secondary);">See all registered hooks</div>
+            </div>
+        </div>
+    </a>
+    <div class="stat-card">
+        <div style="display: flex; align-items: center; gap: 1rem;">
+            <i class="bi bi-folder" style="font-size: 2rem; color: var(--success);"></i>
+            <div>
+                <div style="font-weight: 600; color: var(--text-primary);">Plugin Directory</div>
+                <div style="font-size: 0.875rem; color: var(--text-secondary); font-family: monospace;">
+                    {{ stats.plugin_dir }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function togglePlugin(pluginName, action) {
+    if (!confirm(`Are you sure you want to ${action} "${pluginName}"?`)) {
+        return;
+    }
+
+    fetch(`/admin/plugins/${pluginName}/${action}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            location.reload();
+        } else {
+            alert(`Failed to ${action} plugin: ${data.error}`);
+        }
+    })
+    .catch(error => {
+        alert(`Error: ${error}`);
+    });
+}
+
+function loadPlugin(pluginName) {
+    if (!confirm(`Load plugin "${pluginName}"?`)) {
+        return;
+    }
+
+    fetch(`/admin/plugins/api/load/${pluginName}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Plugin loaded successfully! Reloading page...');
+            location.reload();
+        } else {
+            alert(`Failed to load plugin: ${data.error}`);
+        }
+    })
+    .catch(error => {
+        alert(`Error: ${error}`);
+    });
+}
+
+function uninstallPlugin(pluginName) {
+    if (!confirm(`Are you sure you want to uninstall "${pluginName}"?\n\nThis will remove all plugin files. This action cannot be undone.`)) {
+        return;
+    }
+
+    const row = document.querySelector(`tr[data-plugin-name="${pluginName}"]`);
+    if (row) {
+        row.style.opacity = '0.5';
+    }
+
+    fetch(`/admin/plugins/${pluginName}/uninstall`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            location.reload();
+        } else {
+            if (row) {
+                row.style.opacity = '1';
+            }
+            alert(`Failed to uninstall plugin: ${data.error}`);
+        }
+    })
+    .catch(error => {
+        if (row) {
+            row.style.opacity = '1';
+        }
+        alert(`Error: ${error}`);
+    });
+}
+</script>
+{% endblock %}
