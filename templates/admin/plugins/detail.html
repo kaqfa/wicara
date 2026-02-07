@@ -1,0 +1,240 @@
+{% extends "admin/base.html" %}
+
+{% block title %}{{ metadata.get('name', plugin_name) }} - Plugins{% endblock %}
+
+{% block page_title %}{{ metadata.get('name', plugin_name) }}{% endblock %}
+
+{% block content %}
+<!-- Flash Messages -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
+<!-- Back Button -->
+<div class="mb-3">
+    <a href="{{ url_for('plugins.index') }}" class="btn btn-secondary">
+        <i class="bi bi-arrow-left"></i>
+        Back to Plugins
+    </a>
+</div>
+
+<div class="row">
+    <!-- Plugin Info -->
+    <div class="col-lg-8">
+        <!-- Metadata Card -->
+        <div class="card mb-4" style="background: var(--glass-bg); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 16px;">
+            <div class="card-header" style="background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(59, 130, 246, 0.1)); border-bottom: 1px solid rgba(255, 255, 255, 0.1); padding: 1.5rem;">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h3 class="mb-0" style="color: var(--text-primary); font-weight: 600;">
+                        <i class="bi bi-puzzle"></i>
+                        {{ metadata.get('name', plugin_name) }}
+                    </h3>
+                    {% if enabled %}
+                        <span class="badge bg-success">
+                            <i class="bi bi-check-circle"></i> Enabled
+                        </span>
+                    {% else %}
+                        <span class="badge bg-warning">
+                            <i class="bi bi-dash-circle"></i> Disabled
+                        </span>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="card-body" style="padding: 2rem;">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <strong style="color: var(--text-secondary);">Version:</strong>
+                        <span class="template-badge ms-2">v{{ metadata.get('version', 'unknown') }}</span>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <strong style="color: var(--text-secondary);">Author:</strong>
+                        <span style="color: var(--text-primary);">{{ metadata.get('author', 'Unknown') }}</span>
+                    </div>
+                    <div class="col-12 mb-3">
+                        <strong style="color: var(--text-secondary);">Description:</strong>
+                        <p style="color: var(--text-primary); margin-top: 0.5rem;">
+                            {{ metadata.get('description', 'No description provided') }}
+                        </p>
+                    </div>
+                    {% if metadata.get('min_version') %}
+                    <div class="col-md-6 mb-3">
+                        <strong style="color: var(--text-secondary);">Min Wicara Version:</strong>
+                        <span style="color: var(--text-primary);">{{ metadata.get('min_version') }}</span>
+                    </div>
+                    {% endif %}
+                    {% if metadata.get('max_version') %}
+                    <div class="col-md-6 mb-3">
+                        <strong style="color: var(--text-secondary);">Max Wicara Version:</strong>
+                        <span style="color: var(--text-primary);">{{ metadata.get('max_version') }}</span>
+                    </div>
+                    {% endif %}
+                    {% if metadata.get('depends_on') %}
+                    <div class="col-12">
+                        <strong style="color: var(--text-secondary);">Dependencies:</strong>
+                        <div style="margin-top: 0.5rem;">
+                            {% for dep in metadata.get('depends_on', []) %}
+                                <span class="badge bg-info me-1">{{ dep }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Hooks Card -->
+        {% if hooks %}
+        <div class="card mb-4" style="background: var(--glass-bg); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 16px;">
+            <div class="card-header" style="background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(59, 130, 246, 0.1)); border-bottom: 1px solid rgba(255, 255, 255, 0.1); padding: 1.5rem;">
+                <h3 class="mb-0" style="color: var(--text-primary); font-weight: 600;">
+                    <i class="bi bi-link-45deg"></i>
+                    Registered Hooks ({{ hooks|length }})
+                </h3>
+            </div>
+            <div class="card-body" style="padding: 2rem;">
+                <div class="table-responsive">
+                    <table class="table table-borderless">
+                        <thead>
+                            <tr>
+                                <th style="color: var(--text-secondary);">Hook Name</th>
+                                <th style="color: var(--text-secondary);">Priority</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for hook in hooks %}
+                            <tr>
+                                <td>
+                                    <code style="color: var(--accent-primary);">{{ hook.name }}</code>
+                                </td>
+                                <td>
+                                    <span class="badge bg-secondary">{{ hook.priority }}</span>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Configuration Schema -->
+        {% if config_schema %}
+        <div class="card mb-4" style="background: var(--glass-bg); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 16px;">
+            <div class="card-header" style="background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(59, 130, 246, 0.1)); border-bottom: 1px solid rgba(255, 255, 255, 0.1); padding: 1.5rem;">
+                <h3 class="mb-0" style="color: var(--text-primary); font-weight: 600;">
+                    <i class="bi bi-sliders"></i>
+                    Configuration Schema
+                </h3>
+            </div>
+            <div class="card-body" style="padding: 2rem;">
+                <pre style="background: rgba(0, 0, 0, 0.3); padding: 1rem; border-radius: 8px; color: var(--text-primary); overflow-x: auto;">{{ config_schema | tojson(indent=2) }}</pre>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Actions Sidebar -->
+    <div class="col-lg-4">
+        <div class="card" style="background: var(--glass-bg); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 16px; position: sticky; top: 2rem;">
+            <div class="card-header" style="background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(59, 130, 246, 0.1)); border-bottom: 1px solid rgba(255, 255, 255, 0.1); padding: 1.5rem;">
+                <h3 class="mb-0" style="color: var(--text-primary); font-weight: 600;">
+                    <i class="bi bi-gear"></i>
+                    Actions
+                </h3>
+            </div>
+            <div class="card-body" style="padding: 1.5rem;">
+                <div class="d-grid gap-2">
+                    {% if enabled %}
+                        <button class="btn btn-warning" onclick="togglePlugin('{{ plugin_name }}', 'disable')">
+                            <i class="bi bi-pause-circle"></i>
+                            Disable Plugin
+                        </button>
+                    {% else %}
+                        <button class="btn btn-success" onclick="togglePlugin('{{ plugin_name }}', 'enable')">
+                            <i class="bi bi-play-circle"></i>
+                            Enable Plugin
+                        </button>
+                    {% endif %}
+
+                    <button class="btn btn-danger" onclick="uninstallPlugin('{{ plugin_name }}')">
+                        <i class="bi bi-trash"></i>
+                        Uninstall Plugin
+                    </button>
+
+                    <hr style="border-color: rgba(255, 255, 255, 0.1);">
+
+                    <a href="{{ url_for('plugins.hooks') }}" class="btn btn-outline-primary">
+                        <i class="bi bi-link-45deg"></i>
+                        View All Hooks
+                    </a>
+
+                    <a href="{{ url_for('plugins.index') }}" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left"></i>
+                        Back to Plugins
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function togglePlugin(pluginName, action) {
+    if (!confirm(`Are you sure you want to ${action} "${pluginName}"?`)) {
+        return;
+    }
+
+    fetch(`/admin/plugins/${pluginName}/${action}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            location.reload();
+        } else {
+            alert(`Failed to ${action} plugin: ${data.error}`);
+        }
+    })
+    .catch(error => {
+        alert(`Error: ${error}`);
+    });
+}
+
+function uninstallPlugin(pluginName) {
+    if (!confirm(`Are you sure you want to uninstall "${pluginName}"?\n\nThis will remove all plugin files. This action cannot be undone.`)) {
+        return;
+    }
+
+    fetch(`/admin/plugins/${pluginName}/uninstall`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            window.location.href = '/admin/plugins/';
+        } else {
+            alert(`Failed to uninstall plugin: ${data.error}`);
+        }
+    })
+    .catch(error => {
+        alert(`Error: ${error}`);
+    });
+}
+</script>
+{% endblock %}

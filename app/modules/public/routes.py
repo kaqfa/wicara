@@ -5,6 +5,7 @@ Handles public-facing pages and content rendering.
 
 from flask import Blueprint, render_template, current_app, request
 from app.core import load_config, render_page_template
+from app.core.config_manager import ConfigManager
 from app.modules.public.utils import get_page_by_url
 
 public_bp = Blueprint('public', __name__)
@@ -36,7 +37,13 @@ def index():
     if not page:
         return render_template('404.html'), 404
 
-    config = load_config(current_app.config['CONFIG_FILE'], logger=current_app.logger)
+    # ECS-08: Use ConfigManager with site_manager for Engine-Content Separation
+    config_manager = ConfigManager(
+        site_manager=getattr(current_app, 'site_manager', None),
+        logger=current_app.logger
+    )
+    config = config_manager.load()
+
     if not config:
         return render_template('500.html'), 500
 
@@ -80,7 +87,13 @@ def page(url):
     if not page:
         return render_template('404.html'), 404
 
-    config = load_config(current_app.config['CONFIG_FILE'], logger=current_app.logger)
+    # ECS-08: Use ConfigManager with site_manager for Engine-Content Separation
+    config_manager = ConfigManager(
+        site_manager=getattr(current_app, 'site_manager', None),
+        logger=current_app.logger
+    )
+    config = config_manager.load()
+
     if not config:
         return render_template('500.html'), 500
 

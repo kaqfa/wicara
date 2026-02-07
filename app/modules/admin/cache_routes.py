@@ -94,6 +94,18 @@ def clear_cache():
     try:
         cache_type = request.form.get('type', 'all')
 
+        # Execute before_cache_clear hook
+        try:
+            from app.plugins import get_plugin_manager
+            manager = get_plugin_manager()
+            if manager:
+                result = manager.hooks.execute('before_cache_clear', cache_type)
+                # If hook returns a modified cache_type, use it
+                if result is not None and isinstance(result, str):
+                    cache_type = result
+        except Exception as e:
+            logger.debug(f'Plugin hook before_cache_clear error: {e}')
+
         if cache_type == 'all':
             success = _cache_service.clear_all()
             message = 'All caches cleared'
@@ -108,6 +120,15 @@ def clear_cache():
             message = 'Config cache cleared'
         else:
             return jsonify({'error': 'Invalid cache type'}), 400
+
+        # Execute after_cache_clear hook
+        try:
+            from app.plugins import get_plugin_manager
+            manager = get_plugin_manager()
+            if manager:
+                manager.hooks.execute('after_cache_clear', cache_type)
+        except Exception as e:
+            logger.debug(f'Plugin hook after_cache_clear error: {e}')
 
         if success:
             logger.info(f"Cache cleared: {cache_type}")
@@ -131,6 +152,18 @@ def api_clear_cache():
         data = request.get_json() or {}
         cache_type = data.get('type', 'all')
 
+        # Execute before_cache_clear hook
+        try:
+            from app.plugins import get_plugin_manager
+            manager = get_plugin_manager()
+            if manager:
+                result = manager.hooks.execute('before_cache_clear', cache_type)
+                # If hook returns a modified cache_type, use it
+                if result is not None and isinstance(result, str):
+                    cache_type = result
+        except Exception as e:
+            logger.debug(f'Plugin hook before_cache_clear error: {e}')
+
         if cache_type == 'all':
             success = _cache_service.clear_all()
             message = 'All caches cleared'
@@ -145,6 +178,15 @@ def api_clear_cache():
             message = 'Config cache cleared'
         else:
             return jsonify({'error': 'Invalid cache type'}), 400
+
+        # Execute after_cache_clear hook
+        try:
+            from app.plugins import get_plugin_manager
+            manager = get_plugin_manager()
+            if manager:
+                manager.hooks.execute('after_cache_clear', cache_type)
+        except Exception as e:
+            logger.debug(f'Plugin hook after_cache_clear error: {e}')
 
         if success:
             logger.info(f"Cache cleared via API: {cache_type}")

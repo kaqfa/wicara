@@ -13,15 +13,29 @@ from app.core.file_manager import create_backup
 class ConfigManager:
     """Configuration manager for WICARA CMS."""
 
-    def __init__(self, config_file='config.json', logger=None):
+    def __init__(self, config_file='config.json', logger=None, site_manager=None):
         """
         Initialize configuration manager.
 
+        Supports both legacy mode (config_file parameter) and sites mode (site_manager).
+        If site_manager is provided, it takes precedence over config_file parameter.
+
         Args:
-            config_file: Path to configuration file
+            config_file: Path to configuration file (legacy mode, default: 'config.json')
             logger: Logger instance for logging
+            site_manager: SiteManager instance for ECS (Engine-Content Separation)
+                         If provided, config_file is obtained from site_manager
         """
-        self.config_file = config_file
+        # ECS-04: Support site_manager for multi-site configuration
+        if site_manager is not None:
+            self.site_manager = site_manager
+            self.config_file = site_manager.get_config_path()
+            if logger:
+                logger.debug(f'ConfigManager using SiteManager: {self.config_file}')
+        else:
+            self.site_manager = None
+            self.config_file = config_file
+
         self.logger = logger
         self._config = None
 
@@ -39,6 +53,16 @@ class ConfigManager:
             Configuration dictionary or None if error
         """
         try:
+            # Execute before_config_load hook
+            try:
+                from app.plugins import get_plugin_manager
+                manager = get_plugin_manager()
+                if manager:
+                    manager.hooks.execute('before_config_load', self.config_file)
+            except Exception as e:
+                if self.logger:
+                    self.logger.debug(f'Plugin hook before_config_load error: {e}')
+
             with open(self.config_file, 'r', encoding='utf-8') as f:
                 config = json.load(f)
 
@@ -50,6 +74,19 @@ class ConfigManager:
                     if self.logger:
                         self.logger.error(f'Config validation errors: {errors}')
                     return None
+
+            # Execute after_config_load hook
+            try:
+                from app.plugins import get_plugin_manager
+                manager = get_plugin_manager()
+                if manager:
+                    result = manager.hooks.execute('after_config_load', config)
+                    # If hook returns modified config, use it
+                    if result is not None and isinstance(result, dict):
+                        config = result
+            except Exception as e:
+                if self.logger:
+                    self.logger.debug(f'Plugin hook after_config_load error: {e}')
 
             self._config = config
             return config
@@ -98,6 +135,19 @@ class ConfigManager:
                         self.logger.error(f'Config validation errors: {errors}')
                     return False
 
+            # Execute before_config_save hook
+            try:
+                from app.plugins import get_plugin_manager
+                manager = get_plugin_manager()
+                if manager:
+                    result = manager.hooks.execute('before_config_save', config)
+                    # If hook returns modified config, use it
+                    if result is not None and isinstance(result, dict):
+                        config = result
+            except Exception as e:
+                if self.logger:
+                    self.logger.debug(f'Plugin hook before_config_save error: {e}')
+
             # Create backup before saving
             create_backup(self.config_file)
 
@@ -105,6 +155,17 @@ class ConfigManager:
                 json.dump(config, f, indent=2, ensure_ascii=False)
 
             self._config = config
+
+            # Execute after_config_save hook
+            try:
+                from app.plugins import get_plugin_manager
+                manager = get_plugin_manager()
+                if manager:
+                    manager.hooks.execute('after_config_save', config)
+            except Exception as e:
+                if self.logger:
+                    self.logger.debug(f'Plugin hook after_config_save error: {e}')
+
             return True
 
         except PermissionError:
@@ -229,7 +290,7 @@ class ConfigManager:
         return self._config is not None
 
 
-def load_config(config_file='config.json', validate=True, logger=None):
+def load_config(config_file='config.json', validate=True, logger=None, site_manager=None):
     """
     Load configuration from JSON file (functional interface).
 
@@ -237,29 +298,31 @@ def load_config(config_file='config.json', validate=True, logger=None):
     and loads the configuration.
 
     Args:
-        config_file: Path to config.json file
+        config_file: Path to config.json file (legacy mode)
         validate: Whether to validate configuration schema
         logger: Logger instance for logging
+        site_manager: SiteManager instance for ECS (takes precedence over config_file)
 
     Returns:
         Configuration dictionary or None if error
     """
-    manager = ConfigManager(config_file, logger)
+    manager = ConfigManager(config_file, logger, site_manager)
     return manager.load(validate=validate)
 
 
-def save_config(config, config_file='config.json', validate=True, logger=None):
+def save_config(config, config_file='config.json', validate=True, logger=None, site_manager=None):
     """
     Save configuration to JSON file (functional interface).
 
     Args:
         config: Configuration dictionary to save
-        config_file: Path to config.json file
+        config_file: Path to config.json file (legacy mode)
         validate: Whether to validate before saving
         logger: Logger instance for logging
+        site_manager: SiteManager instance for ECS (takes precedence over config_file)
 
     Returns:
         True if successful, False otherwise
     """
-    manager = ConfigManager(config_file, logger)
+    manager = ConfigManager(config_file, logger, site_manager)
     return manager.save(config, validate=validate)

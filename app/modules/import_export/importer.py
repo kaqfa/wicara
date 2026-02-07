@@ -104,7 +104,8 @@ class Importer:
         self,
         config_path: str = 'config.json',
         app_root: str = '.',
-        backup_enabled: bool = True
+        backup_enabled: bool = True,
+        site_manager=None
     ):
         """
         Initialize importer.
@@ -113,9 +114,18 @@ class Importer:
             config_path: Path to config.json file
             app_root: Root directory of the application
             backup_enabled: Whether to create backup before import
+            site_manager: Optional SiteManager instance for ECS path resolution
         """
-        self.config_path = config_path
-        self.app_root = app_root
+        self.site_manager = site_manager
+
+        # Use SiteManager for path resolution if available, otherwise use provided paths
+        if site_manager:
+            self.config_path = site_manager.get_config_path()
+            self.app_root = app_root  # Still needed for relative path calculations
+        else:
+            self.config_path = config_path
+            self.app_root = app_root
+
         self.backup_enabled = backup_enabled
         self.backup_path = None
         self.import_stats = {
@@ -389,8 +399,13 @@ class Importer:
     def _import_templates(self, zip_path: str):
         """Import templates from ZIP."""
         try:
-            with zipfile.ZipFile(zip_path, 'r') as zf:
+            # Use SiteManager for path resolution if available
+            if self.site_manager:
+                templates_dir = self.site_manager.get_templates_dir()
+            else:
                 templates_dir = os.path.join(self.app_root, 'templates')
+
+            with zipfile.ZipFile(zip_path, 'r') as zf:
 
                 for file_info in zf.infolist():
                     if file_info.filename.startswith('templates/') and file_info.filename.endswith('.html'):
@@ -409,7 +424,11 @@ class Importer:
     def _import_images(self, zip_path: str, imported_config: Dict):
         """Import images from ZIP."""
         try:
-            uploads_dir = os.path.join(self.app_root, 'static', 'images', 'uploads')
+            # Use SiteManager for path resolution if available
+            if self.site_manager:
+                uploads_dir = self.site_manager.get_uploads_dir()
+            else:
+                uploads_dir = os.path.join(self.app_root, 'static', 'images', 'uploads')
             os.makedirs(uploads_dir, exist_ok=True)
 
             with zipfile.ZipFile(zip_path, 'r') as zf:
@@ -450,8 +469,12 @@ class Importer:
                     os.path.join(backup_dir, 'config.json')
                 )
 
-            # Backup templates
-            templates_src = os.path.join(self.app_root, 'templates')
+            # Backup templates - use SiteManager if available
+            if self.site_manager:
+                templates_src = self.site_manager.get_templates_dir()
+            else:
+                templates_src = os.path.join(self.app_root, 'templates')
+
             if os.path.exists(templates_src):
                 shutil.copytree(
                     templates_src,
@@ -459,8 +482,12 @@ class Importer:
                     dirs_exist_ok=True
                 )
 
-            # Backup images
-            images_src = os.path.join(self.app_root, 'static', 'images', 'uploads')
+            # Backup images - use SiteManager if available
+            if self.site_manager:
+                images_src = self.site_manager.get_uploads_dir()
+            else:
+                images_src = os.path.join(self.app_root, 'static', 'images', 'uploads')
+
             if os.path.exists(images_src):
                 shutil.copytree(
                     images_src,
@@ -484,18 +511,26 @@ class Importer:
             if os.path.exists(backup_config):
                 shutil.copy2(backup_config, self.config_path)
 
-            # Restore templates
+            # Restore templates - use SiteManager if available
             backup_templates = os.path.join(self.backup_path, 'templates')
             if os.path.exists(backup_templates):
-                templates_dest = os.path.join(self.app_root, 'templates')
+                if self.site_manager:
+                    templates_dest = self.site_manager.get_templates_dir()
+                else:
+                    templates_dest = os.path.join(self.app_root, 'templates')
+
                 if os.path.exists(templates_dest):
                     shutil.rmtree(templates_dest)
                 shutil.copytree(backup_templates, templates_dest)
 
-            # Restore images
+            # Restore images - use SiteManager if available
             backup_images = os.path.join(self.backup_path, 'images')
             if os.path.exists(backup_images):
-                images_dest = os.path.join(self.app_root, 'static', 'images', 'uploads')
+                if self.site_manager:
+                    images_dest = self.site_manager.get_uploads_dir()
+                else:
+                    images_dest = os.path.join(self.app_root, 'static', 'images', 'uploads')
+
                 if os.path.exists(images_dest):
                     shutil.rmtree(images_dest)
                 shutil.copytree(backup_images, images_dest)

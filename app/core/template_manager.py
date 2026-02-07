@@ -1,6 +1,26 @@
 """
 WICARA Core Module: Template Manager
 Handles template rendering and data conversion for Jinja2.
+
+ECS-06: Template Loading
+-----------------------
+Template loading is handled by Flask's Jinja2 environment with a ChoiceLoader
+configured in the application factory (app/__init__.py):
+
+Legacy Mode (LEGACY_MODE=true):
+    - Templates are loaded from the root 'templates/' directory
+    - Single template directory for backward compatibility
+
+Sites Mode (LEGACY_MODE=false):
+    - Templates are loaded using Jinja2 ChoiceLoader with two sources:
+      1. Site-specific templates: sites/{site_id}/templates/ (priority 1)
+      2. Engine templates: templates/ (priority 2, fallback)
+    - Allows site-specific template overrides
+    - Falls back to engine templates for admin and system templates
+    - Supports multi-site deployments with shared engine
+
+This module focuses on template context preparation and rendering,
+while template resolution is managed by Flask's Jinja2 environment.
 """
 
 from flask import render_template
@@ -94,8 +114,16 @@ def render_page_template(template_name, config, page_data=None, logger=None):
 
     Handles template existence checking, context preparation, and error handling.
 
+    Template Resolution (ECS-06):
+        In sites mode, Flask's Jinja2 ChoiceLoader searches for templates in:
+        1. Site-specific templates directory (sites/{site_id}/templates/)
+        2. Engine templates directory (templates/) as fallback
+
+        This allows sites to override default templates while maintaining
+        access to shared engine templates (admin interface, error pages, etc.)
+
     Args:
-        template_name: Name of template file to render
+        template_name: Name of template file to render (e.g., 'home.html')
         config: Global configuration dictionary
         page_data: Page-specific data (optional)
         logger: Logger instance for logging (optional)
@@ -103,22 +131,61 @@ def render_page_template(template_name, config, page_data=None, logger=None):
     Returns:
         Tuple of (rendered_html, status_code) or error response tuple
     """
-    # Check if template exists
-    template_path = os.path.join('templates', template_name)
-    if not os.path.exists(template_path):
-        if logger:
-            logger.error(f'Template not found: {template_name}')
-        return render_template('404.html'), 404
-
     # Prepare template context
     template_data = prepare_template_context(config, page_data)
 
+    # Execute before_page_render hook
     try:
-        return render_template(template_name, **template_data)
+        from app.plugins import get_plugin_manager
+        manager = get_plugin_manager()
+        if manager:
+            result = manager.hooks.execute('before_page_render', page_data, template_data)
+            # If hook returns modified context, use it
+            if result is not None and isinstance(result, dict):
+                template_data = result
+    except Exception as e:
+        if logger:
+            logger.debug(f'Plugin hook before_page_render error: {e}')
+
+    try:
+        html = render_template(template_name, **template_data)
+
+        # Execute after_page_render hook
+        try:
+            from app.plugins import get_plugin_manager
+            manager = get_plugin_manager()
+            if manager:
+                result = manager.hooks.execute('after_page_render', page_data, html)
+                # If hook returns modified HTML, use it
+                if result is not None and isinstance(result, str):
+                    html = result
+        except Exception as e:
+            if logger:
+                logger.debug(f'Plugin hook after_page_render error: {e}')
+
+        return html
+
     except Exception as e:
         if logger:
             logger.error(f'Template rendering error for {template_name}: {e}')
-        return render_template('500.html'), 500
+
+        # Check if this is a template not found error
+        error_msg = str(e).lower()
+        if 'template' in error_msg and ('not found' in error_msg or 'does not exist' in error_msg):
+            if logger:
+                logger.error(f'Template not found: {template_name}')
+            try:
+                return render_template('404.html'), 404
+            except Exception:
+                # If even 404.html is missing, return plain text
+                return "404 - Page Not Found", 404
+
+        # For other errors, return 500
+        try:
+            return render_template('500.html'), 500
+        except Exception:
+            # If even 500.html is missing, return plain text
+            return "500 - Internal Server Error", 500
 
 
 def render_admin_page_template(template_name, **kwargs):

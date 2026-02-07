@@ -7,6 +7,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, sessio
 from werkzeug.security import check_password_hash
 from datetime import datetime
 from app.core import load_config
+from app.core.config_manager import ConfigManager
 
 auth_bp = Blueprint('auth', __name__, url_prefix='/admin')
 
@@ -21,7 +22,13 @@ def login():
     """
     if request.method == 'POST':
         password = request.form.get('password')
-        config = load_config(current_app.config['CONFIG_FILE'], logger=current_app.logger)
+
+        # ECS: Use ConfigManager with site_manager for Engine-Content Separation
+        config_manager = ConfigManager(
+            site_manager=getattr(current_app, 'site_manager', None),
+            logger=current_app.logger
+        )
+        config = config_manager.load()
 
         if config and check_password_hash(config['admin-password'], password):
             session['admin_logged_in'] = True

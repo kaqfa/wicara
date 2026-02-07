@@ -45,6 +45,13 @@ class Config:
     TEMPLATES_DIR = os.path.join(BASE_DIR, 'templates')
     STATIC_DIR = os.path.join(BASE_DIR, 'static')
 
+    # Engine-Content Separation (ECS)
+    # Controls how Wicara separates engine code from site content
+    SITES_DIR = os.environ.get('SITES_DIR', 'sites')
+    DEFAULT_SITE = os.environ.get('DEFAULT_SITE', 'default')
+    # LEGACY_MODE: true = use root paths (config.json, templates/), false = use sites/ structure
+    LEGACY_MODE = os.environ.get('LEGACY_MODE', 'true').lower() == 'true'
+
 
 class DevelopmentConfig(Config):
     """Development environment configuration."""
