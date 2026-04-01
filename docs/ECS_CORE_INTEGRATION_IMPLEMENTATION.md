@@ -8,6 +8,16 @@
 
 This document describes the implementation of Core Integration tasks (ECS-03 through ECS-06) for Engine-Content Separation (ECS). These tasks integrate the SiteManager (from ECS-01) into the core application components, enabling path abstraction and multi-site support.
 
+## Consolidated Summary
+
+This file now serves as the canonical ECS core integration record, combining both the former detailed implementation document and the former root-level summary.
+
+- ECS-03 updated the application factory with SiteManager initialization, sites-mode ChoiceLoader support, and site static routing.
+- ECS-04 updated ConfigManager and helper functions to accept `site_manager` while preserving backward compatibility.
+- ECS-05 updated FileManager upload and cleanup helpers for site-aware path resolution.
+- ECS-06 updated template handling and documentation for ChoiceLoader-based resolution.
+- Integration and verification were completed successfully with backward compatibility preserved in legacy mode.
+
 ## Prerequisites
 
 - **ECS-01**: SiteManager implementation (`app/core/site_manager.py`) ✓
