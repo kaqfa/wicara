@@ -36,11 +36,13 @@ def create_app(config=None):
         Configured Flask application instance
     """
     # Create Flask app instance
-    # Set template_folder to parent directory (templates/ is outside app/)
-    template_folder = os.path.join(
-        os.path.dirname(os.path.dirname(__file__)), "templates"
-    )
-    static_folder = os.path.join(os.path.dirname(os.path.dirname(__file__)), "static")
+    project_root = os.path.dirname(os.path.dirname(__file__))
+    app_templates = os.path.abspath(os.path.join(project_root, "app", "templates"))
+    engine_templates = os.path.abspath(os.path.join(project_root, "templates"))
+    static_folder = os.path.join(project_root, "static")
+
+    # Use app templates as default so admin/* always resolves, even if loader override fails.
+    template_folder = app_templates
     app = Flask(
         __name__,
         instance_relative_config=False,
@@ -89,42 +91,31 @@ def create_app(config=None):
     # Ensure required directories exist
     ensure_directories(app)
 
-    # Configure Jinja2 ChoiceLoader for sites mode (ECS-03)
-    if not app.site_manager.legacy_mode:
-        app.logger.info("Configuring Jinja2 ChoiceLoader for sites mode...")
-        try:
-            # App admin templates directory (contains admin/ subdirectory)
-            app_templates = os.path.join(os.path.dirname(__file__), "templates")
-            app_templates = os.path.abspath(app_templates)
+    # Configure Jinja2 ChoiceLoader (always include app templates for admin/*)
+    app.logger.info("Configuring Jinja2 ChoiceLoader...")
+    try:
+        loader_paths = [app_templates]
 
-            # Site-specific templates directory
-            site_templates = app.site_manager.get_templates_dir()
+        if not app.site_manager.legacy_mode:
+            site_templates = os.path.abspath(app.site_manager.get_templates_dir())
+            loader_paths.append(site_templates)
+            app.logger.info("Sites mode detected: enabling site templates loader")
+        else:
+            app.logger.info("Legacy mode detected: skipping site templates loader")
 
-            # Engine templates directory (root templates/ for base templates fallback)
-            engine_templates = os.path.join(
-                os.path.dirname(__file__), "..", "templates"
-            )
-            engine_templates = os.path.abspath(engine_templates)
+        loader_paths.append(engine_templates)
 
-            # Create ChoiceLoader: app templates first so admin/500.html is found
-            loader = ChoiceLoader(
-                [
-                    FileSystemLoader(app_templates),  # 1: Admin templates (admin/*)
-                    FileSystemLoader(site_templates),  # 2: Site content templates
-                    FileSystemLoader(engine_templates),  # 3: Root templates (fallback)
-                ]
-            )
+        for path in loader_paths:
+            if not os.path.isdir(path):
+                app.logger.warning(f"Template directory not found: {path}")
 
-            app.jinja_loader = loader
-            app.logger.info(
-                f"Jinja2 ChoiceLoader configured: app={app_templates}, "
-                f"site={site_templates}, engine={engine_templates}"
-            )
+        app.jinja_loader = ChoiceLoader(
+            [FileSystemLoader(path) for path in loader_paths]
+        )
+        app.logger.info(f"Jinja2 ChoiceLoader configured with paths: {loader_paths}")
 
-        except Exception as e:
-            app.logger.error(f"Failed to configure Jinja2 ChoiceLoader: {str(e)}")
-    else:
-        app.logger.info("Using legacy template loading (single template directory)")
+    except Exception as e:
+        app.logger.error(f"Failed to configure Jinja2 ChoiceLoader: {str(e)}")
 
     # Initialize caching system
     app.logger.info("Initializing cache system...")
