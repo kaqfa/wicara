@@ -37,10 +37,16 @@ def create_app(config=None):
     """
     # Create Flask app instance
     # Set template_folder to parent directory (templates/ is outside app/)
-    template_folder = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'templates')
-    static_folder = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'static')
-    app = Flask(__name__, instance_relative_config=False,
-                template_folder=template_folder, static_folder=static_folder)
+    template_folder = os.path.join(
+        os.path.dirname(os.path.dirname(__file__)), "templates"
+    )
+    static_folder = os.path.join(os.path.dirname(os.path.dirname(__file__)), "static")
+    app = Flask(
+        __name__,
+        instance_relative_config=False,
+        template_folder=template_folder,
+        static_folder=static_folder,
+    )
 
     # Load configuration
     if config is None:
@@ -50,64 +56,79 @@ def create_app(config=None):
 
     # Setup logging
     setup_logger(app)
-    app.logger.info('Application factory initialized')
+    app.logger.info("Application factory initialized")
 
     # Initialize SiteManager for ECS (Engine-Content Separation)
-    app.logger.info('Initializing SiteManager...')
+    app.logger.info("Initializing SiteManager...")
     try:
-        sites_dir = app.config.get('SITES_DIR', 'sites')
-        default_site = app.config.get('DEFAULT_SITE', 'default')
-        legacy_mode = app.config.get('LEGACY_MODE', True)  # Default to True for backward compatibility
+        sites_dir = app.config.get("SITES_DIR", "sites")
+        default_site = app.config.get("DEFAULT_SITE", "default")
+        legacy_mode = app.config.get(
+            "LEGACY_MODE", True
+        )  # Default to True for backward compatibility
 
         site_manager = SiteManager(sites_dir, default_site, legacy_mode)
         app.site_manager = site_manager
 
-        app.logger.info(f'SiteManager initialized (legacy_mode={legacy_mode}, '
-                       f'sites_dir={sites_dir}, default_site={default_site})')
+        app.logger.info(
+            f"SiteManager initialized (legacy_mode={legacy_mode}, "
+            f"sites_dir={sites_dir}, default_site={default_site})"
+        )
 
         # Ensure site directory structure exists
         if not site_manager.ensure_site_structure():
-            app.logger.warning('Failed to ensure site directory structure')
+            app.logger.warning("Failed to ensure site directory structure")
 
     except Exception as e:
-        app.logger.error(f'SiteManager initialization failed: {str(e)}')
+        app.logger.error(f"SiteManager initialization failed: {str(e)}")
         # Fall back to legacy mode
         site_manager = SiteManager(legacy_mode=True)
         app.site_manager = site_manager
-        app.logger.warning('Falling back to legacy mode')
+        app.logger.warning("Falling back to legacy mode")
 
     # Ensure required directories exist
     ensure_directories(app)
 
     # Configure Jinja2 ChoiceLoader for sites mode (ECS-03)
     if not app.site_manager.legacy_mode:
-        app.logger.info('Configuring Jinja2 ChoiceLoader for sites mode...')
+        app.logger.info("Configuring Jinja2 ChoiceLoader for sites mode...")
         try:
-            # Engine templates directory (admin templates, base templates)
-            engine_templates = os.path.join(os.path.dirname(__file__), '..', 'templates')
-            engine_templates = os.path.abspath(engine_templates)
+            # App admin templates directory (contains admin/ subdirectory)
+            app_templates = os.path.join(os.path.dirname(__file__), "templates")
+            app_templates = os.path.abspath(app_templates)
 
             # Site-specific templates directory
             site_templates = app.site_manager.get_templates_dir()
 
-            # Create ChoiceLoader with priority: site templates first, then engine templates
-            loader = ChoiceLoader([
-                FileSystemLoader(site_templates),    # Priority 1: Site-specific templates
-                FileSystemLoader(engine_templates)    # Priority 2: Engine templates (fallback)
-            ])
+            # Engine templates directory (root templates/ for base templates fallback)
+            engine_templates = os.path.join(
+                os.path.dirname(__file__), "..", "templates"
+            )
+            engine_templates = os.path.abspath(engine_templates)
+
+            # Create ChoiceLoader: app templates first so admin/500.html is found
+            loader = ChoiceLoader(
+                [
+                    FileSystemLoader(app_templates),  # 1: Admin templates (admin/*)
+                    FileSystemLoader(site_templates),  # 2: Site content templates
+                    FileSystemLoader(engine_templates),  # 3: Root templates (fallback)
+                ]
+            )
 
             app.jinja_loader = loader
-            app.logger.info(f'Jinja2 ChoiceLoader configured: site={site_templates}, '
-                           f'engine={engine_templates}')
+            app.logger.info(
+                f"Jinja2 ChoiceLoader configured: app={app_templates}, "
+                f"site={site_templates}, engine={engine_templates}"
+            )
 
         except Exception as e:
-            app.logger.error(f'Failed to configure Jinja2 ChoiceLoader: {str(e)}')
+            app.logger.error(f"Failed to configure Jinja2 ChoiceLoader: {str(e)}")
     else:
-        app.logger.info('Using legacy template loading (single template directory)')
+        app.logger.info("Using legacy template loading (single template directory)")
 
     # Initialize caching system
-    app.logger.info('Initializing cache system...')
-    cache_backend_type = os.environ.get('CACHE_BACKEND', 'memory').lower()
+    app.logger.info("Initializing cache system...")
+    cache_backend_type = os.environ.get("CACHE_BACKEND", "memory").lower()
     try:
         cache_manager = CacheFactory.create_manager(cache_backend_type)
         cache_service = CacheService(cache_manager)
@@ -121,19 +142,19 @@ def create_app(config=None):
         app.cache_service = cache_service
         set_cache_service(cache_service)
 
-        app.logger.info(f'Cache system initialized with backend: {cache_backend_type}')
+        app.logger.info(f"Cache system initialized with backend: {cache_backend_type}")
     except Exception as e:
-        app.logger.warning(f'Cache system initialization failed: {str(e)}')
+        app.logger.warning(f"Cache system initialization failed: {str(e)}")
         app.cache_service = None
 
     # Initialize plugin system
-    app.logger.info('Initializing plugin system...')
+    app.logger.info("Initializing plugin system...")
     try:
-        plugin_manager = init_plugins(app, plugin_dir='app/plugins/installed')
+        plugin_manager = init_plugins(app, plugin_dir="app/plugins/installed")
 
         # Load all enabled plugins
         loaded_plugins = plugin_manager.load_all()
-        app.logger.info(f'Loaded {len(loaded_plugins)} plugins')
+        app.logger.info(f"Loaded {len(loaded_plugins)} plugins")
 
         # Register plugin-defined template filters
         _register_plugin_template_filters(app, plugin_manager)
@@ -141,13 +162,13 @@ def create_app(config=None):
         # Register plugin-defined template globals
         _register_plugin_template_globals(app, plugin_manager)
 
-        app.logger.info('Plugin system initialized successfully')
+        app.logger.info("Plugin system initialized successfully")
     except Exception as e:
-        app.logger.warning(f'Plugin system initialization failed: {str(e)}')
+        app.logger.warning(f"Plugin system initialization failed: {str(e)}")
         # Plugin system failure should not prevent app from starting
 
     # Register blueprints
-    app.logger.info('Registering blueprints...')
+    app.logger.info("Registering blueprints...")
     app.register_blueprint(auth_bp)
     app.register_blueprint(admin_bp)
     app.register_blueprint(import_export_bp)
@@ -155,15 +176,16 @@ def create_app(config=None):
     if app.cache_service:
         app.register_blueprint(cache_bp)
     app.register_blueprint(plugin_bp)
-    app.logger.info(f'Registered {len(app.blueprints)} blueprints')
+    app.logger.info(f"Registered {len(app.blueprints)} blueprints")
 
     # Register error handlers
-    app.logger.info('Registering error handlers...')
+    app.logger.info("Registering error handlers...")
     register_error_handlers(app)
 
     # Register site static route for sites mode (ECS-03)
     if not app.site_manager.legacy_mode:
-        @app.route('/sites/<site_id>/static/<path:filename>')
+
+        @app.route("/sites/<site_id>/static/<path:filename>")
         def site_static(site_id, filename):
             """
             Serve static files from site-specific directories.
@@ -183,17 +205,21 @@ def create_app(config=None):
 
                 # Security check: ensure site exists
                 if not app.site_manager.site_exists(site_id):
-                    app.logger.warning(f'Attempt to access non-existent site: {site_id}')
+                    app.logger.warning(
+                        f"Attempt to access non-existent site: {site_id}"
+                    )
                     return "Site not found", 404
 
                 return send_from_directory(static_dir, filename)
             except Exception as e:
-                app.logger.error(f'Error serving static file for site {site_id}: {str(e)}')
+                app.logger.error(
+                    f"Error serving static file for site {site_id}: {str(e)}"
+                )
                 return "File not found", 404
 
-        app.logger.info('Site static route registered')
+        app.logger.info("Site static route registered")
 
-    app.logger.info('===== Application Factory Complete =====')
+    app.logger.info("===== Application Factory Complete =====")
 
     return app
 
@@ -208,7 +234,9 @@ def _register_plugin_template_filters(app, plugin_manager):
     """
     try:
         # Execute register_template_filters hook to collect filters from all plugins
-        filters_list = plugin_manager.hooks.execute_multiple('register_template_filters')
+        filters_list = plugin_manager.hooks.execute_multiple(
+            "register_template_filters"
+        )
 
         # Merge all filter dictionaries
         for filters in filters_list:
@@ -218,7 +246,7 @@ def _register_plugin_template_filters(app, plugin_manager):
                         app.jinja_env.filters[filter_name] = filter_func
                         app.logger.debug(f"Registered template filter: {filter_name}")
     except Exception as e:
-        app.logger.error(f'Error registering plugin template filters: {str(e)}')
+        app.logger.error(f"Error registering plugin template filters: {str(e)}")
 
 
 def _register_plugin_template_globals(app, plugin_manager):
@@ -231,7 +259,9 @@ def _register_plugin_template_globals(app, plugin_manager):
     """
     try:
         # Execute register_template_globals hook to collect globals from all plugins
-        globals_list = plugin_manager.hooks.execute_multiple('register_template_globals')
+        globals_list = plugin_manager.hooks.execute_multiple(
+            "register_template_globals"
+        )
 
         # Merge all global dictionaries
         for globals_dict in globals_list:
@@ -240,4 +270,4 @@ def _register_plugin_template_globals(app, plugin_manager):
                     app.jinja_env.globals[global_name] = global_value
                     app.logger.debug(f"Registered template global: {global_name}")
     except Exception as e:
-        app.logger.error(f'Error registering plugin template globals: {str(e)}')
+        app.logger.error(f"Error registering plugin template globals: {str(e)}")
