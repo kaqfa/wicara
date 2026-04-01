@@ -34,18 +34,29 @@ A lightweight, flat-file CMS built with Flask that allows you to create editable
    cd wicara
    ```
 
-2. **Install dependencies**
+2. **Create and activate a virtual environment**
+   ```bash
+   # Linux/macOS
+   python3 -m venv .venv
+   source .venv/bin/activate
+
+   # Windows (PowerShell)
+   python -m venv .venv
+   .venv\Scripts\Activate.ps1
+   ```
+
+3. **Install dependencies**
    ```bash
    pip install -r requirements.txt
    ```
 
-3. **Create environment configuration (optional)**
+4. **Create environment configuration (optional)**
    ```bash
    cp .env.example .env
    # Edit .env to customize settings (port, cache backend, log level, etc.)
    ```
 
-4. **Run the application**
+5. **Run the application**
    ```bash
    # Using the modern entry point (recommended)
    python run.py
@@ -54,7 +65,7 @@ A lightweight, flat-file CMS built with Flask that allows you to create editable
    python -m flask run
    ```
 
-5. **Access the website**
+6. **Access the website**
    - Public site: http://localhost:5555
    - Admin panel: http://localhost:5555/admin
    - Default admin password: `admin123`
@@ -72,6 +83,32 @@ config['admin-password'] = generate_password_hash('your-new-password', method='s
 with open('config.json', 'w') as f: json.dump(config, f, indent=2)
 "
 ```
+
+## Docker
+
+### Recommended: Docker Compose
+
+Run the full stack with the provided compose configuration:
+
+```bash
+docker compose up -d
+```
+
+The included `docker-compose.yml` mounts persistent volumes for:
+- `sites/`
+- `plugins/`
+- `uploads/`
+- `logs/`
+
+### Alternative: Manual Docker Build
+
+```bash
+docker build -t wicara . && docker run -p 5555:5555 wicara
+```
+
+After startup, access:
+- Public site: http://localhost:5555
+- Admin panel: http://localhost:5555/admin
 
 ## Project Structure
 
@@ -258,17 +295,13 @@ Global variables available in all templates:
    CACHE_BACKEND=file  # or redis for distributed caching
    ```
 
-2. **Install production server**:
+2. **Run with Gunicorn**:
    ```bash
-   pip install gunicorn
-   ```
-
-3. **Run with Gunicorn**:
-   ```bash
+   # Gunicorn is included in requirements.txt
    gunicorn -w 4 -b 0.0.0.0:5555 "app:create_app()" --timeout 60
    ```
 
-4. **Configure web server** (Apache/Nginx) to reverse proxy:
+3. **Configure web server** (Apache/Nginx) to reverse proxy:
    ```nginx
    # Nginx example
    location / {
@@ -280,7 +313,7 @@ Global variables available in all templates:
    }
    ```
 
-5. **Advanced Caching (Optional)**:
+4. **Advanced Caching (Optional)**:
    - For distributed caching across multiple servers, configure Redis:
      ```bash
      CACHE_BACKEND=redis

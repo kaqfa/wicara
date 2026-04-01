@@ -1,0 +1,33 @@
+.git/
+.gitignore
+.env
+.venv/
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Ignore local CMS data (data tersebut akan di-mount menggunakan volume)
+# config.json (Jika Anda ingin copy config default, uncomment ini, tapi biasanya lebih baik diabaikan saat build)
+# config.json
+
+# Local exports & logs
+exports/
+logs/
+
+# IDE/Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Tests
+.pytest_cache/
+tests/
+
+# Engine Content Separation (ECS) local data
+sites/
+
+# Local Plugin Data
+app/plugins/installed/

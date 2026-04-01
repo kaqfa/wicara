@@ -762,7 +762,7 @@ safe_name = sanitize_filename("user file.jpg")
    cd wicara
    ```
 
-2. **Create Virtual Environment**
+2. **Create Virtual Environment** (Always use a virtual environment for development)
    ```bash
    python -m venv venv
    source venv/bin/activate  # On Windows: venv\Scripts\activate
@@ -775,7 +775,12 @@ safe_name = sanitize_filename("user file.jpg")
 
 4. **Run Development Server**
    ```bash
-   python app.py
+   python run.py
+   ```
+
+5. **Optional: Use Docker for Consistent Development Environment**
+   ```bash
+   docker compose up -d
    ```
 
 ### Development Workflow

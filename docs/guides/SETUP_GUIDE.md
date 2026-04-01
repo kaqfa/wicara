@@ -54,6 +54,9 @@
    
    # Activate on macOS/Linux
    source venv/bin/activate
+
+   # Deactivate when finished
+   deactivate
    ```
 
 3. **Install Dependencies**
@@ -317,21 +320,31 @@ python app.py
 
 ### Option 3: Docker
 
-1. **Create Dockerfile**
-   ```dockerfile
-   FROM python:3.9-slim
-
-   WORKDIR /app
-   COPY requirements.txt .
-   RUN pip install -r requirements.txt
-
-   COPY . .
-   EXPOSE 5555
-
-   CMD ["python", "app.py"]
+1. **Use Docker Compose (Recommended)**
+   ```bash
+   docker compose up -d
    ```
 
-2. **Build and Run**
+2. **Stop Services**
+   ```bash
+   docker compose down
+   ```
+
+3. **View Logs**
+   ```bash
+   docker compose logs -f
+   ```
+
+4. **Container Configuration**
+   - Use the project root `Dockerfile` for image configuration
+   - Use `docker-compose.yml` for service and volume configuration
+   - Persistent directories mounted by compose:
+     - `sites/`
+     - `plugins/`
+     - `uploads/`
+     - `logs/`
+
+5. **Build and Run Manually (Alternative)**
    ```bash
    docker build -t wicara .
    docker run -p 5555:5555 wicara

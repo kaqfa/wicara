@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    container_name: wicara-cms
+    ports:
+      - "5555:5555"
+    environment:
+      - HOST=0.0.0.0
+      - PORT=5555
+      - FLASK_ENV=production
+      # - LEGACY_MODE=false # Uncomment untuk Engine-Content Separation (Multi-site)
+      - SECRET_KEY=change-this-to-a-secure-random-string-in-production
+      - LOG_LEVEL=INFO
+    volumes:
+      # Data persisten utama (config)
+      - ./config.json:/app/config.json
+      # Uploads gambar
+      - ./static/images/uploads:/app/static/images/uploads
+      # Direktori logs
+      - ./logs:/app/logs
+      # Direktori exports 
+      - ./exports:/app/exports
+      # Direktori multi-site/ECS (Jika digunakan)
+      - ./sites:/app/sites
+      # Instalasi plugin
+      - ./app/plugins/installed:/app/app/plugins/installed
+    restart: always
+
+# Catatan: 
+# Pertama kali menjalankan, pastikan file config.json dan folder-folder yang di-mount sudah ada.
+# Jalankan `mkdir -p static/images/uploads logs exports sites app/plugins/installed && touch config.json` di host Anda, lalu `docker-compose up -d`.

@@ -277,8 +277,14 @@ graph LR
 
 ### Optional
 - **Cache Backends**: Redis (optional)
+- **Containerization**: Docker and Docker Compose
 - **Web Server**: Gunicorn (production)
 - **Reverse Proxy**: Nginx (production)
+
+### Containerization
+- **Docker**: Dockerfile (`python:3.10-slim` + gunicorn)
+- **Docker Compose**: `docker-compose.yml` with volume mounts
+- **Production Server**: Gunicorn (4 workers)
 
 ---
 
@@ -455,6 +461,9 @@ LOG_FILE=logs/wicara.log
 - [ ] Configure Redis cache (optional)
 - [ ] Set up log rotation
 - [ ] Configure Gunicorn
+- [ ] Docker: `docker compose up -d` for production
+- [ ] Review `docker-compose.yml` environment variables
+- [ ] Change `SECRET_KEY` in `docker-compose.yml`
 - [ ] Set up Nginx reverse proxy
 - [ ] Enable file permissions for config.json
 - [ ] Configure backup strategy
