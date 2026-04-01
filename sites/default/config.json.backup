@@ -1,0 +1,1032 @@
+{
+  "admin-password": "scrypt:32768:8:1$DReccMgIty5mRou7$93e07038ee861c87980eca29be910a59dfef215a4ab9d31393bfd43ad9ffc14b611fcc4c3a2af8ada7842879cbd84c28bcd2508a68713909e9ebd805a8ff3174",
+  "sitename": "WICARA - Editable Static CMS",
+  "description": "Lightweight, database-free CMS built with Flask that lets you create beautiful websites without complexity",
+  "keywords": [
+    "lightweight cms",
+    "flat-file cms",
+    "flask cms",
+    "static site cms",
+    "editable static web",
+    "profile website cms",
+    "landing page builder",
+    "python cms",
+    "no database cms"
+  ],
+  "pages": [
+    {
+      "title": "WICARA - Build Fast, Edit Easy, Deploy Anywhere",
+      "template": "home.html",
+      "menu-title": "Home",
+      "url": "/",
+      "seo-description": "WICARA is a lightweight, flat-file CMS built with Flask. Build fast websites, edit content easily, deploy anywhere. No database required.",
+      "seo-keywords": [
+        "lightweight cms",
+        "flat-file cms",
+        "flask cms",
+        "static site generator"
+      ],
+      "fields": [
+        {
+          "name": "hero-title",
+          "type": "text",
+          "label": "Hero Title",
+          "value": "Build Fast, Edit Easy, Deploy Anywhere"
+        },
+        {
+          "name": "hero-subtitle",
+          "type": "text",
+          "label": "Hero Subtitle",
+          "value": "The lightweight CMS that combines static site speed with dynamic content management"
+        },
+        {
+          "name": "hero-description",
+          "type": "textarea",
+          "label": "Hero Description",
+          "value": "WICARA is a flat-file CMS built with Flask that lets you create beautiful websites without the complexity of traditional CMS platforms. No database required, just pure simplicity."
+        },
+        {
+          "name": "hero-cta-text",
+          "type": "text",
+          "label": "Hero CTA Button Text",
+          "value": "Get Started"
+        },
+        {
+          "name": "hero-cta-link",
+          "type": "text",
+          "label": "Hero CTA Button Link",
+          "value": "#features"
+        },
+        {
+          "name": "feature-1-icon",
+          "type": "text",
+          "label": "Feature 1 Icon",
+          "value": "⚡"
+        },
+        {
+          "name": "feature-1-title",
+          "type": "text",
+          "label": "Feature 1 Title",
+          "value": "Lightning Fast"
+        },
+        {
+          "name": "feature-1-description",
+          "type": "textarea",
+          "label": "Feature 1 Description",
+          "value": "No database queries, instant load times. Your content loads at the speed of static files."
+        },
+        {
+          "name": "feature-2-icon",
+          "type": "text",
+          "label": "Feature 2 Icon",
+          "value": "🎨"
+        },
+        {
+          "name": "feature-2-title",
+          "type": "text",
+          "label": "Feature 2 Title",
+          "value": "Easy to Customize"
+        },
+        {
+          "name": "feature-2-description",
+          "type": "textarea",
+          "label": "Feature 2 Description",
+          "value": "Simple admin panel for content editing and Jinja2 templates for easy customization."
+        },
+        {
+          "name": "feature-3-icon",
+          "type": "text",
+          "label": "Feature 3 Icon",
+          "value": "🔒"
+        },
+        {
+          "name": "feature-3-title",
+          "type": "text",
+          "label": "Feature 3 Title",
+          "value": "Secure by Design"
+        },
+        {
+          "name": "feature-3-description",
+          "type": "textarea",
+          "label": "Feature 3 Description",
+          "value": "Built-in XSS protection, safe file uploads, and secure session management."
+        },
+        {
+          "name": "feature-4-icon",
+          "type": "text",
+          "label": "Feature 4 Icon",
+          "value": "📦"
+        },
+        {
+          "name": "feature-4-title",
+          "type": "text",
+          "label": "Feature 4 Title",
+          "value": "Zero Database"
+        },
+        {
+          "name": "feature-4-description",
+          "type": "textarea",
+          "label": "Feature 4 Description",
+          "value": "Single JSON file storage. Easy backup, version control, and migration."
+        },
+        {
+          "name": "feature-5-icon",
+          "type": "text",
+          "label": "Feature 5 Icon",
+          "value": "🚀"
+        },
+        {
+          "name": "feature-5-title",
+          "type": "text",
+          "label": "Feature 5 Title",
+          "value": "Deploy Anywhere"
+        },
+        {
+          "name": "feature-5-description",
+          "type": "textarea",
+          "label": "Feature 5 Description",
+          "value": "VPS, PaaS, Docker compatible. Works anywhere Flask works."
+        },
+        {
+          "name": "feature-6-icon",
+          "type": "text",
+          "label": "Feature 6 Icon",
+          "value": "🎯"
+        },
+        {
+          "name": "feature-6-title",
+          "type": "text",
+          "label": "Feature 6 Title",
+          "value": "Purpose-Built"
+        },
+        {
+          "name": "feature-6-description",
+          "type": "textarea",
+          "label": "Feature 6 Description",
+          "value": "Designed specifically for profile websites, landing pages, and small business sites."
+        },
+        {
+          "name": "bottom-cta-title",
+          "type": "text",
+          "label": "Bottom CTA Title",
+          "value": "Ready to Build Your Website?"
+        },
+        {
+          "name": "bottom-cta-description",
+          "type": "textarea",
+          "label": "Bottom CTA Description",
+          "value": "Start creating beautiful, fast websites today. WICARA is open source and free to use."
+        },
+        {
+          "name": "bottom-cta-button",
+          "type": "text",
+          "label": "Bottom CTA Button Text",
+          "value": "Get Started Now"
+        },
+        {
+          "name": "bottom-cta-link",
+          "type": "text",
+          "label": "Bottom CTA Button Link",
+          "value": "/docs"
+        }
+      ]
+    },
+    {
+      "title": "Features - WICARA CMS",
+      "template": "features.html",
+      "menu-title": "Features",
+      "url": "/features",
+      "seo-description": "Explore WICARA CMS features: Flask-powered backend, Jinja2 templates, JSON configuration, secure file uploads, and more.",
+      "seo-keywords": [
+        "cms features",
+        "flask features",
+        "jinja2 templates",
+        "flat-file features"
+      ],
+      "fields": [
+        {
+          "name": "page-title",
+          "type": "text",
+          "label": "Page Title",
+          "value": "Powerful Features, Simple Design"
+        },
+        {
+          "name": "page-subtitle",
+          "type": "textarea",
+          "label": "Page Subtitle",
+          "value": "Everything you need to build and manage beautiful websites, without the complexity."
+        },
+        {
+          "name": "core-features-title",
+          "type": "text",
+          "label": "Core Features Title",
+          "value": "Core Features"
+        },
+        {
+          "name": "core-features-description",
+          "type": "textarea",
+          "label": "Core Features Description",
+          "value": "WICARA provides all the essential features you need for a professional website, with none of the bloat you don't."
+        },
+        {
+          "name": "technical-title",
+          "type": "text",
+          "label": "Technical Excellence Title",
+          "value": "Technical Excellence"
+        },
+        {
+          "name": "technical-description",
+          "type": "textarea",
+          "label": "Technical Excellence Description",
+          "value": "Built with modern web development best practices and simplicity of Flask Python Framework."
+        },
+        {
+          "name": "tech-feature-1-title",
+          "type": "text",
+          "label": "Tech Feature 1 Title",
+          "value": "Flask-Powered Backend"
+        },
+        {
+          "name": "tech-feature-1-description",
+          "type": "textarea",
+          "label": "Tech Feature 1 Description",
+          "value": "Clean, maintainable Python architecture with Flask framework. Easy to extend and customize."
+        },
+        {
+          "name": "tech-feature-2-title",
+          "type": "text",
+          "label": "Tech Feature 2 Title",
+          "value": "Jinja2 Templates"
+        },
+        {
+          "name": "tech-feature-2-description",
+          "type": "textarea",
+          "label": "Tech Feature 2 Description",
+          "value": "Powerful templating engine with auto-escaping, template inheritance, and reusable components."
+        },
+        {
+          "name": "tech-feature-3-title",
+          "type": "text",
+          "label": "Tech Feature 3 Title",
+          "value": "JSON Configuration"
+        },
+        {
+          "name": "tech-feature-3-description",
+          "type": "textarea",
+          "label": "Tech Feature 3 Description",
+          "value": "Human-readable configuration format. Easy backup, version control, and migration."
+        },
+        {
+          "name": "tech-feature-4-title",
+          "type": "text",
+          "label": "Tech Feature 4 Title",
+          "value": "Secure File Uploads"
+        },
+        {
+          "name": "tech-feature-4-description",
+          "type": "textarea",
+          "label": "Tech Feature 4 Description",
+          "value": "Type validation, safe filename generation, and magic number verification for security."
+        },
+        {
+          "name": "built-for-title",
+          "type": "text",
+          "label": "Built For Everyone Title",
+          "value": "Built for Everyone"
+        },
+        {
+          "name": "built-for-description",
+          "type": "textarea",
+          "label": "Built For Everyone Description",
+          "value": "Whether you're a developer or end user, WICARA is designed to work for you."
+        },
+        {
+          "name": "developer-benefit-title",
+          "type": "text",
+          "label": "Developer Benefit Title",
+          "value": "For Developers"
+        },
+        {
+          "name": "developer-benefit-description",
+          "type": "textarea",
+          "label": "Developer Benefit Description",
+          "value": "Clean code architecture, easy customization, Flask ecosystem integration, and comprehensive documentation."
+        },
+        {
+          "name": "user-benefit-title",
+          "type": "text",
+          "label": "User Benefit Title",
+          "value": "For End Users"
+        },
+        {
+          "name": "user-benefit-description",
+          "type": "textarea",
+          "label": "User Benefit Description",
+          "value": "Intuitive admin panel, zero technical knowledge required, instant content updates, and no learning curve."
+        }
+      ]
+    },
+    {
+      "title": "Use Cases - WICARA CMS",
+      "template": "use-cases.html",
+      "menu-title": "Use Cases",
+      "url": "/use-cases",
+      "seo-description": "Perfect use cases for WICARA CMS: profile websites, landing pages, small business sites, portfolios, events, and documentation.",
+      "seo-keywords": [
+        "profile website",
+        "landing page",
+        "small business website",
+        "portfolio website"
+      ],
+      "fields": [
+        {
+          "name": "page-title",
+          "type": "text",
+          "label": "Page Title",
+          "value": "Perfect for Your Next Project"
+        },
+        {
+          "name": "page-subtitle",
+          "type": "textarea",
+          "label": "Page Subtitle",
+          "value": "WICARA is ideal for specific use cases where simplicity and performance matter most."
+        },
+        {
+          "name": "perfect-for-title",
+          "type": "text",
+          "label": "Perfect For Title",
+          "value": "Perfect For"
+        },
+        {
+          "name": "perfect-for-description",
+          "type": "textarea",
+          "label": "Perfect For Description",
+          "value": "These are the scenarios where WICARA truly shines and provides the best value."
+        },
+        {
+          "name": "use-case-1-title",
+          "type": "text",
+          "label": "Use Case 1 Title",
+          "value": "Profile Websites"
+        },
+        {
+          "name": "use-case-1-description",
+          "type": "textarea",
+          "label": "Use Case 1 Description",
+          "value": "Professional personal and business profiles. Easy for clients to update their own content without technical knowledge."
+        },
+        {
+          "name": "use-case-2-title",
+          "type": "text",
+          "label": "Use Case 2 Title",
+          "value": "Landing Pages"
+        },
+        {
+          "name": "use-case-2-description",
+          "type": "textarea",
+          "label": "Use Case 2 Description",
+          "value": "High-converting marketing campaigns and product launches. Fast loading times improve conversion rates."
+        },
+        {
+          "name": "use-case-3-title",
+          "type": "text",
+          "label": "Use Case 3 Title",
+          "value": "Small Business Sites"
+        },
+        {
+          "name": "use-case-3-description",
+          "type": "textarea",
+          "label": "Use Case 3 Description",
+          "value": "Professional business presence without the complexity and cost of enterprise CMS platforms."
+        },
+        {
+          "name": "use-case-4-title",
+          "type": "text",
+          "label": "Use Case 4 Title",
+          "value": "Portfolio Sites"
+        },
+        {
+          "name": "use-case-4-description",
+          "type": "textarea",
+          "label": "Use Case 4 Description",
+          "value": "Showcase creative work with easy content updates. Perfect for designers, photographers, and artists."
+        },
+        {
+          "name": "use-case-5-title",
+          "type": "text",
+          "label": "Use Case 5 Title",
+          "value": "Event Websites"
+        },
+        {
+          "name": "use-case-5-description",
+          "type": "textarea",
+          "label": "Use Case 5 Description",
+          "value": "Frequently changing event details, schedules, and announcements. Easy updates without technical skills."
+        },
+        {
+          "name": "use-case-6-title",
+          "type": "text",
+          "label": "Use Case 6 Title",
+          "value": "Documentation Sites"
+        },
+        {
+          "name": "use-case-6-description",
+          "type": "textarea",
+          "label": "Use Case 6 Description",
+          "value": "Lightweight documentation with regular updates. Fast loading and easy content management."
+        },
+        {
+          "name": "not-recommended-title",
+          "type": "text",
+          "label": "Not Recommended Title",
+          "value": "Honest Limitations"
+        },
+        {
+          "name": "not-recommended-description",
+          "type": "textarea",
+          "label": "Not Recommended Description",
+          "value": "We believe in honest positioning. WICARA is not the right tool for every job."
+        },
+        {
+          "name": "limitation-1",
+          "type": "textarea",
+          "label": "Limitation 1",
+          "value": "Large-scale content websites (100+ pages) - Consider WordPress or Django CMS"
+        },
+        {
+          "name": "limitation-2",
+          "type": "textarea",
+          "label": "Limitation 2",
+          "value": "E-commerce platforms - Use Shopify, WooCommerce, or Magento"
+        },
+        {
+          "name": "limitation-3",
+          "type": "textarea",
+          "label": "Limitation 3",
+          "value": "Blogs with complex categorization - Consider WordPress or Ghost"
+        },
+        {
+          "name": "limitation-4",
+          "type": "textarea",
+          "label": "Limitation 4",
+          "value": "Multi-user collaboration systems - Use enterprise CMS solutions"
+        },
+        {
+          "name": "limitation-5",
+          "type": "textarea",
+          "label": "Limitation 5",
+          "value": "Sites requiring user accounts and authentication systems"
+        }
+      ]
+    },
+    {
+      "title": "Documentation - WICARA CMS",
+      "template": "documentation.html",
+      "menu-title": "Documentation",
+      "url": "/docs",
+      "seo-description": "Complete WICARA CMS documentation: installation, configuration, admin panel, customization, and deployment guides.",
+      "seo-keywords": [
+        "wicara documentation",
+        "cms installation",
+        "flask cms tutorial",
+        "flat-file cms guide"
+      ],
+      "fields": [
+        {
+          "name": "page-title",
+          "type": "text",
+          "label": "Page Title",
+          "value": "Getting Started with WICARA"
+        },
+        {
+          "name": "page-subtitle",
+          "type": "textarea",
+          "label": "Page Subtitle",
+          "value": "Complete guide to setting up and managing your WICARA-powered website."
+        },
+        {
+          "name": "installation-title",
+          "type": "text",
+          "label": "Installation Title",
+          "value": "Installation"
+        },
+        {
+          "name": "installation-description",
+          "type": "textarea",
+          "label": "Installation Description",
+          "value": "Get WICARA running on your system in just a few minutes."
+        },
+        {
+          "name": "step-1-title",
+          "type": "text",
+          "label": "Step 1 Title",
+          "value": "1. Clone Repository"
+        },
+        {
+          "name": "step-1-code",
+          "type": "textarea",
+          "label": "Step 1 Code",
+          "value": "git clone https://github.com/yourusername/wicara.git\r\ncd wicara"
+        },
+        {
+          "name": "step-2-title",
+          "type": "text",
+          "label": "Step 2 Title",
+          "value": "2. Create Virtual Environment"
+        },
+        {
+          "name": "step-2-code",
+          "type": "textarea",
+          "label": "Step 2 Code",
+          "value": "python -m venv venv\r\nsource venv/bin/activate  # On Windows: venv\\Scripts\\activate"
+        },
+        {
+          "name": "step-3-title",
+          "type": "text",
+          "label": "Step 3 Title",
+          "value": "3. Install Dependencies"
+        },
+        {
+          "name": "step-3-code",
+          "type": "textarea",
+          "label": "Step 3 Code",
+          "value": "pip install -r requirements.txt"
+        },
+        {
+          "name": "step-4-title",
+          "type": "text",
+          "label": "Step 4 Title",
+          "value": "4. Run Application"
+        },
+        {
+          "name": "step-4-code",
+          "type": "textarea",
+          "label": "Step 4 Code",
+          "value": "python app.py"
+        },
+        {
+          "name": "step-5-title",
+          "type": "text",
+          "label": "Step 5 Title",
+          "value": "5. Open Browser"
+        },
+        {
+          "name": "step-5-code",
+          "type": "textarea",
+          "label": "Step 5 Code",
+          "value": "Visit http://localhost:5555"
+        },
+        {
+          "name": "configuration-title",
+          "type": "text",
+          "label": "Configuration Title",
+          "value": "Configuration"
+        },
+        {
+          "name": "configuration-description",
+          "type": "textarea",
+          "label": "Configuration Description",
+          "value": "Everything in WICARA is configured through a single config.json file."
+        },
+        {
+          "name": "config-1-title",
+          "type": "text",
+          "label": "Config 1 Title",
+          "value": "Site-wide Settings"
+        },
+        {
+          "name": "config-1-description",
+          "type": "textarea",
+          "label": "Config 1 Description",
+          "value": "Configure sitename, description, keywords, and other global settings."
+        },
+        {
+          "name": "config-2-title",
+          "type": "text",
+          "label": "Config 2 Title",
+          "value": "Page Definitions"
+        },
+        {
+          "name": "config-2-description",
+          "type": "textarea",
+          "label": "Config 2 Description",
+          "value": "Define pages, URLs, templates, and editable fields for each page."
+        },
+        {
+          "name": "config-3-title",
+          "type": "text",
+          "label": "Config 3 Title",
+          "value": "Field Management"
+        },
+        {
+          "name": "config-3-description",
+          "type": "textarea",
+          "label": "Config 3 Description",
+          "value": "Create text, textarea, and image fields with labels and default values."
+        },
+        {
+          "name": "admin-title",
+          "type": "text",
+          "label": "Admin Panel Title",
+          "value": "Admin Panel"
+        },
+        {
+          "name": "admin-description",
+          "type": "textarea",
+          "label": "Admin Description",
+          "value": "Manage your website content through the intuitive admin interface."
+        },
+        {
+          "name": "admin-1-url",
+          "type": "text",
+          "label": "Admin 1 URL",
+          "value": "/admin/login"
+        },
+        {
+          "name": "admin-1-description",
+          "type": "textarea",
+          "label": "Admin 1 Description",
+          "value": "Access the admin panel at /admin/login"
+        },
+        {
+          "name": "admin-2-password",
+          "type": "text",
+          "label": "Admin 2 Password",
+          "value": "Default: 'Wicara2025' (change immediately!)"
+        },
+        {
+          "name": "admin-2-description",
+          "type": "textarea",
+          "label": "Admin 2 Description",
+          "value": "Login with the default password and change it immediately"
+        },
+        {
+          "name": "admin-3-editing",
+          "type": "text",
+          "label": "Admin 3 Editing",
+          "value": "Edit pages from dashboard"
+        },
+        {
+          "name": "admin-3-description",
+          "type": "textarea",
+          "label": "Admin 3 Description",
+          "value": "Changes take effect immediately after saving"
+        },
+        {
+          "name": "customization-title",
+          "type": "text",
+          "label": "Customization Title",
+          "value": "Customization"
+        },
+        {
+          "name": "customization-description",
+          "type": "textarea",
+          "label": "Customization Description",
+          "value": "Make WICARA your own with easy customization options."
+        },
+        {
+          "name": "custom-1-templates",
+          "type": "text",
+          "label": "Custom 1 Templates",
+          "value": "Templates in /templates folder"
+        },
+        {
+          "name": "custom-1-description",
+          "type": "textarea",
+          "label": "Custom 1 Description",
+          "value": "Create and modify HTML templates using Jinja2 syntax"
+        },
+        {
+          "name": "custom-2-syntax",
+          "type": "text",
+          "label": "Custom 2 Syntax",
+          "value": "Jinja2 Syntax"
+        },
+        {
+          "name": "custom-2-description",
+          "type": "textarea",
+          "label": "Custom 2 Description",
+          "value": "Use {{ field_name }} to display content from config.json"
+        },
+        {
+          "name": "deployment-title",
+          "type": "text",
+          "label": "Deployment Title",
+          "value": "Deployment"
+        },
+        {
+          "name": "deployment-description",
+          "type": "textarea",
+          "label": "Deployment Description",
+          "value": "Deploy WICARA anywhere Python and Flask can run."
+        },
+        {
+          "name": "deployment-1-title",
+          "type": "text",
+          "label": "Deployment 1 Title",
+          "value": "VPS with Gunicorn/Nginx"
+        },
+        {
+          "name": "deployment-1-description",
+          "type": "textarea",
+          "label": "Deployment 1 Description",
+          "value": "Traditional server deployment with production-grade stack"
+        },
+        {
+          "name": "deployment-2-title",
+          "type": "text",
+          "label": "Deployment 2 Title",
+          "value": "PaaS Platforms"
+        },
+        {
+          "name": "deployment-2-description",
+          "type": "textarea",
+          "label": "Deployment 2 Description",
+          "value": "Heroku, Railway, Render, and other platform-as-a-service providers"
+        },
+        {
+          "name": "deployment-3-title",
+          "type": "text",
+          "label": "Deployment 3 Title",
+          "value": "Docker Containers"
+        },
+        {
+          "name": "deployment-3-description",
+          "type": "textarea",
+          "label": "Deployment 3 Description",
+          "value": "Containerized deployment for scalability and portability"
+        }
+      ]
+    },
+    {
+      "title": "About - WICARA CMS",
+      "template": "about.html",
+      "menu-title": "About",
+      "url": "/about",
+      "seo-description": "Learn about WICARA CMS: our story, philosophy, and mission to create simple, fast, and secure websites without database complexity.",
+      "seo-keywords": [
+        "about wicara",
+        "cms philosophy",
+        "open source cms",
+        "flask cms story"
+      ],
+      "fields": [
+        {
+          "name": "page-title",
+          "type": "text",
+          "label": "Page Title",
+          "value": "The Story Behind WICARA"
+        },
+        {
+          "name": "page-subtitle",
+          "type": "textarea",
+          "label": "Page Subtitle",
+          "value": "Simplicity, speed, and security in web content management."
+        },
+        {
+          "name": "story-title",
+          "type": "text",
+          "label": "Story Title",
+          "value": "Our Story"
+        },
+        {
+          "name": "story-content",
+          "type": "textarea",
+          "label": "Story Content",
+          "value": "WICARA was born from a simple observation: profile websites don't need WordPress complexity. Static generators require technical knowledge clients don't have. There's a gap in the market for something that's fast like static sites, but editable like traditional CMS.\n\nWe watched clients struggle with complex WordPress installations they only used for simple profile pages. We saw developers spending hours setting up databases for sites that would never need them. We knew there had to be a better way.\n\nWICARA bridges that gap - giving you the speed and security of static sites with the editing convenience of a CMS, without the database overhead and complexity."
+        },
+        {
+          "name": "philosophy-title",
+          "type": "text",
+          "label": "Philosophy Title",
+          "value": "Our Philosophy"
+        },
+        {
+          "name": "philosophy-description",
+          "type": "textarea",
+          "label": "Philosophy Description",
+          "value": "Guiding principles that shape every decision we make."
+        },
+        {
+          "name": "philosophy-1-title",
+          "type": "text",
+          "label": "Philosophy 1 Title",
+          "value": "Simplicity Over Features"
+        },
+        {
+          "name": "philosophy-1-description",
+          "type": "textarea",
+          "label": "Philosophy 1 Description",
+          "value": "We focus on doing a few things exceptionally well rather than providing mediocre solutions for everything."
+        },
+        {
+          "name": "philosophy-2-title",
+          "type": "text",
+          "label": "Philosophy 2 Title",
+          "value": "Security by Design"
+        },
+        {
+          "name": "philosophy-2-description",
+          "type": "textarea",
+          "label": "Philosophy 2 Description",
+          "value": "Every feature is built with security in mind. Less complexity means fewer attack vectors."
+        },
+        {
+          "name": "philosophy-3-title",
+          "type": "text",
+          "label": "Philosophy 3 Title",
+          "value": "Speed as a Feature"
+        },
+        {
+          "name": "philosophy-3-description",
+          "type": "textarea",
+          "label": "Philosophy 3 Description",
+          "value": "Website speed isn't just technical - it's about user experience and conversion rates."
+        },
+        {
+          "name": "philosophy-4-title",
+          "type": "text",
+          "label": "Philosophy 4 Title",
+          "value": "Solve Specific Problems Well"
+        },
+        {
+          "name": "philosophy-4-description",
+          "type": "textarea",
+          "label": "Philosophy 4 Description",
+          "value": "We're not trying to be everything to everyone. We're the best solution for specific use cases."
+        },
+        {
+          "name": "opensource-title",
+          "type": "text",
+          "label": "Open Source Title",
+          "value": "Open Source & Free Forever"
+        },
+        {
+          "name": "opensource-content",
+          "type": "textarea",
+          "label": "Open Source Content",
+          "value": "WICARA is and always will be free and open source. We believe in the power of community and the importance of transparent, accessible technology.\n\nLicensed under the permissive MIT license, you can use WICARA for personal projects, commercial websites, and everything in between. No hidden fees, no premium tiers - just powerful, simple CMS for everyone."
+        },
+        {
+          "name": "contributing-title",
+          "type": "text",
+          "label": "Contributing Title",
+          "value": "Contributions Welcome"
+        },
+        {
+          "name": "contributing-content",
+          "type": "textarea",
+          "label": "Contributing Content",
+          "value": "WICARA lives on GitHub and we welcome contributions from the community. Whether you're reporting bugs, suggesting features, or submitting pull requests, we appreciate your help in making WICARA better for everyone."
+        },
+        {
+          "name": "name-meaning-title",
+          "type": "text",
+          "label": "Name Meaning Title",
+          "value": "What's in a Name?"
+        },
+        {
+          "name": "name-meaning-content",
+          "type": "textarea",
+          "label": "Name Meaning Content",
+          "value": "WICARA (Indonesian for 'speech' or 'conversation') represents what websites truly are: a conversation with your visitors. We're here to help you manage that conversation simply and effectively, without the technical overhead that gets in the way of your message."
+        }
+      ]
+    },
+    {
+      "title": "Contact - WICARA CMS",
+      "template": "contact.html",
+      "menu-title": "Contact",
+      "url": "/contact",
+      "seo-description": "Get in touch with the WICARA CMS community: GitHub, email, and Discord. Join our open source project and connect with other users.",
+      "seo-keywords": [
+        "wicara contact",
+        "cms support",
+        "open source community",
+        "flask cms help"
+      ],
+      "fields": [
+        {
+          "name": "page-title",
+          "type": "text",
+          "label": "Page Title",
+          "value": "Get in Touch"
+        },
+        {
+          "name": "page-subtitle",
+          "type": "textarea",
+          "label": "Page Subtitle",
+          "value": "Join the WICARA community and connect with developers and users worldwide."
+        },
+        {
+          "name": "contact-intro",
+          "type": "textarea",
+          "label": "Contact Introduction",
+          "value": "Whether you need help, want to contribute, or just want to chat about web development, we're here to listen and help."
+        },
+        {
+          "name": "github-title",
+          "type": "text",
+          "label": "GitHub Title",
+          "value": "GitHub - For Technical Discussions"
+        },
+        {
+          "name": "github-description",
+          "type": "textarea",
+          "label": "GitHub Description",
+          "value": "The best place for bug reports, feature requests, code contributions, and technical discussions. We use GitHub Issues to track all development work and ensure transparency in our development process."
+        },
+        {
+          "name": "github-link",
+          "type": "text",
+          "label": "GitHub Link",
+          "value": "https://github.com/yourusername/wicara"
+        },
+        {
+          "name": "github-button-text",
+          "type": "text",
+          "label": "GitHub Button Text",
+          "value": "Visit GitHub Repository"
+        },
+        {
+          "name": "email-title",
+          "type": "text",
+          "label": "Email Title",
+          "value": "Email - Private Inquiries"
+        },
+        {
+          "name": "email-description",
+          "type": "textarea",
+          "label": "Email Description",
+          "value": "For general inquiries, partnership opportunities, press requests, and support that requires private communication. We typically respond within 24-48 hours."
+        },
+        {
+          "name": "email-address",
+          "type": "text",
+          "label": "Email Address",
+          "value": "hello@wicara-cms.dev"
+        },
+        {
+          "name": "email-button-text",
+          "type": "text",
+          "label": "Email Button Text",
+          "value": "Send Us an Email"
+        },
+        {
+          "name": "community-title",
+          "type": "text",
+          "label": "Community Title",
+          "value": "Community - Connect & Learn"
+        },
+        {
+          "name": "community-description",
+          "type": "textarea",
+          "label": "Community Description",
+          "value": "Join our growing community of developers and users. Share templates, get help from experienced users, and stay updated with the latest developments."
+        },
+        {
+          "name": "community-link",
+          "type": "text",
+          "label": "Community Link",
+          "value": "https://discord.gg/wicara"
+        },
+        {
+          "name": "community-button-text",
+          "type": "text",
+          "label": "Community Button Text",
+          "value": "Join Discord Community"
+        },
+        {
+          "name": "support-title",
+          "type": "text",
+          "label": "Support Title",
+          "value": "Need Help?"
+        },
+        {
+          "name": "support-description",
+          "type": "textarea",
+          "label": "Support Description",
+          "value": "Before reaching out, check our comprehensive documentation which covers installation, configuration, customization, and deployment. Most questions can be answered quickly with our guides."
+        },
+        {
+          "name": "support-link",
+          "type": "text",
+          "label": "Support Link",
+          "value": "/docs"
+        },
+        {
+          "name": "support-button-text",
+          "type": "text",
+          "label": "Support Button Text",
+          "value": "Browse Documentation"
+        }
+      ]
+    }
+  ],
+  "footer": {
+    "content": [
+      "Copyright © 2025 WICARA. Open source under MIT License.",
+      "Editable Static Web • Built with Flask"
+    ]
+  }
+}

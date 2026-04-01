@@ -1,0 +1,265 @@
+{% extends "base.html" %}
+
+{% block title %}{{ page_title }} - {{ sitename }}{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8 mx-auto text-center">
+                <h1 class="hero-title animate-fade-in">{{ page_title }}</h1>
+                <p class="hero-subtitle animate-fade-in">{{ page_subtitle }}</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Core Features Section -->
+<section class="section section-light">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 text-center mb-5">
+                <h2 class="section-title">{{ core_features_title }}</h2>
+                <p class="section-subtitle">{{ core_features_description }}</p>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-lg-6">
+                <div class="custom-card">
+                    <h3 class="card-title-custom">Lightning Fast Performance</h3>
+                    <p class="card-description">No database queries mean instant load times. Your content serves at static site speeds.</p>
+                    <ul class="feature-list">
+                        <li>Static file performance</li>
+                        <li>Zero database overhead</li>
+                        <li>Instant content updates</li>
+                        <li>Optimized for speed</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="custom-card">
+                    <h3 class="card-title-custom">Easy Content Management</h3>
+                    <p class="card-description">Intuitive admin panel for non-technical users to manage content effortlessly.</p>
+                    <ul class="feature-list">
+                        <li>Web-based admin interface</li>
+                        <li>What-you-see-is-what-you-get editing</li>
+                        <li>Instant publishing</li>
+                        <li>No technical knowledge required</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Technical Excellence Section -->
+<section class="section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 text-center mb-5">
+                <h2 class="section-title">{{ technical_title }}</h2>
+                <p class="section-subtitle">{{ technical_description }}</p>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-lg-6">
+                <div class="custom-card">
+                    <h3 class="card-title-custom">{{ tech_feature_1_title }}</h3>
+                    <p class="card-description">{{ tech_feature_1_description }}</p>
+                    <div class="code-block">
+# Clean Flask architecture
+from flask import Flask, render_template
+app = Flask(__name__)
+
+@app.route('/')
+def home():
+    return render_template('home.html')
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="custom-card">
+                    <h3 class="card-title-custom">{{ tech_feature_2_title }}</h3>
+                    <p class="card-description">{{ tech_feature_2_description }}</p>
+                    <div class="code-block">
+<!-- Powerful templating -->
+&lt;h1&gt;{{ page_title }}&lt;/h1&gt;
+{% for feature in features %}
+&lt;div&gt;{{ feature.title }}&lt;/div&gt;
+{% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="custom-card">
+                    <h3 class="card-title-custom">{{ tech_feature_3_title }}</h3>
+                    <p class="card-description">{{ tech_feature_3_description }}</p>
+                    <div class="code-block">
+{
+  "sitename": "My Website",
+  "pages": [...],
+  "fields": {...}
+}
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="custom-card">
+                    <h3 class="card-title-custom">{{ tech_feature_4_title }}</h3>
+                    <p class="card-description">{{ tech_feature_4_description }}</p>
+                    <ul class="feature-list">
+                        <li>File type validation</li>
+                        <li>Size restrictions</li>
+                        <li>Magic number verification</li>
+                        <li>Safe filename generation</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Built For Everyone Section -->
+<section class="section section-dark">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 text-center mb-5">
+                <h2 class="section-title">{{ built_for_title }}</h2>
+                <p class="section-subtitle">{{ built_for_description }}</p>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-lg-6">
+                <div class="custom-card">
+                    <h3 class="card-title-custom">{{ developer_benefit_title }}</h3>
+                    <p class="card-description">{{ developer_benefit_description }}</p>
+                    <div class="row g-3 mt-3">
+                        <div class="col-6">
+                            <div class="text-center">
+                                <i class="bi bi-code-slash fs-2 text-primary"></i>
+                                <h6 class="mt-2">Clean Code</h6>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="text-center">
+                                <i class="bi bi-puzzle fs-2 text-primary"></i>
+                                <h6 class="mt-2">Easy Extend</h6>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="text-center">
+                                <i class="bi bi-book fs-2 text-primary"></i>
+                                <h6 class="mt-2">Well Documented</h6>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="text-center">
+                                <i class="bi bi-lightning fs-2 text-primary"></i>
+                                <h6 class="mt-2">Fast Setup</h6>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="custom-card">
+                    <h3 class="card-title-custom">{{ user_benefit_title }}</h3>
+                    <p class="card-description">{{ user_benefit_description }}</p>
+                    <div class="row g-3 mt-3">
+                        <div class="col-6">
+                            <div class="text-center">
+                                <i class="bi bi-pencil fs-2 text-primary"></i>
+                                <h6 class="mt-2">Easy Editing</h6>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="text-center">
+                                <i class="bi bi-eye fs-2 text-primary"></i>
+                                <h6 class="mt-2">Live Preview</h6>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="text-center">
+                                <i class="bi bi-shield-check fs-2 text-primary"></i>
+                                <h6 class="mt-2">Secure</h6>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="text-center">
+                                <i class="bi bi-phone fs-2 text-primary"></i>
+                                <h6 class="mt-2">Mobile Ready</h6>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center">
+                <h2 class="cta-title">Ready to Experience WICARA?</h2>
+                <p class="cta-description">See all these features in action. Start building your website today.</p>
+                <div class="d-flex gap-3 justify-content-center flex-wrap">
+                    <a href="/docs" class="btn btn-light btn-lg">View Documentation</a>
+                    <a href="/use-cases" class="btn btn-outline-light btn-lg">See Use Cases</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Add smooth scroll behavior
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+            target.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }
+    });
+});
+
+// Add animation on scroll
+const observerOptions = {
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
+};
+
+const observer = new IntersectionObserver(function(entries) {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.style.opacity = '1';
+            entry.target.style.transform = 'translateY(0)';
+        }
+    });
+}, observerOptions);
+
+// Observe cards
+document.querySelectorAll('.custom-card').forEach(card => {
+    card.style.opacity = '0';
+    card.style.transform = 'translateY(20px)';
+    card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+    observer.observe(card);
+});
+</script>
+{% endblock %}
